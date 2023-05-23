@@ -1,0 +1,1480 @@
+﻿
+@model SNRWMSPortal.Models.AllocationSKUModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Allocation SKU Club Setup";
+
+
+}
+@{
+
+
+
+
+    try
+    {
+        <h2 class="text-white">@ViewBag.Title</h2>
+        @*container starts here*@
+
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-1">
+                
+
+            @*<ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#singleUpload" type="button" role="tab" aria-controls="single" aria-selected="true">Single Setup</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batchUpload" type="button" role="tab" aria-controls="batch" aria-selected="false">Batch Upload</button>
+                </li>
+            </ul>*@
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="single-tab" data-toggle="tab" href="#singleUpload" role="tab" aria-controls="single" aria-selected="true">Single Setup</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batchUpload" role="tab" aria-controls="batch" aria-selected="false">Batch Upload</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="vendorSetup">
+                        <div class="tab-pane active" id="singleUpload" role="tabpanel" aria-labelledby="single-tab">
+                            <br />
+                            @*sku search*@
+
+
+
+
+                        <div class="row m-0">
+                            <label for="SKU" class="form-label">SKU</label>
+                            <input type="text" onkeypress='return restrictAlphabets(event)' onclick="this.select()" onfocus="this.value=''" class="form-control" id="SKU" style="display: block; width: 350px; height: 50px; margin: 0px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left; " placeholder="Search SKU" name="SKU">
+                            <button type="submit" class="btn btn-primary" id="skubtn" name="skubtn" style="display: block; margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 50px; height: 50px; padding: 0px; "><i class="fa fa-search"></i></button>
+                            <div class="justify-content-lg-start text-primary" id="loader4" style="display: none;">
+                                <br />
+                                <div class="spinner-border" role="status">
+
+                                </div>
+                                <span>Searching Please wait...</span>
+                            </div>
+                            <input type="hidden" name="SKU1" id="SKU1">
+
+                        </div>
+                            <br />
+
+                            @*input fields for the sku description*@
+                            @*@using (Html.BeginForm("InsertSKUDes", "AllocationSKU", FormMethod.Post))
+            {*@
+                        <div class="row m-0">
+                            <div class="col-6  mb-3">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-8" })
+                                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "badge badge-danger text-danger" })
+
+                                </div>
+                            </div>
+
+                            <div class="col-3  mb-3">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.Status, htmlAttributes: new { @class = "control-label col-md-8" })
+                                    @Html.TextBoxFor(m => m.Status, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(m => m.Status, "", new { @class = "badge badge-danger text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="row">
+                                    <label for="Option" class="form-label">Build To</label>
+                                    <select name="status" style="height:46px;" class="form-select" id="buildoption">
+
+                                        <option value="DYNAMIC">DYNAMIC</option>
+                                        <option value="FIXED">FIXED</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="row m-0">
+                                <div class="col-4">
+                                    <div class="row g-3">
+                                        @Html.LabelFor(m => m.Category, htmlAttributes: new { @class = "control-label col-md-6 " })
+                                        @Html.DropDownListFor(m => m.Category, new SelectList(ViewBag.TruckLoadCategory, "Value", "Text"), "Select Truck Load Category", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                                        @Html.ValidationMessageFor(m => m.Category, "", new { @class = "badge badge-danger text-danger" })
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4  ">
+                                    <div class="row g-3">
+                                        @Html.LabelFor(m => m.DConfig, htmlAttributes: new { @class = "control-label col-md-6" })
+                                        @Html.DropDownListFor(m => m.DConfig, new SelectList(ViewBag.Config, "Value", "Text"), "Select Distribution Config", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                                        @Html.ValidationMessageFor(m => m.DConfig, "", new { @class = "badge badge-danger text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="row g-3">
+                                        @Html.LabelFor(m => m.DConfigQty, htmlAttributes: new { @class = "control-label col-md-6 mb-2" })
+                                        @Html.TextBoxFor(m => m.DConfigQty, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+                                        @Html.ValidationMessageFor(m => m.DConfigQty, "", new { @class = "badge badge-danger text-danger" })
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+
+                            <div class="row m-0">
+                                <div class="col-4  mb-3">
+                                    <div class="row g-3">
+                                        @Html.HiddenFor(m => m.ISTDPK, new { @id = "unitpercase" })
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4  mb-3">
+                                    <div class="row g-3">
+                                        @Html.HiddenFor(m => m.IVPLTI, new { @id = "pallettie" })
+                                    </div>
+                                </div>
+                                <div class="col-4  mb-3">
+                                    <div class="row g-3">
+                                        @Html.HiddenFor(m => m.IVPLHI, new { @id = "pallethigh" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">CLUB Records</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table cell-border table-responsive table-hover" id="dataTable" style="width:100%" cellspacing="0">
+                                            <thead>
+                                                <tr class="table-info">
+                                                    <th>CLUB</th>
+                                                    <th style="text-align: right;">AVERAGE SALES</th>
+                                                    <th style="text-align: right;">MINIMUM</th>
+                                                    <th style="text-align: right;">MULTIPLIER</th>
+                                                    <th style="text-align: right;">LEAD TIME</th>
+                                                    <th style="text-align: right;">BUILD TO</th>
+                                                    <th style="text-align: right;">TRIGGER</th>
+                                                    @*<th>On-Hand</th>
+                                    <th>In-Transit</th>
+                                    <th>Oh + It</th>
+                                    <th>Club Needs</th>*@
+                                                    @*<th>STR NUM</th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody id="dataTablebdy"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*display: none;*@
+                            <!--<table class="table cell-border table-responsive table-hover" id="tblInval" style="width: 100%; display: none; " cellspacing="0">
+        <thead>
+            <tr class="table-info">
+                <th>SKU</th>
+                <th>CLUB</th>
+                <th>ON HAND</th>
+                <th>IN TRANSIT</th>
+                <th>OH+IT</th>-->
+                            @*<th>STR NUM</th>*@
+                            <!--</tr>
+            </thead>
+            <tbody id="dataTablebdyInval"></tbody>
+        </table>-->
+
+
+
+
+
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+                            <button type="button" class="btn btn-success" id="modalRegisterBtn" style="width: 120px; height: 45px;"><i class="fa fa-check" style="margin-right:5px;"></i>Simulate</button>
+                            <button type="submit" class="btn btn-primary" id="btnSave" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                            @*}*@
+
+
+                            @*modal for simulate*@
+                            <div id="modalRegisterForm" class="modal fade" aria-modal="true">
+                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <div class="justify-content-lg-start text-primary" id="loader3" style="display: none;">
+                                    <div class="spinner-border" role="status">
+                                            
+                                        </div>
+                                         <span>Please wait simulating...</span>
+                                        </div>
+                                    </div>
+                                        <div class="modal-body">
+
+                                            <div class="card shadow mb-4">
+                                                <div class="card-header py-3">
+                                                    <h6 class="m-0 font-weight-bold text-primary">CLUB Records</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table cell-border table-responsive table-hover" id="tblSimulate" style="width:100%" cellspacing="0">
+                                                            <thead>
+                                                                <tr class="table-info" >
+                                                                    <th>CLUB</th>
+                                                                    <th style="text-align:right">OH</th>
+                                                                    <th style="text-align:right">IT</th>
+                                                                    <th style="text-align:right">OH+IT</th>
+                                                                    <th style="text-align:right">CLUB NEEDS</th>
+                                                                    <th style="text-align:right">ROUNDED</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="dataTablebdysimulate"></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*end of modal*@
+
+
+                        </div>
+                        
+                            <div class="tab-pane" id="batchUpload" role="tabpanel" aria-labelledby="batch-tab">
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <br />
+                                        <label for="FileName" class="form-label">File Name</label>
+                                    </div>
+                                    <div class="row m-0">
+                                        <input id="fileupload" type=file name="files[]" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style=" width: 500px; height: 50px;  border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left;">
+                                        <button type="submit" hidden class="btn btn-primary" id="btnUpload" style="margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 150px; height: 50px; padding: 0px; "><i class="fa fa-upload" style="margin-right:5px;"></i>Upload</button>
+                                        <button type="submit" class="btn btn-primary" id="btnUploadCon" style="margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 150px; height: 50px; padding: 0px; "><i class="fa fa-upload" style="margin-right:5px;"></i>Upload</button>
+
+                                        <div class="justify-content-lg-start col-4 text-primary" id="loader" style="display: none;">
+                                            <div class="spinner-border" role="status">
+
+                                            </div>
+                                            <span>Please wait while uploading...</span>
+                                        </div>
+                                        <div class="justify-content-lg-start col-4 text-primary" id="loader1" style="display: none;">
+                                            <div class="spinner-border" role="status">
+
+                                            </div>
+                                            <span>Please wait while validating the SKU...</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="w3-responsive">
+                                        <br />
+                                        <div class="card shadow mb-4">
+                                            <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">Batch Upload</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table cell-border  table-bordered table-hover" id="tblItems" style="width:100%" cellspacing="0">
+                                                        <thead>
+                                                            <tr class="table-info" style="text-align:center">
+                                                                <th style="text-align: left;">ClubCode</th>
+                                                                <th style="text-align: right;">SKU</th>
+                                                                <th style="text-align: right;">MINIMUM</th>
+                                                                <th style="text-align: right;">MULTIPLIER</th>
+                                                                <th style="text-align: right;">LEAD TIME</th>
+                                                                <th style="text-align: right;">ORDER CONFIG</th>
+                                                                <th style="text-align: right;">CATEGORY</th>
+                                                                <th style="text-align: right;">BUILD TO OPTION</th>
+                                                                @*<th>On-Hand</th>
+                                                <th>In-Transit</th>
+                                                <th>Oh + It</th>
+                                                <th>Club Needs</th>*@
+                                                                @*<th>STR NUM</th>*@
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbodyid"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                        @*end of tab pane*@
+                    </div>
+            </div>
+        @*end of container*@
+    }
+    catch (Exception)
+    {
+    }
+}
+
+@* javascript start here*@
+
+@section scripts{
+
+    @if (TempData["Success"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@TempData["Success"]'
+            })
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: '@TempData["Error"]'
+            })
+        </script>
+    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.0/dist/xlsx.full.min.js"></script>
+    <script>
+
+        
+
+        var ExcelToJSON = function () {
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+                    
+
+                    workbook.SheetNames.forEach(function (sheetName) {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { defval: "" });
+                        
+                        var productList = JSON.parse(JSON.stringify(XL_row_object));
+                        
+                        var rows = $('#tblItems tbody');
+                        if (sheetName != "Allocation SKU") {
+                            return;
+                        }
+
+                        for (i = 0; i < productList.length; i++) {
+                            var columns = Object.values(productList[i]);
+                            rows.append(`
+                                <tr>
+
+                                    
+
+                                    <td>${columns[0]}</td>
+                                    <td style="text-align: right;">${columns[1]}</td>
+                                    <td style="text-align: right;">${columns[2]}</td>
+                                    <td style="text-align: right;">${columns[3]}</td>
+                                    <td style="text-align: right;">${columns[4]}</td>
+                                    <td style="text-align: right;">${columns[5]}</td>
+                                    <td style="text-align: right;">${columns[6]}</td>
+                                    <td style="text-align: right;">${columns[7]}</td>
+
+                                </tr>
+                            `);
+
+                        }
+                       
+                          /*  $('#tblItems').DataTable();*/
+                        
+
+                    })
+                };
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+       
+
+        function handleFileSelect(evt) {
+            
+            var files = evt.target.files; // FileList object
+            var xl2json = new ExcelToJSON();
+            xl2json.parseExcel(files[0]);
+        }
+        $('#fileupload').click(function (e) {
+            clearTable();
+            $("#fileupload").val("");
+        });
+        function clearTable() {
+            var node = document.getElementById("tbodyid");
+            while (node.hasChildNodes()) {
+                node.removeChild(node.lastChild);
+            }
+            handleFileSelect
+        }
+
+
+        document.getElementById('fileupload').addEventListener('change', handleFileSelect, false);
+
+
+        //Batch Upload
+
+        $('#btnUploadCon').click(function () {
+            $('#loader1').css("display", "block");
+            var counterCon = 0;
+
+            //Loop through the Table rows and build a JSON array.
+            var batch1 = new Array();
+            $("#tblItems TBODY TR").each(function () {
+                var row = $(this);
+
+                var skusbatch1 = {};
+
+
+                if (row.find("TD").eq(1).html() == '') {
+
+                    Swal.fire(
+                        'Some of rows are empty!',
+                        'Please try again',
+                        'error'
+                    )
+                    $('#loader1').css("display", "none");
+                    counterCon++;
+                }
+                skusbatch1.SKU = row.find("TD").eq(1).html();
+
+
+                batch1.push(skusbatch1);
+            })
+            if (counterCon > 0) {
+
+                return;
+            }
+            $.ajax({
+                type: "Post",
+                url: "/AllocationSKU/InsertBatchCon",
+                dataType: 'json',
+                data: JSON.stringify(batch1),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    if (data.success == true) {
+
+
+                        Swal.fire({
+                            title: 'All SKU are successfully found in MMS. Do you want to upload this data?',
+                            icon: 'success',
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancel',
+                            confirmButtonText: 'Okay'
+                        }).then((result) => {
+                            if (result['isConfirmed']) {
+
+                                $('#btnUpload').click();
+
+                            }
+                            else {
+                                return;
+                            }
+                        })
+
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                    $('#loader1').css("display", "none");
+                }
+            });
+        });
+
+
+        $("#btnUpload").on("click", function () {
+            $('#loader').css("display", "block");
+            var counterC = 0;
+            
+            //Loop through the Table rows and build a JSON array.
+            var batch = new Array();
+            $("#tblItems TBODY TR").each(function () {
+                var row = $(this);
+                
+                var skusbatch = {};
+                
+
+                if (row.find("TD").eq(0).html() == '' || row.find("TD").eq(1).html() == '' || row.find("TD").eq(2).html() == '' || row.find("TD").eq(3).html() == '' || row.find("TD").eq(4).html() == '' || row.find("TD").eq(5).html() == '' || row.find("TD").eq(6).html() == '' || row.find("TD").eq(7).html() == '' ) {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'Some of rows are empty!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+                //if (row.find("TD").eq(5).html() != "PALLET" && row.find("TD").eq(5).html() != "CASE" && row.find("TD").eq(5).html() != "LAYER" ) {
+                //    $('#loader').css("display", "none");
+                //    Swal.fire(
+                //        'Please insert valid data for column Distribution Config!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    counterC++;
+                //}
+                //if (row.find("TD").eq(6).html() != "TOP" && row.find("TD").eq(6).html() != "BASE" && row.find("TD").eq(6).html() != "FRAGILE" && row.find("TD").eq(6).html() != "OFFSIZE" ) {
+                //    $('#loader').css("display", "none");
+                //    Swal.fire(
+                //        'Please insert valid data for column Category!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    counterC++;
+                //}
+                //if (row.find("TD").eq(7).html() != "DYNAMIC" && row.find("TD").eq(7).html() != "FIXED") {
+                //    $('#loader').css("display", "none");
+                //    Swal.fire(
+                //        'Please insert valid data for column Build To Option!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    counterC++;
+                //}
+                if (isNaN(row.find("TD").eq(0).html()) && isNaN(row.find("TD").eq(1).html()) && isNaN(row.find("TD").eq(2).html()) && isNaN(row.find("TD").eq(3).html()) && isNaN(row.find("TD").eq(4).html())) {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'Please insert only a numeric value to a numeric columns!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+                
+
+                skusbatch.ClubCode = row.find("TD").eq(0).html();
+                skusbatch.SKU = row.find("TD").eq(1).html();
+                skusbatch.Minimum = row.find("TD").eq(2).html();
+                skusbatch.Multiplier = row.find("TD").eq(3).html();
+                skusbatch.LeadTime = row.find("TD").eq(4).html();
+                skusbatch.ConfigExcel = row.find("TD").eq(5).html();
+                skusbatch.CategoryExcel = row.find("TD").eq(6).html();
+                skusbatch.BuildToDF = row.find("TD").eq(7).html();
+
+
+                batch.push(skusbatch);
+            });
+
+            if (counterC > 0) {
+
+                return;
+            }
+           
+            
+            $.ajax({
+                type: "Post",
+                url: "/AllocationSKU/InsertBatch",
+                dataType: 'json',
+                data: JSON.stringify(batch),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    if (data.success == true) {
+                        $('#loader').css("display", "none");
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message
+                        })
+                    } else {
+                        $('#loader').css("display", "none");
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                }
+            });
+
+        });
+
+
+    </script>
+
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        //avoid input string..............
+        function restrictAlphabets(e) {
+            var x = e.which || e.keycode;
+            if ((x >= 48 && x <= 57))
+                return true;
+            else
+                return false;
+        }
+        //....................................
+        //display sku clubs...................
+        $(document).ready(function () {
+
+
+            
+
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            $('#skubtn').click(function () {
+                $('#loader4').css("display", "block");
+                $('#skubtn').prop("disabled", true);
+                var id = $('#SKU').val();
+                if ($('#SKU').val() == "") {
+                    Swal.fire(
+                        'Please input SKU field to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    $('#skubtn').prop("disabled", false);
+                    $('#loader4').css("display", "none");
+                    return;
+                    
+                }
+
+
+
+                $("#dataTablebdy").empty();
+
+                
+                $.ajax({
+                    url: "/AllocationSKU/SearchSKU?id=" + id,
+                    type: "Get",
+
+                    success: function (data) {
+
+                        if (data.success == false) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                            $('#skubtn').prop("disabled", false);
+                            $('#loader4').css("display", "none");
+                        }
+
+
+                        $('#SKU1').val(data.SKU);
+                        $('#Description').val(data.Description);
+                        $('#Status').val(data.Status);
+                        $('#DConfig').val(data.DConfig);
+                        $('#DConfigQty').val(data.DConfigQty);
+                        $('#Category').val(data.Category);
+                        $('#unitpercase').val(data.ISTDPK);
+                        $('#pallettie').val(data.IVPLTI);
+                        $('#pallethigh').val(data.IVPLHI);
+                        $('#buildoption').val(data.BuildToDF);
+
+
+
+                        for (var i = 0; i < data.ClubSKU.length; i++) {
+                            
+
+                                var hie = $('#pallethigh').val();
+                                var tie = $('#pallettie').val();
+                                var cas = $('#unitpercase').val();
+                                var res = 0;
+                                if ($('#DConfig').val() == 1) {
+
+                                    res = hie * tie * cas;
+                                    $('#DConfigQty').val(res);
+                                }
+                                else if ($('#DConfig').val() == 2) {
+
+                                    res = tie * cas;
+                                    $('#DConfigQty').val(res);
+                                }
+                                else if ($('#DConfig').val() == 3) {
+
+                                    res = cas;
+                                    $('#DConfigQty').val(res);
+                                }
+                               
+
+                            
+                            var buildoption = $('#buildoption').val();
+                            
+                            var buildto;
+                                if (buildoption == "DYNAMIC") {
+
+                                  buildto = (data.ClubSKU[i].CurrentMultiplier * data.ClubSKU[i].AveSalesPerDay) + (data.ClubSKU[i].LeadTime * data.ClubSKU[i].AveSalesPerDay);
+                                 }
+                                else if (buildoption == "FIXED") {
+
+                                    buildto = (data.ClubSKU[i].Minimum) + (data.ClubSKU[i].LeadTime * data.ClubSKU[i].AveSalesPerDay);
+
+                                  }    
+
+                            var NeededOrder = Math.ceil((data.ClubSKU[i].AveSalesPerDay * 7) / res, 0) * res;
+                            if (isNaN(NeededOrder)) {
+                                NeededOrder = 0;
+                            }
+                               
+                            
+                               
+
+                                var triggers;
+
+                                if ($('#DConfigQty').val() == 0) {
+                                    triggers = 0;
+                                }
+                                else {
+                                    triggers = Math.max((buildto - NeededOrder), data.ClubSKU[i].Minimum)
+                                }
+
+                                var clubneeds = 0;
+                                if (data.ClubSKU[i].OHITsum < triggers == true) {
+                                    clubneeds = buildto - data.ClubSKU[i].OHITsum
+                                }
+                                else {
+                                    clubneeds = 0;
+                                }
+
+                                var RoundedCN = Math.round(clubneeds / res) * res;
+                                  if (isNaN(RoundedCN)) {
+                                        RoundedCN = 0;
+                                  }
+
+                                var tablerow = '<tr class="package-row">'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.ClubSKU[i].ClubName + '</td>'
+                                    + '<td width="10%" style="background-color: #e9ecef; text-align: right;"><input type="hidden" id="salesperday"  name="salesperday"  class="form-control" value=' + data.ClubSKU[i].AveSalesPerDay + '  />' + data.ClubSKU[i].AveSalesPerDay + '</td>'
+                                    + '<td width="10%"><input type="text" style="padding:10px;height: 40px;text-align: right;" name="minimum" id="minimum" value=' + data.ClubSKU[i].Minimum + ' class="form-control" onkeyup="getValues()" onkeypress="return restrictAlphabets(event)" /></td>'
+                                    + '<td width="10%"><input type="text" style="padding:10px;height: 40px;text-align: right;" name="multiplier" id="multiplier" onclick="this.select()" value=' + data.ClubSKU[i].CurrentMultiplier + ' class="form-control" onkeyup="getValues()" onkeypress="return restrictAlphabets(event)" /></td>'
+                                    + '<td width="10%"><input type="text" style="padding:10px;height: 40px;text-align: right;" name="leadtime" onclick="this.select()" id="leadtime" value=' + data.ClubSKU[i].LeadTime + ' class="form-control" onkeyup="getValues()" onkeypress="return restrictAlphabets(event)" /></td>'
+                                    + '<td width="10%" name="buildto" style="background-color: #e9ecef; text-align: right;" id="buildto">' + parseInt(buildto) + '</td>'
+                                    + '<td width="10%" name="triggers" style="background-color: #e9ecef;text-align: right;" id="triggers">' + parseInt(triggers) + '</td>'
+                                    + '<td width="10%" name="buildto1" style="display: none;" id="buildto1">' + buildto + '</td>'
+                                    + '<td width="10%" name="triggers1" style="display: none;" id="triggers1">' + triggers + '</td>'
+                                    + '<td style="display: none;" width="20%">' + data.ClubSKU[i].SKU + '</td>'
+                                    + '<td style="display: none;" width="20%">' + data.ClubSKU[i].ClubCode + '</td>'
+                                    //+ '<td display: none;><input type="hidden" id="sku" name="sku" class="form-control" value=' + data.ClubSKU[i].SKU + ' />' + data.ClubSKU[i].SKU + '</td>'
+                                    //+ '<td display: none;><input type = "hidden" id = "clubcode" name = "clubcode" class="form-control" value = ' + data.ClubSKU[i].ClubCode + ' /> ' + data.ClubSKU[i].ClubCode + '</td > '
+                                    //+ '<td style="display: none;" ><input type="hidden"  id="onhand" name="onhand"  class="form-control" value=' + data.ClubSKU[i].OnHand + ' />' + data.ClubSKU[i].OnHand + '</td>'
+                                    //+ '<td style="display: none;" ><input type="hidden"  id="intransit" name="intransit"  class="form-control" value=' + data.ClubSKU[i].InTransit + ' />' + data.ClubSKU[i].InTransit + '</td>'
+                                    ///*+ '<td style="background-color: #e9ecef;" ><input type="hidden"  id="ohit" name="ohit"  class="form-control" value=' + data.ClubSKU[i].OHIT + ' />' + data.ClubSKU[i].OHIT + '</td>'*/
+                                    ////+ '<td name="onhand" style="background-color: #e9ecef;" id="onhand">' + data.ClubSKU[i].OnHand + '</td>'
+                                    ////+ '<td name="intransit" style="background-color: #e9ecef;" id="intransit">' + data.ClubSKU[i].InTransit + '</td>'
+                                    //+ '<td name="ohit" style="display: none;" id="ohit">' + data.ClubSKU[i].OHIT + '</td>'
+                                    + '<td style="display: none;" ><input type="hidden"  id="ibhand" name="ibhand"  class="form-control" value=' + data.ClubSKU[i].IBHAND + ' />' + data.ClubSKU[i].IBHAND + '</td>'
+                                    + '<td style="display: none;" ><input type="hidden"  id="ibintiq" name="ibintq"  class="form-control" value=' + data.ClubSKU[i].IBINTQ + ' />' + data.ClubSKU[i].IBINTQ + '</td>'
+                                    + '<td style="display: none;" ><input type="hidden"  id="ohitsum" name="ohitsum"  class="form-control" value=' + data.ClubSKU[i].OHITsum + ' />' + data.ClubSKU[i].OHITsum + '</td>'
+                                    + '<td name="clubneeds" style="display: none;" id="clubneeds">' + parseInt(clubneeds) + '</td>'
+                                    + '<td name="clubneeds2" style="display: none;" id="clubneeds2">' + clubneeds + '</td>'
+                                    + '<td name="dconfigs" style="display: none;" id="dconfigs">' + data.ClubSKU[i].DConfig + '</td>'
+                                    + '<td name="categoryval" style="display: none;" onkeyup="getValues1()" id="categoryval">' + data.ClubSKU[i].Category + '</td>'
+                                    + '<td name="roundedclubneeds" style="display: none;"  id="roundedclubneeds">' + parseInt(RoundedCN) + '</td>'
+                                   
+                                    + '<td name="roundedclubneeds2" style="display: none;" id="roundedclubneeds2">' + RoundedCN + '</td>'
+                                    
+                                    + '<td width="10%" name="dept" style="display: none;text-align: right;" id="dept">' + data.ClubSKU[i].Department + '</td>'
+                                    + '<td width="10%" name="deptsub" style="display: none;text-align: right;" id="subdept">' + data.ClubSKU[i].SubDepartment + '</td>'
+                                    + '<td width="10%" name="classname" style="display: none;text-align: right;" id="classname">' + data.ClubSKU[i].ClassName + '</td>'
+                                    + '<td width="10%" name="subclass" style="display: none;text-align: right;" id="subclass">' + data.ClubSKU[i].SubClass + '</td>'
+                                    + '<td width="10%" name="vcode" style="display: none;text-align: right;" id="vcode">' + data.ClubSKU[i].Vendor + '</td>'
+                                    + '<td width="10%" name="boption" style="display: none;text-align: right;" id="boption" onkeyup="getValues2()">' + data.ClubSKU[i].BuildToDF + '</td>'
+                                    + '<td width="10%" name="NeededOrder" style="display: none;display: none;" id="NeededOrder">' + NeededOrder + '</td>'
+                                    /*+ '<td style="background-color: #e9ecef;" ><input type="hidden"  id="store" name="store"  class="form-control" value=' + data.ClubSKU[i].ISTORE + ' />' + data.ClubSKU[i].ISTORE + '</td>'*/
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+
+                        
+                        $('#skubtn').prop("disabled", false);
+                        $('#loader4').css("display", "none");
+                    }
+
+                });
+
+            });
+
+            
+        });
+
+
+
+        //to compute the formulas for trigger and build to
+        function getValues() {
+            var dconfigqty = $('#DConfigQty').val();
+            var rows = document.querySelectorAll("tr.package-row");
+            rows.forEach(function (currentRow, b) {
+                var salesperday = Number(currentRow.querySelector('#salesperday').value);
+                var minimum = Number(currentRow.querySelector('#minimum').value);
+                var multiplier = Number(currentRow.querySelector('#multiplier').value);
+                var leadtime = Number(currentRow.querySelector('#leadtime').value);
+                var onhand = Number(currentRow.querySelector('#ibhand').value);
+                var intransit = Number(currentRow.querySelector('#ibintiq').value);
+                var NeededOrder = Number(currentRow.querySelector('#NeededOrder').value);
+
+                var dconfiguration = $('#DConfig').val();
+
+                var buildoption = $('#buildoption').val();
+
+
+                ohit = onhand + intransit;
+
+                var buildto;
+                if (buildoption == "DYNAMIC") {
+
+                    buildto = (multiplier * salesperday) + (leadtime * salesperday);
+                }
+                else if (buildoption == "FIXED") {
+                    
+                    buildto = (minimum) + (leadtime * salesperday);
+
+                }
+               
+
+                NeededOrder = Math.ceil((salesperday * 7) / dconfigqty, 0) * dconfigqty;
+                if (isNaN(NeededOrder)) {
+                    NeededOrder = 0;
+                }
+
+
+                var triggers;
+
+                if (dconfigqty == 0) {
+                    triggers = 0;
+                }
+                else {
+                 triggers =  Math.max((buildto - NeededOrder), minimum);
+                }
+
+                
+
+                var clubneeds = 0;
+                if (ohit < triggers == true) {
+                    clubneeds = buildto - ohit
+                }
+                else {
+                    clubneeds = 0;
+                }
+
+                var RoundedCN = Math.round(clubneeds / dconfigqty) * dconfigqty;
+                if (isNaN(RoundedCN)) {
+                    RoundedCN = 0;
+                }
+                
+               
+
+
+                currentRow.querySelector("#triggers").innerHTML = parseInt(triggers);
+                currentRow.querySelector("#triggers1").innerHTML = triggers;
+                currentRow.querySelector("#clubneeds").innerHTML = parseInt(clubneeds);
+                currentRow.querySelector("#clubneeds2").innerHTML = clubneeds;
+                currentRow.querySelector("#buildto").innerHTML = parseInt(buildto);
+                currentRow.querySelector("#buildto1").innerHTML = buildto;
+                currentRow.querySelector("#ohitsum").innerHTML = ohit;
+                currentRow.querySelector("#minimum").innerHTML = minimum;
+
+                currentRow.querySelector("#dconfigs").innerHTML = dconfiguration;
+                currentRow.querySelector("#roundedclubneeds").innerHTML = parseInt(RoundedCN);
+                currentRow.querySelector("#roundedclubneeds2").innerHTML = RoundedCN;
+                currentRow.querySelector("#NeededOrder").innerHTML = NeededOrder;
+                $('#modalRegisterBtn').prop("disabled", true);
+
+
+            });
+        }
+
+        function getValues1() {
+
+            var rows = document.querySelectorAll("tr.package-row");
+            rows.forEach(function (currentRow) {
+
+                var categories = $('#Category').val();
+
+                currentRow.querySelector("#categoryval").innerHTML = categories;
+
+
+            });
+        }
+
+        function getValues2() {
+
+            var rows = document.querySelectorAll("tr.package-row");
+            rows.forEach(function (currentRow) {
+
+                var buildoption = $('#buildoption').val();
+
+                currentRow.querySelector("#boption").innerHTML = buildoption;
+
+
+            });
+        }
+
+        
+
+        //save and update post button
+        $("#btnSave").on("click", function () {
+
+            if ($('#SKU1').val() == "") {
+
+                Swal.fire(
+                    'Please input SKU field above!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+            else if ($('#DConfig').val() == null) {
+
+                Swal.fire(
+                    'Please select distribution config above!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+
+            else if ($('#DConfig').val() == 0) {
+
+                Swal.fire(
+                    'Please select distribution config above!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+
+            
+            else if ($('#Category').val() == null) {
+
+                Swal.fire(
+                    'Please select truck load category above!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+
+            else if ($('#Category').val() == 0) {
+
+                Swal.fire(
+                    'Please select truck load category above!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+            else if ($('#buildoption').val() == null) {
+
+                Swal.fire(
+                    'Please select build to type above!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+
+           
+           
+
+           
+
+            //Loop through the Table rows and build a JSON array.
+            var counterT = 0;
+            var skus = new Array();
+            $("#dataTable TBODY TR").each(function () {
+                var row = $(this);
+                var skuslist = {};
+
+                
+
+                if (row.find('td:eq(2) input').val() == '' || row.find('td:eq(3) input').val() == '' || row.find('td:eq(4) input').val() == '') {
+                    
+                    Swal.fire(
+                        'Please input all fields above!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterT++;
+                }
+                //else if (row.find("TD").eq(16).html() == 0) {
+
+                //    Swal.fire(
+                //        'Please select distribution config above!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    counterT++;
+                //}
+                
+
+                //skuslist.ClubId = row.find("TD").eq(0).html();
+                skuslist.AveSalesPerDay = row.find('td:eq(1) input').val();
+                skuslist.Minimum = row.find('td:eq(2) input').val();
+                skuslist.Multiplier = row.find('td:eq(3) input').val();
+                skuslist.LeadTime = row.find('td:eq(4) input').val();
+               // skuslist.BuildTo = row.find("TD").eq(5).html();
+               // skuslist.Triggers = row.find("TD").eq(6).html();
+
+                skuslist.BuildTo = row.find("TD").eq(7).html();
+                skuslist.Triggers = row.find("TD").eq(8).html();
+
+                skuslist.SKU = row.find("TD").eq(9).html();
+                skuslist.CLubCode = row.find("TD").eq(10).html();
+                //skuslist.OnHand = row.find('td:eq(11) input').val();
+                //skuslist.InTransit = row.find('td:eq(12) input').val();
+                skuslist.OHITsum = row.find('td:eq(13) input').val();
+               // skuslist.ClubNeeds = row.find("TD").eq(14).html();
+                skuslist.ClubNeeds = row.find("TD").eq(15).html();
+                skuslist.DConfig = row.find("TD").eq(16).html();
+                skuslist.Category = row.find("TD").eq(17).html();
+                //skuslist.RoundedClubNeeds = row.find("TD").eq(18).html();
+                skuslist.RoundedClubNeeds = row.find("TD").eq(19).html();
+
+                skuslist.Department = row.find("TD").eq(20).html();
+                skuslist.SubDepartment = row.find("TD").eq(21).html();
+                skuslist.ClassName = row.find("TD").eq(22).html();
+                skuslist.SubClass = row.find("TD").eq(23).html();
+                skuslist.Vendor = row.find("TD").eq(24).html();
+                skuslist.BuildToDF = row.find("TD").eq(25).html();
+                skuslist.NeededOrder = row.find("TD").eq(26).html();
+                skuslist.DConfigQty = $('#DConfigQty').val();
+
+
+                skus.push(skuslist);
+
+               
+                
+                
+
+            });
+
+            if (counterT > 0) {
+
+                return;
+            }
+
+            $.ajax({
+                type: "Post",
+                url: "/AllocationSKU/InsertSKU",
+                dataType: 'json',
+                data: JSON.stringify(skus),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success == true) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message
+                        })
+                        $('#modalRegisterBtn').prop("disabled", false);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                }
+            });
+
+            //var inval = new Array();
+            //$("#tblInval TBODY TR").each(function () {
+            //    var row = $(this);
+            //    var invallist = {};
+            //    invallist.SKU = row.find("TD").eq(0).html();
+            //    invallist.ClubCode = row.find('td:eq(1) input').val();
+            //    invallist.OnHand = row.find('td:eq(2) input').val();
+            //    invallist.InTransit = row.find('td:eq(3) input').val();
+            //    inval.push(invallist);
+            //});
+            //$.ajax({
+            //    type: "Post",
+            //    url: "/AllocationSKU/InsertInval",
+            //    dataType: 'json',
+            //    data: JSON.stringify(inval),
+            //    contentType: "application/json; charset=utf-8",
+            //    success: function (r) {
+
+            //    }
+            //});
+
+            //var sku = $("#SKU").val();
+            //var description = $("#Description").val();
+            //var status = $('#Status').val();
+            //var dconfig = $('#DConfig').val();
+            //var dconfigqty = $('#DConfigQty').val();
+            //var category = $('#Category').val();
+            //// all property names must be same as the viewmodel has
+            //var jsonData = {
+            //    SKU: sku,
+            //    Description: description,
+            //    Status: status,
+            //    DConfig: dconfig,
+            //    DConfigQty: dconfigqty,
+            //    Category: category
+            //};
+            //$.ajax({
+            //    type: "POST",
+            //    url: "/AllocationSKU/InsertSKUDes",
+            //    contentType: "application/json;charset=utf-8",
+            //    data: JSON.stringify(jsonData),
+            //    dataType: "json",
+            //    success: function () {
+            //        // do something
+            //    }
+            //});
+        });
+        //configuration quantity formula
+        $('#DConfig').change(function () {
+            configqtys.switchingConfigs();
+        });
+
+        
+
+
+        const configqtys = {
+            switchingConfigs: function () {
+                var configs = $('#DConfig').val();
+
+                switch (configs) {
+                    case "1":
+                        var tie = $('#pallettie').val();
+                        var high = $('#pallethigh').val();
+                        var cases = $('#unitpercase').val();
+                        var result = 0;
+                        result = tie * high * cases;
+
+                        $('#DConfigQty').val(result)
+                        $('#multiplier').keyup();
+
+
+                        break;
+
+                    case "2":
+                        var tie = $('#pallettie').val();
+                        var cases = $('#unitpercase').val();
+                        var result = 0;
+                        result = tie * cases;
+                        $('#DConfigQty').val(result)
+                        $('#multiplier').keyup();
+
+                        break;
+
+                    case "3":
+                        var cases = $('#unitpercase').val();
+                        var result = 0;
+                        result = cases;
+                        $('#DConfigQty').val(result)
+                        $('#multiplier').keyup();
+
+                        break;
+
+                }
+            }
+        }
+
+
+        $('#Category').change(function () {
+            categoryswitch.switchingCategory();
+        });
+        const categoryswitch = {
+            switchingCategory: function () {
+                var categs = $('#Category').val();
+
+                switch (categs) {
+                    case "1":
+                        var result = 1;
+
+                        $('#Category').val(result)
+
+                        $('#categoryval').keyup();
+
+                        break;
+
+                    case "2":
+                        $('#categoryval').keyup();
+                        break;
+
+                    case "3":
+                        $('#categoryval').keyup();
+                        break;
+                    case "4":
+                        $('#categoryval').keyup();
+                        break;
+                }
+            }
+        }
+
+        $('#buildoption').change(function () {
+            boptionswitch.switchingBOption();
+        });
+        const boptionswitch = {
+            switchingBOption: function () {
+                var buildoption = $('#buildoption').val();
+
+                switch (buildoption) {
+                    case "DYNAMIC":
+                        var result = "DYNAMIC";
+                        
+
+                        $('#buildoption').val(result)
+                        $('#boption').keyup();
+                        
+                        $('#multiplier').keyup();
+                        
+                        break;
+
+                    case "FIXED":
+                        var result1 = "FIXED";
+                        $('#buildoption').val(result1)
+                        $('#boption').keyup();
+                        $('#minimum').keyup();
+                        
+                        break;
+                }
+            }
+        }
+
+
+        //modal for simulate
+        $(function () {
+
+
+            $('#modalRegisterBtn').click(function () {
+                $('#modalRegisterForm').modal('show');
+            })
+            $('#closeModalBtn').click(function () {
+                $('#modalRegisterForm').modal('hide');
+            })
+            
+        });
+        //table for simulate
+        $(document).ready(function () {
+
+            $('#tblSimulate').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            $('#modalRegisterBtn').click(function () {
+                $('#loader3').css("display", "block");
+
+
+                var id = $('#SKU').val();
+                if ($('#SKU').val() == "") {
+
+                    return;
+                }
+                
+                //var inval = new Array();
+                //$("#dataTable TBODY TR").each(function () {
+                //    var row = $(this);
+                //    var invallist = {};
+                //    invallist.SKU = row.find("TD").eq(9).html();
+                //    invallist.ClubCode = row.find("TD").eq(10).html();
+                //    invallist.ClubNeeds = row.find("TD").eq(15).html();
+                //    invallist.RoundedClubNeeds = row.find("TD").eq(19).html();
+
+
+                //    inval.push(invallist);
+                //});
+                //$.ajax({
+                //    type: "Post",
+                //    url: "/AllocationSKU/UpdateInval",
+                //    dataType: 'json',
+                //    data: JSON.stringify(inval),
+                //    contentType: "application/json; charset=utf-8",
+                //    success: function (r) {
+
+                //    }
+                //});
+
+                $("#dataTablebdysimulate").empty();
+                $.ajax({
+                    url: "/AllocationSKU/SearchSKU?id=" + id,
+                    type: "Get",
+                    success: function (data) {
+                        $('#SKU1').val(data.SKU);
+
+                        for (var i = 0; i < data.ClubSKU.length; i++) {
+
+
+                            var hie = $('#pallethigh').val();
+                            var tie = $('#pallettie').val();
+                            var cas = $('#unitpercase').val();
+                            var res = 0;
+                            if ($('#DConfig').val() == 1) {
+
+                                res = hie * tie * cas;
+                                $('#DConfigQty').val(res);
+                            }
+                            else if ($('#DConfig').val() == 2) {
+
+                                res = tie * cas;
+                                $('#DConfigQty').val(res);
+                            }
+                            else if ($('#DConfig').val() == 3) {
+
+                                res = cas;
+                                $('#DConfigQty').val(res);
+                            }
+
+
+
+                            var buildoption = $('#buildoption').val();
+
+                            var buildto;
+                            if (buildoption == "DYNAMIC") {
+
+                                buildto = (data.ClubSKU[i].CurrentMultiplier * data.ClubSKU[i].AveSalesPerDay) + (data.ClubSKU[i].LeadTime * data.ClubSKU[i].AveSalesPerDay);
+                            }
+                            else if (buildoption == "FIXED") {
+
+                                buildto = (data.ClubSKU[i].Minimum) + (data.ClubSKU[i].LeadTime * data.ClubSKU[i].AveSalesPerDay);
+
+                            }
+
+                            var NeededOrder = Math.ceil((data.ClubSKU[i].AveSalesPerDay * 7) / res, 0) * res;
+                            if (isNaN(NeededOrder)) {
+                                NeededOrder = 0;
+                            }
+
+
+                            var triggers;
+
+                            if ($('#DConfigQty').val() == 0) {
+                                triggers = 0;
+                            }
+                            else {
+                                triggers = Math.max((buildto - NeededOrder), data.ClubSKU[i].Minimum)
+                            }
+
+                            var clubneeds = 0;
+                            if (data.ClubSKU[i].OHITsum < triggers == true) {
+                                clubneeds = buildto - data.ClubSKU[i].OHITsum
+                            }
+                            else {
+                                clubneeds = 0;
+                            }
+
+                            var RoundedCN = Math.round(clubneeds / res) * res;
+                            if (isNaN(RoundedCN)) {
+                                RoundedCN = 0;
+                            }
+
+                            var tablerow = '<tr class="package-row">'
+                                + '<td style="background-color: #e9ecef;"width="20%">' + data.ClubSKU[i].ClubName + '</td>'
+                                + '<td width="10%" style="display: none; text-align: right;"><input type="hidden" id="salesperday"  name="salesperday"  class="form-control" value=' + data.ClubSKU[i].AveSalesPerDay + '  />' + data.ClubSKU[i].AveSalesPerDay + '</td>'
+                                + '<td width="10%" style="display: none; text-align: right;"><input type="text" style="padding:10px;height: 40px;text-align: right;" name="minimum" id="minimum" value=' + data.ClubSKU[i].Minimum + ' class="form-control" onkeyup="getValues()" onkeypress="return restrictAlphabets(event)" /></td>'
+                                + '<td width="10%" style="display: none; text-align: right;"><input type="text" style="padding:10px;height: 40px;text-align: right;" name="multiplier" id="multiplier" onclick="this.select()" value=' + data.ClubSKU[i].CurrentMultiplier + ' class="form-control" onkeyup="getValues()" onkeypress="return restrictAlphabets(event)" /></td>'
+                                + '<td width="10%" style="display: none; text-align: right;"><input type="text" style="padding:10px;height: 40px;text-align: right;" name="leadtime" onclick="this.select()" id="leadtime" value=' + data.ClubSKU[i].LeadTime + ' class="form-control" onkeyup="getValues()" onkeypress="return restrictAlphabets(event)" /></td>'
+                                + '<td width="10%" name="buildto" style="display: none; text-align: right;" id="buildto">' + parseInt(buildto) + '</td>'
+                                + '<td width="10%" name="triggers" style="display: none;text-align: right;" id="triggers">' + parseInt(triggers) + '</td>'
+                                + '<td width="10%" name="buildto1" style="display: none;" id="buildto1">' + buildto + '</td>'
+                                + '<td width="10%" name="triggers1" style="display: none;" id="triggers1">' + triggers + '</td>'
+                                + '<td style="display: none;" width="20%">' + data.ClubSKU[i].SKU + '</td>'
+                                + '<td style="display: none;" width="20%">' + data.ClubSKU[i].ClubCode + '</td>'
+                                //+ '<td display: none;><input type="hidden" id="sku" name="sku" class="form-control" value=' + data.ClubSKU[i].SKU + ' />' + data.ClubSKU[i].SKU + '</td>'
+                                //+ '<td display: none;><input type = "hidden" id = "clubcode" name = "clubcode" class="form-control" value = ' + data.ClubSKU[i].ClubCode + ' /> ' + data.ClubSKU[i].ClubCode + '</td > '
+                                //+ '<td style="display: none;" ><input type="hidden"  id="onhand" name="onhand"  class="form-control" value=' + data.ClubSKU[i].OnHand + ' />' + data.ClubSKU[i].OnHand + '</td>'
+                                //+ '<td style="display: none;" ><input type="hidden"  id="intransit" name="intransit"  class="form-control" value=' + data.ClubSKU[i].InTransit + ' />' + data.ClubSKU[i].InTransit + '</td>'
+                                ///*+ '<td style="background-color: #e9ecef;" ><input type="hidden"  id="ohit" name="ohit"  class="form-control" value=' + data.ClubSKU[i].OHIT + ' />' + data.ClubSKU[i].OHIT + '</td>'*/
+                                ////+ '<td name="onhand" style="background-color: #e9ecef;" id="onhand">' + data.ClubSKU[i].OnHand + '</td>'
+                                ////+ '<td name="intransit" style="background-color: #e9ecef;" id="intransit">' + data.ClubSKU[i].InTransit + '</td>'
+                                //+ '<td name="ohit" style="display: none;" id="ohit">' + data.ClubSKU[i].OHIT + '</td>'
+                                
+                                + '<td style="background-color: #e9ecef;text-align: right;" ><input type="hidden"  id="ibhand" name="ibhand"  class="form-control" value=' + data.ClubSKU[i].IBHAND + ' />' + parseInt(data.ClubSKU[i].IBHAND) + '</td>'
+                                + '<td style="background-color: #e9ecef;text-align: right;" ><input type="hidden"  id="ibintiq" name="ibintq"  class="form-control" value=' + data.ClubSKU[i].IBINTQ + ' />' + parseInt(data.ClubSKU[i].IBINTQ) + '</td>'
+                                + '<td style="background-color: #e9ecef;text-align: right;" ><input type="hidden"  id="ohitsum" name="ohitsum"  class="form-control" value=' + data.ClubSKU[i].OHITsum + ' />' + parseInt(data.ClubSKU[i].OHITsum) + '</td>'
+                                + '<td name="clubneeds" style="background-color: #e9ecef;text-align: right;" id="clubneeds">' + parseInt(clubneeds) + '</td>'
+                                + '<td name="clubneeds2" style="display: none;" id="clubneeds2">' + clubneeds + '</td>'
+                                + '<td name="dconfigs" style="display: none;" id="dconfigs">' + data.ClubSKU[i].DConfig + '</td>'
+                                + '<td name="categoryval" style="display: none;" onkeyup="getValues1()" id="categoryval">' + data.ClubSKU[i].Category + '</td>'
+                                + '<td name="roundedclubneeds" style="background-color: #e9ecef;text-align: right;"  id="roundedclubneeds">' + parseInt(RoundedCN) + '</td>'
+
+                                + '<td name="roundedclubneeds2" style="display: none;" id="roundedclubneeds2">' + RoundedCN + '</td>'
+
+                                + '<td width="10%" name="dept" style="display: none;text-align: right;" id="dept">' + data.ClubSKU[i].Department + '</td>'
+                                + '<td width="10%" name="deptsub" style="display: none;text-align: right;" id="subdept">' + data.ClubSKU[i].SubDepartment + '</td>'
+                                + '<td width="10%" name="classname" style="display: none;text-align: right;" id="classname">' + data.ClubSKU[i].ClassName + '</td>'
+                                + '<td width="10%" name="subclass" style="display: none;text-align: right;" id="subclass">' + data.ClubSKU[i].SubClass + '</td>'
+                                + '<td width="10%" name="vcode" style="display: none;text-align: right;" id="vcode">' + data.ClubSKU[i].Vendor + '</td>'
+                                + '<td width="10%" name="boption" style="display: none;text-align: right;" id="boption" onkeyup="getValues2()">' + data.ClubSKU[i].BuildToDF + '</td>'
+                                + '<td width="10%" name="NeededOrder" style="display: none;" id="NeededOrder">' + NeededOrder + '</td>'
+                                /*+ '<td style="background-color: #e9ecef;" ><input type="hidden"  id="store" name="store"  class="form-control" value=' + data.ClubSKU[i].ISTORE + ' />' + data.ClubSKU[i].ISTORE + '</td>'*/
+                                + '</tr>';
+                                
+                                $("#dataTablebdysimulate").append(tablerow);
+                            }
+                        
+                        $('#loader3').css("display", "none");
+
+                    }
+                });
+            });
+        });
+
+
+
+        $("#SKU").keyup(function (event) {
+            if (event.which === 13) {
+                $("#skubtn").click();
+            }
+        });
+
+        
+        $(document).ready(function () {
+            $('#myTab a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+            // wire up shown event
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            // read hash from page load and change tab
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+            }
+        });
+
+
+    </script>
+
+}
+
+
+
+

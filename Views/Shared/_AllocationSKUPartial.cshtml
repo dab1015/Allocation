@@ -1,0 +1,27 @@
+﻿@model IEnumerable<SNRWMSPortal.Models.AllocationSKUModel>
+
+<table width="100%" cellpadding="5" border="1" cellspacing="0">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th colspan="2">
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td colspan="2">
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+
+        </tr>
+    }
+
+</table>

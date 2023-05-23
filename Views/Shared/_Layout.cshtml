@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - WMS Allocation</title>
+    @Styles.Render("~/Content/fontawesome")
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Scripts/sweetalert/sweetalert")
+    <link href="~/Content/DataTables/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/fixedHeader.dataTables.min.css" rel="stylesheet" />
+
+    <link href="~/Content/DataTables/responsive.dataTables.min.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <main>
+        <div class="container py-4">
+            <header class="pb-3 mb-4 border-bottom">
+                <a id="homepage" class="navbar-brand" href="javascript:void(0)">
+                    @*<img src="~/Content/Images/snr.png" width="30" height="30" class="d-inline-block align-top" alt="">*@
+                    <span class="fs-4 m-1 text-light">WMS Allocation</span>
+                </a>
+                <div class="pull-right">
+
+
+                    @if (Request.Cookies["SNRPortalCookie"] != null)
+
+                    {
+                        <div class="d-inline-block">
+
+
+
+                            @if (Session["Username"] != null)
+                            {
+
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <span class="text-light m-3" style="vertical-align : -webkit-baseline-middle;">Hello @Session["Username"] !</span>
+                                    <button class="btn btn-outline-info pull-right text-decoration-none text-bg-light" id="btnLogout">
+                                        <i class="fa fa-sign-out" style="font-size:20px"></i>
+                                        @*@Html.ActionLink("Logout", "Logout", "Account", null, new { style = "text-decoration:none;" })*@
+                                        Logout
+                                    </button>
+
+                                }
+                                else
+                                {
+                                    <span class="text-light m-3" style="vertical-align : -webkit-baseline-middle;"></span>
+                                    <button class="btn btn-outline-info pull-right text-decoration-none text-bg-light" id="continueLogin">
+                                        <i class="fa fa-sign-in" style="font-size:20px"></i>
+                                        Do you want Continue your last session?
+                                        @*@Html.ActionLink("Continue?", "Index", "Home", null, new { @style = "text-decoration:none;", @id = "continueLogin" })*@
+                                    </button>
+                                }
+
+
+
+
+
+                            }
+                        </div>
+                    }
+
+                </div>
+
+            </header>
+            <p style="float:right">
+                <a onclick="history.go(0)" class="btn btn-primary">
+                    <i class="fa fa-refresh" style="font-size:20px"></i>
+                    Refresh
+                </a>
+                <a href="http://199.84.200.96:888/Home/Index" class="btn btn-success">
+                    <i class="fa fa-arrow-circle-o-left" style="font-size:20px"></i>
+                    Back to Home Page
+                </a>
+
+            </p>
+        </div>
+    </main>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p style="color:white;">&copy; @DateTime.Now.Year -S&R WMS Portal</p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/sweetalert/sweetalert2.js")
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.fixedHeader.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.responsive.min.js"></script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        $(function () {
+
+            $('#continueLogin').click(function () {
+                //alert("continue login");
+                getBackHere();
+            });
+            function getBackHere() {
+                $.ajax({
+                    url: "/Home/Index/",
+                    type: "GET",
+                    success: function (response) {
+                        window.location.reload();
+                    }
+                });
+            }
+
+            $('#btnLogout').click(function () {
+                Swal.fire({
+                    title: 'Are you sure you want to logout?',
+                    showCancelButton: true,
+                    icon: "warning",
+                    confirmButtonText: `Yes`,
+                    denyButtonText: `Cancel`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        logoutUser();
+                        //Swal.fire('Logout Successfully!', '', 'success')
+                    } else if (result.isDenied) {
+                        //Swal.fire('Changes are not saved', '', 'info')
+                    }
+                });
+
+            });
+
+
+            function logoutUser() {
+                $.ajax({
+                    url: "/Account/Logout/",
+                    type: "POST",
+                    success: function (response) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Successfully Logout'
+                        });
+
+                        setTimeout(function () { window.location.href = "http://199.84.200.96:888"; }, 500);
+
+                    }
+                });
+
+            }
+
+            let string = $('#continueLogin').text();
+            let substring = "Do";
+
+            //console.log(string.includes(substring)); 
+            //alert($('#continueLogin').val());
+            //let value = ;
+            //(typeof (value) == "string" && value.includes("?"))
+            if (string.includes(substring)) {
+                window.location.reload();
+            } else { }
+        });
+
+
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

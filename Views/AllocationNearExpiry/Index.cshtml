@@ -1,0 +1,371 @@
+﻿
+@model SNRWMSPortal.Models.AllocationNearExpiryModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Near Expiry Exception";
+
+
+}
+@{
+
+
+
+
+    try
+    {
+        <h2 class="text-white">@ViewBag.Title</h2>
+        @*container starts here*@
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-1">
+
+
+
+
+
+
+
+                <div class="row m-0">
+                    <label for="SKU" class="form-label">SKU</label>
+                    <input type="text" onkeypress='return restrictAlphabets(event)' onclick="this.select()" onfocus="this.value=''" class="form-control" id="SKU" style="display: block; width: 350px; height: 50px; margin: 0px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left; " placeholder="Search SKU" name="SKU">
+                    <button type="submit" class="btn btn-primary" id="skubtn" name="skubtn" style="display: block; margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 50px; height: 50px; padding: 0px; "><i class="fa fa-search"></i></button>
+                    <input type="hidden" name="SKU1" id="SKU1">
+                </div>
+                <br />
+
+
+                @*<div class="row m-0">
+                        <div class="col-3  mb-3">
+                            <div class="row g-3">
+                                @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-8 mb-2" })
+                                @Html.TextBoxFor(m => m.Description, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+                                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "badge badge-danger text-danger" })
+
+                            </div>
+                        </div>
+
+                    </div>*@
+
+
+
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <label class="font-weight-bold text-primary" id="Description"></label>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table cell-border table-responsive table-hover" id="dataTable" style="width:100%" cellspacing="0">
+                                <thead>
+                                    <tr class="table-info">
+
+                                        <th>Club Name</th>
+                                        <th style="text-align:center">1 to 30</th>
+                                        <th style="text-align:center">31 to 60</th>
+                                        <th style="text-align:center">61 and Above</th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTablebdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+
+                <button type="submit" class="btn btn-primary" id="btnSave" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                @*}*@
+
+
+
+
+
+            </div>
+        </div>
+        @*end of container*@
+    }
+    catch (Exception)
+    {
+    }
+}
+
+@* javascript start here*@
+
+@section scripts{
+
+    @if (TempData["Success"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@TempData["Success"]'
+            })
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: '@TempData["Error"]'
+            })
+        </script>
+    }
+
+
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        //avoid input string..............
+        function restrictAlphabets(e) {
+            var x = e.which || e.keycode;
+            if ((x >= 48 && x <= 57))
+                return true;
+            else
+                return false;
+        }
+
+
+        //....................................
+        //display sku clubs...................
+        $(document).ready(function () {
+
+
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            
+
+            
+            $('#skubtn').click(function () {
+                $('#skubtn').prop("disabled", true);
+                var id = $('#SKU').val();
+                if ($('#SKU').val() == "") {
+                    Swal.fire(
+                        'Please input SKU field to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    $('#skubtn').prop("disabled", false);
+                    return;
+                }
+
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationNearExpiry/SearchSKU?id=" + id,
+                    type: "Get",
+                    success: function (data) {
+
+                        if (data.success == false) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                            $('#skubtn').prop("disabled", false);
+                        }
+
+
+                        $('#SKU1').val(data.SKU);
+                        $('#Description').html(data.Description);
+
+
+
+
+
+
+                        for (var i = 0; i < data.MerchandiseSKU.length; i++) {
+
+                           
+
+
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                + '<td id = "clubcode" style="display: none;">' + data.MerchandiseSKU[i].ClubCode + '</td>'
+                                + '<td style="text-align: center;"><input type="checkbox"   id= "check1' + i + '" value=' + data.MerchandiseSKU[i].OneToThirty + '  /></td>'
+                                + '<td style="text-align: center;"><input type="checkbox"   id= "check2' + i + '" value=' + data.MerchandiseSKU[i].ThirtyoneToSixty + ' /> </td>'
+                                + '<td style="text-align: center;"><input type="checkbox"   id= "check3' + i + '" value=' + data.MerchandiseSKU[i].SixtyoneAbove + ' /> </td>'
+                                + '<td style="display: none;">' + data.MerchandiseSKU[i].SKU + '</td>'
+                               // + '<td onchange="getValues1()" id="test">' + 2 + '</td>'
+                                + '</tr>';
+
+                           
+
+                              
+
+                            $("#dataTablebdy").append(tablerow);
+                           
+                            var firsty = data.MerchandiseSKU[i].OneToThirty;
+                            var thirty = data.MerchandiseSKU[i].ThirtyoneToSixty;
+                            var sixty = data.MerchandiseSKU[i].SixtyoneAbove;
+                            if (firsty == 0) {
+                                $("#check1" + i + "").prop("checked", false);
+
+                            }
+                            else {
+                                $("#check1" + i + "").prop("checked", true);
+
+                            }
+                            if (thirty == 0) {
+                                $("#check2" + i + "").prop("checked", false);
+
+                            }
+                            else {
+                                $("#check2" + i + "").prop("checked", true);
+
+                            }
+                            if (sixty == 0) {
+                                $("#check3" + i + "").prop("checked", false);
+
+                            }
+                            else {
+                                $("#check3" + i + "").prop("checked", true);
+                                
+
+                            }
+                            
+                            var checkbox = document.getElementById('check1' + i + '');
+                            checkbox.addEventListener("change", function () {
+                                this.value = this.checked ? 1 : 0;
+                            });
+
+                            var checkbox2 = document.getElementById('check2' + i + '');
+                            checkbox2.addEventListener("change", function () {
+                                this.value = this.checked ? 1 : 0;
+                            });
+
+                            var checkbox3 = document.getElementById('check3' + i + '');
+                            checkbox3.addEventListener("change", function () {
+                                this.value = this.checked ? 1 : 0;
+                            });
+                            
+                        }
+                        
+
+                        $('#skubtn').prop("disabled", false);
+                        
+                    }
+
+                });
+
+
+
+            });
+
+
+
+        });
+
+       
+        
+          
+
+        
+
+        $("#SKU").keyup(function (event) {
+            if (event.which === 13) {
+                $("#skubtn").click();
+            }
+        });
+
+        $(document).ready(function () {
+            $("#btnSave").on("click", function () {
+
+
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.OneToThirty = row.find('td:eq(2) input').val();
+                    skuslist.ThirtyoneToSixty = row.find('td:eq(3) input').val();
+                    skuslist.SixtyoneAbove = row.find('td:eq(4) input').val();
+                    skuslist.SKU = row.find("TD").eq(5).html();
+
+                    skus.push(skuslist);
+
+
+                });
+
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationNearExpiry/InsertNearExpiry",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+        function getValues() {
+
+            var rows = document.querySelectorAll("tr.package-row");
+            rows.forEach(function (currentRow) {
+
+                var reasons = $('#Reason').val();
+                var dconfigs = $('#DConfig').val();
+
+
+                currentRow.querySelector("#colreason").innerHTML = reasons;
+                currentRow.querySelector("#dconfigs").innerHTML = dconfigs;
+
+
+
+            });
+        }
+
+
+
+    </script>
+
+}
+
+
+
+

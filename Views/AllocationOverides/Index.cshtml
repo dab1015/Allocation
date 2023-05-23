@@ -1,0 +1,2003 @@
+﻿
+@model SNRWMSPortal.Models.AllocationOverRides
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Allocation Overrides";
+
+
+}
+@{
+    <style>
+        .form-floating > .form-control::placeholder {
+            color: revert;
+        }
+
+        .form-floating > .form-control:not(:focus)::placeholder {
+            color: transparent;
+        }
+    </style>
+
+    try
+    {
+        <h2 class="text-white">@ViewBag.Title</h2>
+        @*container starts here*@
+
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-1">
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="single-tab" data-toggle="tab" href="#singleUpload" role="tab" aria-controls="single" aria-selected="true">Single Setup</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batchUpload" role="tab" aria-controls="batch" aria-selected="false">Batch Upload</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="vendorSetup">
+                    <div class="tab-pane active" id="singleUpload" role="tabpanel" aria-labelledby="single-tab">
+                        <br />
+
+                        <div class="row m-0">
+                            <div class="col-3  mb-3">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.DeptName, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                                    @Html.DropDownListFor(m => m.DeptName, new SelectList(ViewBag.Departments, "Value", "Text"), "Select Department", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;", @onchange = "SKU.value='';VendorCode.value=''" })
+
+                                    @Html.ValidationMessageFor(m => m.DeptName, "", new { @class = "badge badge-danger text-danger" })
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-3  mb-3">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.SubDeptName, htmlAttributes: new { @class = "control-label col-md-6" })
+
+                                    @Html.DropDownListFor(m => m.SubDeptName, new SelectList(ViewBag.SubDepartments, "Value", "Text"), "Select Sub-Department", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+
+                                    @Html.ValidationMessageFor(m => m.SubDeptName, "", new { @class = "badge badge-danger text-danger" })
+
+                                </div>
+                            </div>
+
+                            <div class="col-3">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.ClassName, htmlAttributes: new { @class = "control-label col-md-6" })
+                                    @Html.DropDownListFor(m => m.ClassName, new SelectList(ViewBag.Classes, "Value", "Text"), "Select Class", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                                    @Html.ValidationMessageFor(m => m.ClassName, "", new { @class = "badge badge-danger text-danger" })
+
+                                </div>
+                            </div>
+
+                            <div class="col-3  ">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.SubClassName, htmlAttributes: new { @class = "control-label col-md-6" })
+                                    @Html.DropDownListFor(m => m.SubClassName, new SelectList(ViewBag.SubClasses, "Value", "Text"), "Select Sub-Class", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                                    @Html.ValidationMessageFor(m => m.SubClassName, "", new { @class = "badge badge-danger text-danger" })
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row m-0">
+
+
+
+                            <div class="col-4 ">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.VendorCode, htmlAttributes: new { @class = "control-label col-md-6 mb-3" })
+                                    <input type="text" onkeypress='return restrictAlphabets(event)' onclick="this.select()" onfocus="SKU.value=''" class="form-control" id="VendorCode" style="display: block; height: 46px; margin: 0px; padding: 10px; float: left; " placeholder="Search Vendor Code" name="VendorCode">
+                                </div>
+                            </div>
+                            <div class="col-4 ">
+                                <div class="row g-3">
+                                    @Html.LabelFor(m => m.SKU, htmlAttributes: new { @class = "control-label col-md-6 mb-3" })
+                                    <input type="text" onkeypress='return restrictAlphabets(event)' onclick="this.select()" onfocus="VendorCode.value =''" class="form-control" id="SKU" style="display: block; height: 46px; margin: 0px; padding: 10px; float: left; " placeholder="Search SKU" name="SKU">
+
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <label for="search"></label>
+                                <div class="input-group mt-3">
+
+                                    <button type="submit" class="btn btn-primary" id="search" style="width: 105px; height: 45px;"><i class="fa fa-search" style="margin-right:5px;"></i>Search</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row m-0">
+                            <div class="col-8">
+                                <div class="row g-3">
+                                    <label mt-3">
+                                        <input type="checkbox" id="allsearch" value="1" style="width: 15px; height:14px;">
+                                        Check this checkbox if the option is for all categories
+
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="row m-0">
+                            <div class="col-3">
+                                <label for="to">Period :</label>
+                                <div class="input-group mt-1">
+                                    <span class="input-group-text mt-2" style="height: 46px;"><i class="fa fa-calendar" style="color: dodgerblue;"></i></span>
+                                    <div class="form-floating">
+                                        <input placeholder="Choose Date" type="text" class="form-control" id="from" style="height: 46px; width: 250px;" readonly>
+                                        <label for="from">From</label>
+                                        @*<input id="fromtemp" name="fromtemp" type="text">
+                                            <input id="totemp" name="totemp" type="text">*@
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-3  ">
+                                <label for="to"></label>
+                                <div class="input-group mt-1">
+                                    <span class="input-group-text mt-2" style="height: 46px;"><i class="fa fa-calendar" style="color: dodgerblue;"></i></span>
+                                    <div class="form-floating">
+                                        <input placeholder="Choose Date" type="text" class="form-control" id="to" style="height: 46px; width: 250px;" readonly>
+                                        <label for="to">To</label>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+
+
+                        <br />
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <div class="col-6  mb-3">
+                                    <div class="row g-3">
+
+
+                                        <label class="font-weight-bold text-primary" id="Description"></label>
+                                        <label class="font-weight-bold text-primary" id="VendorName"></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table cell-border table-responsive table-hover" id="dataTable" style="width:100%" cellspacing="0">
+                                        <thead>
+                                            <tr class="table-info">
+                                                @*<th>SKU</th>*@
+                                                <th>CLUBCODE</th>
+                                                @*<th>DESCRIPTION</th>*@
+                                                <th id="multpliersetup" style="text-align:right;">MULTIPLIER SET-UP</th>
+                                                <th id="currentmultiplier" style="text-align:right;">CURRENT MULTIPLIER</th>
+                                                <th style="text-align:center;">MULTIPLIER ADJUSTMENT</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dataTablebdy">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+                        <button type="submit" class="btn btn-primary" id="btnSave" style="width:  105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                        <button type="submit" hidden class="btn btn-primary" id="btnDept" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                        <button type="submit" hidden class="btn btn-primary" id="btnSubDept" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                        <button type="submit" hidden class="btn btn-primary" id="btnClass" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                        <button type="submit" hidden class="btn btn-primary" id="btnSubClass" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                        <button type="submit" hidden class="btn btn-success" id="btnAllSearch" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                        @*}*@
+                    </div>
+
+                    <div class="tab-pane" id="batchUpload" role="tabpanel" aria-labelledby="batch-tab">
+                        <div class="row">
+                            <div class="col-md-6 ">
+                                <br />
+                                <label for="Option" class="form-label">Select options to Upload</label>
+                                <select name="cars" style = "height:46px;" class="form-select" id="options">
+                                   
+                                    <option value="1">Dept, SubDept, Class, SubClass</option>
+                                    <option value="2">Vendor</option>
+                                    <option value="3">SKU</option>
+
+                                </select>
+                                <br />
+                            </div>
+
+                            <div class="row m-0">
+                                <label for="FileName" class="form-label">File Name</label>
+                                <input id="fileupload" type=file name="files[]" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style=" width: 500px; height: 50px;  border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left;">
+                                <button type="submit" class="btn btn-primary" id="btnUpload" style="margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 150px; height: 50px; padding: 0px; "><i class="fa fa-upload" style="margin-right:5px;"></i>Upload</button>
+
+                                <input id="fileupload2" hidden type=file name="files[]" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style=" width: 500px; height: 50px;  border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left;">
+                                <button type="submit" hidden class="btn btn-primary" id="btnUpload2" style="margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 150px; height: 50px; padding: 0px; "><i class="fa fa-upload" style="margin-right:5px;"></i>Upload</button>
+
+                                <input id="fileupload3" hidden type=file name="files[]" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style=" width: 500px; height: 50px;  border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left;">
+                                <button type="submit" hidden class="btn btn-primary" id="btnUpload3" style="margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 150px; height: 50px; padding: 0px; "><i class="fa fa-upload" style="margin-right:5px;"></i>Upload</button>
+
+                                <div class="justify-content-lg-start col-4 text-primary" id="loader" style="display: none;">
+                                    <div class="spinner-border" role="status">
+
+                                    </div>
+                                    <span>Please wait while uploading...</span>
+                                </div>
+                            </div>
+
+                            <div class="w3-responsive">
+                                <br />
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Batch Upload</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table cell-border  table-bordered table-hover" id="tblItems" style="width:100%" cellspacing="0">
+                                                <thead>
+                                                    <tr class="table-info" style="text-align:center">
+                                                        @*<th>SKU</th>*@
+                                                        <th style="text-align: left;">CLUBCODE</th>
+                                                        @*<th>DESCRIPTION</th>*@
+                                                        <th id="multcol" style="text-align: right;">MULTIPLIER ADJUSTMENT</th>
+                                                        <th id="deptcol" style="text-align:right;">DEPARTMENT</th>
+                                                        <th id="subdeptcol" style="text-align:right;">SUB-DEPARTMENT</th>
+                                                        <th id="classcol" style="text-align: right;">CLASS</th>
+                                                        <th id="subclasscol" style="text-align: right;">SUB-CLASS</th>
+                                                        <th id="vendorcol" hidden style="text-align: right;">VENDOR CODE</th>
+                                                        <th id="skucol" hidden style="text-align: right;">SKU</th>
+
+                                                        <th style="text-align:right;">DATE FROM</th>
+                                                        <th style="text-align:right;">DATE TO</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyid"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+            @*end of tab pane*@
+        </div>
+
+        @*end of container*@
+    }
+    catch (Exception)
+    {
+    }
+}
+
+@* javascript start here*@
+
+@section scripts{
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.0/dist/xlsx.full.min.js"></script>
+    <script>
+        var ExcelToJSON = function () {
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+
+
+                    workbook.SheetNames.forEach(function (sheetName) {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { defval: "" });
+
+                        var productList = JSON.parse(JSON.stringify(XL_row_object));
+
+                        var rows = $('#tblItems tbody');
+                        if (sheetName != "Department") {
+                            return;
+                        }
+
+                        for (i = 0; i < productList.length; i++) {
+                            var columns = Object.values(productList[i]);
+                            rows.append(`
+                                    <tr>
+
+
+
+                                        <td>${columns[0]}</td>
+                                        <td style="text-align: right;">${columns[1]}</td>
+                                        <td style="text-align: right;">${columns[2]}</td>
+                                        <td style="text-align: right;">${columns[3]}</td>
+                                        <td style="text-align: right;">${columns[4]}</td>
+                                        <td style="text-align: right;">${columns[5]}</td>
+                                        <td style="text-align: right;">${columns[6]}</td>
+                                        <td style="text-align: right;">${columns[7]}</td>
+
+                                    </tr>
+                                `);
+
+                        }
+
+                    })
+                };
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        function handleFileSelect(evt) {
+
+            var files = evt.target.files; // FileList object
+            var xl2json = new ExcelToJSON();
+            xl2json.parseExcel(files[0]);
+        }
+        $('#fileupload').click(function (e) {
+            clearTable();
+            $("#fileupload").val("");
+        });
+        function clearTable() {
+            var node = document.getElementById("tbodyid");
+            while (node.hasChildNodes()) {
+                node.removeChild(node.lastChild);
+            }
+            handleFileSelect
+        }
+
+
+        document.getElementById('fileupload').addEventListener('change', handleFileSelect, false);
+
+
+        //Batch Upload
+
+        $("#btnUpload").on("click", function () {
+            $('#loader').css("display", "block");
+            var counterC = 0;
+
+            //Loop through the Table rows and build a JSON array.
+            var batch = new Array();
+            $("#tblItems TBODY TR").each(function () {
+                var row = $(this);
+
+                var skusbatch = {};
+
+
+                if (row.find("TD").eq(0).html() == '' || row.find("TD").eq(1).html() == '' || row.find("TD").eq(2).html() == '' || row.find("TD").eq(3).html() == '' || row.find("TD").eq(4).html() == '' || row.find("TD").eq(5).html() == '' || row.find("TD").eq(6).html() == '' || row.find("TD").eq(7).html() == '') {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'All rows and columns cannot be empty!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+                
+               
+                if (isNaN(row.find("TD").eq(0).html()) && isNaN(row.find("TD").eq(5).html())) {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'Please insert only a numeric value to the numeric columns!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+
+
+                skusbatch.ClubCode = row.find("TD").eq(0).html();
+                skusbatch.MultiplierAdjustment = row.find("TD").eq(1).html();
+                skusbatch.Department = row.find("TD").eq(2).html();
+                skusbatch.SubDepartment = row.find("TD").eq(3).html();
+                skusbatch.ClassCode = row.find("TD").eq(4).html();
+                skusbatch.SubClassCode = row.find("TD").eq(5).html();
+                
+                skusbatch.DateFrom = row.find("TD").eq(6).html();
+                skusbatch.DateTo = row.find("TD").eq(7).html();
+
+
+
+                batch.push(skusbatch);
+            });
+
+            if (counterC > 0) {
+
+                return;
+            }
+
+            $.ajax({
+                type: "Post",
+                url: "/AllocationOverides/InsertBatchDept",
+                dataType: 'json',
+                data: JSON.stringify(batch),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success == true) {
+                        $('#loader').css("display", "none");
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message
+                        })
+                    } else {
+                        $('#loader').css("display", "none");
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                }
+            });
+
+        });
+
+
+
+
+        var ExcelToJSON1 = function () {
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+
+
+                    workbook.SheetNames.forEach(function (sheetName) {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { defval: "" });
+
+                        var productList = JSON.parse(JSON.stringify(XL_row_object));
+
+                        var rows = $('#tblItems tbody');
+                        if (sheetName != "Vendor") {
+                            return;
+                        }
+
+                        for (i = 0; i < productList.length; i++) {
+                            var columns = Object.values(productList[i]);
+                            rows.append(`
+                                    <tr>
+
+
+
+                                        <td>${columns[0]}</td>
+                                        <td style="text-align: right;">${columns[1]}</td>
+                                        <td style="text-align: right;">${columns[2]}</td>
+                                        <td style="text-align: right;">${columns[3]}</td>
+                                        <td style="text-align: right;">${columns[4]}</td>
+
+
+                                    </tr>
+                                `);
+
+                        }
+
+                    })
+                };
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        function handleFileSelect1(evt) {
+
+            var files = evt.target.files; // FileList object
+            var xl2json = new ExcelToJSON1();
+            xl2json.parseExcel(files[0]);
+        }
+       
+        $('#fileupload2').click(function (e) {
+            clearTable1();
+            $("#fileupload2").val("");
+        });
+        function clearTable1() {
+            var node = document.getElementById("tbodyid");
+            while (node.hasChildNodes()) {
+                node.removeChild(node.lastChild);
+            }
+            handleFileSelect1
+        }
+
+
+        document.getElementById('fileupload2').addEventListener('change', handleFileSelect1, false);
+
+
+        //Batch Upload
+
+        $("#btnUpload2").on("click", function () {
+            $('#loader').css("display", "block");
+            var counterC = 0;
+
+            //Loop through the Table rows and build a JSON array.
+            var batch = new Array();
+            $("#tblItems TBODY TR").each(function () {
+                var row = $(this);
+
+                var skusbatch = {};
+
+
+                if (row.find("TD").eq(0).html() == '' || row.find("TD").eq(1).html() == '' || row.find("TD").eq(2).html() == '' || row.find("TD").eq(3).html() == '' || row.find("TD").eq(4).html() == '') {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'All rows and columns cannot be empty!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+
+
+                if (isNaN(row.find("TD").eq(0).html()) && isNaN(row.find("TD").eq(1).html()) && isNaN(row.find("TD").eq(2).html())) {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'Please insert only a numeric value to the numeric columns!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+
+
+                skusbatch.ClubCode = row.find("TD").eq(0).html();
+                skusbatch.MultiplierAdjustment = row.find("TD").eq(1).html();
+                skusbatch.VendorCode = row.find("TD").eq(2).html();
+                skusbatch.DateFrom = row.find("TD").eq(3).html();
+                skusbatch.DateTo = row.find("TD").eq(4).html();
+                
+
+
+                batch.push(skusbatch);
+            });
+
+            if (counterC > 0) {
+
+                return;
+            }
+
+            $.ajax({
+                type: "Post",
+                url: "/AllocationOverides/InsertOverRidesVendor",
+                dataType: 'json',
+                data: JSON.stringify(batch),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success == true) {
+                        $('#loader').css("display", "none");
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message
+                        })
+                    } else {
+                        $('#loader').css("display", "none");
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                }
+            });
+
+        });
+
+
+        var ExcelToJSON2 = function () {
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+
+
+                    workbook.SheetNames.forEach(function (sheetName) {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName], { defval: "" });
+
+                        var productList = JSON.parse(JSON.stringify(XL_row_object));
+
+                        var rows = $('#tblItems tbody');
+                        if (sheetName != "SKU") {
+                            return;
+                        }
+
+                        for (i = 0; i < productList.length; i++) {
+                            var columns = Object.values(productList[i]);
+                            rows.append(`
+                                    <tr>
+
+
+
+                                        <td width="17%">${columns[0]}</td>
+                                        <td width="30%" style="text-align: right;">${columns[1]}</td>
+                                        <td width="17%" style="text-align: right;">${columns[2]}</td>
+                                        <td width="17%" style="text-align: right;">${columns[3]}</td>
+                                        <td width="17%" style="text-align: right;">${columns[4]}</td>
+
+
+                                    </tr>
+                                `);
+
+                        }
+
+                    })
+                };
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        function handleFileSelect2(evt) {
+
+            var files = evt.target.files; // FileList object
+            var xl2json = new ExcelToJSON2();
+            xl2json.parseExcel(files[0]);
+        }
+        
+        $('#fileupload3').click(function (e) {
+            clearTable2();
+            $("#fileupload3").val("");
+        });
+        function clearTable2() {
+            var node = document.getElementById("tbodyid");
+            while (node.hasChildNodes()) {
+                node.removeChild(node.lastChild);
+            }
+            handleFileSelect2
+        }
+
+
+        document.getElementById('fileupload3').addEventListener('change', handleFileSelect2, false);
+
+
+        //Batch Upload
+
+        $("#btnUpload3").on("click", function () {
+            $('#loader').css("display", "block");
+            var counterC = 0;
+
+            //Loop through the Table rows and build a JSON array.
+            var batch = new Array();
+            $("#tblItems TBODY TR").each(function () {
+                var row = $(this);
+
+                var skusbatch = {};
+
+
+                if (row.find("TD").eq(0).html() == '' || row.find("TD").eq(1).html() == '' || row.find("TD").eq(2).html() == '' || row.find("TD").eq(3).html() == '' || row.find("TD").eq(4).html() == '') {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'All rows and columns cannot be empty!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+
+
+                if (isNaN(row.find("TD").eq(0).html()) && isNaN(row.find("TD").eq(1).html()) && isNaN(row.find("TD").eq(2).html())) {
+                    $('#loader').css("display", "none");
+                    Swal.fire(
+                        'Please insert only a numeric value to the numeric columns!',
+                        'Please try again',
+                        'error'
+                    )
+                    counterC++;
+                }
+
+
+                skusbatch.ClubCode = row.find("TD").eq(0).html();
+                skusbatch.MultiplierAdjustment = row.find("TD").eq(1).html();
+                skusbatch.SKU = row.find("TD").eq(2).html();
+                skusbatch.DateFrom = row.find("TD").eq(3).html();
+                skusbatch.DateTo = row.find("TD").eq(4).html();
+
+
+                batch.push(skusbatch);
+            });
+
+            if (counterC > 0) {
+
+                return;
+            }
+
+            $.ajax({
+                type: "Post",
+                url: "/AllocationOverides/InsertOverRides",
+                dataType: 'json',
+                data: JSON.stringify(batch),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.success == true) {
+                        $('#loader').css("display", "none");
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message
+                        })
+                    } else {
+                        $('#loader').css("display", "none");
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                }
+            });
+
+        });
+
+
+    </script>
+
+    @if (TempData["Success"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@TempData["Success"]'
+            })
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: '@TempData["Error"]'
+            })
+        </script>
+    }
+    <link href="~/jquery-ui-1.13.2.custom/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+
+    <script>
+        //avoid input string..............
+        function restrictAlphabets(txt, evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode == 45) {
+                //Check if the text already contains the . character
+                if (txt.value.indexOf('-') === -1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                if (charCode > 31 &&
+                    (charCode < 48 || charCode > 57))
+                    return false;
+            }
+            return true;
+        }
+
+
+
+        $(document).ready(function () {
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+
+
+            $('#search').click(function () {
+                $('#search').prop("disabled", true);
+
+                if ($('#VendorCode').val() == "" && $('#SKU').val() == "") {
+                    Swal.fire(
+                        'Please input SKU or VendorCode field to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    $('#search').prop("disabled", false);
+                    return;
+                }
+
+                else if ($('#VendorCode').val() == "") {
+
+                    var id = $('#SKU').val();
+                    $("#dataTablebdy").empty();
+                    $.ajax({
+                        url: "/AllocationOverides/SearchSKU?id=" + id,
+                        type: "Get",
+                        success: function (data) {
+
+                            if (data.success == false) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.message,
+                                    text: 'Please try again...'
+                                })
+                                $('#search').prop("disabled", false);
+                            }
+                            $('#Description').html(data.Description);
+                            for (var i = 0; i < data.OverRides.length; i++) {
+                                $('#from').val(data.OverRides[6].DateFrom);
+                                $('#to').val(data.OverRides[7].DateTo);
+
+                                var tablerow = '<tr class="package-row">'
+
+                                    + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+
+                                    + '<td width="12%" style="text-align: right;">' + data.OverRides[i].MultiplierSetup + '</td>'
+                                    + '<td width="12%" style="text-align: right;">' + data.OverRides[i].CurrentMultiplier + '</td>'
+                                    + '<td width="12%"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + ' class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SKU + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+
+                                    + '</tr>';
+
+                                $("#dataTablebdy").append(tablerow);
+
+                            }
+
+                            $('#search').prop("disabled", false);
+
+
+                        }
+
+
+
+
+                    });
+
+                }
+                else if ($('#SKU').val() == "") {
+                    var vcode = $('#VendorCode').val();
+                    $("#dataTablebdy").empty();
+                    $.ajax({
+                        url: "/AllocationOverides/SearchVendorCode?vcode=" + vcode,
+                        type: "Get",
+                        success: function (data) {
+
+                            if (data.success == false) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.message,
+                                    text: 'Please try again...'
+                                })
+                                $('#search').prop("disabled", false);
+                            }
+                            $('#VendorName').html(data.VendorName);
+
+                            for (var i = 0; i < data.OverRides.length; i++) {
+
+                                $('#from').val(data.OverRides[10].DateFrom);
+                                $('#to').val(data.OverRides[11].DateTo);
+
+
+
+                                var tablerow = '<tr class="package-row">'
+
+                                    + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+
+
+
+                                    + '<td width="8%" style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + '  class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].VendorCode + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].Department + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubDepartment + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClassCode + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubClassCode + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].AllSearch + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                    + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+                                    + '</tr>';
+
+                                $("#dataTablebdy").append(tablerow);
+
+
+                            }
+
+                            $('#search').prop("disabled", false);
+
+                        }
+
+
+
+
+                    });
+                }
+
+
+
+            });
+
+
+            $('#DeptName').change(function () {
+
+
+                var deptcode = $('#DeptName').val();
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationOverides/SearchDeptCode?deptcode=" + deptcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.OverRides.length; i++) {
+
+                            $('#from').val(data.OverRides[10].DateFrom);
+                            $('#to').val(data.OverRides[11].DateTo);
+
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+
+
+
+                                + '<td width="8%"style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + '  class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].Department + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubDepartment + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].VendorCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].AllSearch + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+                                + '</tr>';
+                            $("#dataTablebdy").append(tablerow);
+                        }
+
+
+                    }
+
+                });
+
+
+
+            });
+
+            $('#SubDeptName').change(function () {
+
+                var deptcode = $('#DeptName').val();
+                var subdeptcode = $('#SubDeptName').val();
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationOverides/SearchSubDeptCode?deptcode=" + deptcode + "&subdeptcode=" + subdeptcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.OverRides.length; i++) {
+
+                            $('#from').val(data.OverRides[10].DateFrom);
+                            $('#to').val(data.OverRides[11].DateTo);
+
+                            var tablerow = '<tr class="package-row">'
+
+                                /*+ '<td width="12%">' + data[i].SKU + '</td>'*/
+                                + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+                                /*+ '<td width="18%">' + data[i].Description + '</td>'*/
+
+
+                                + '<td width="8%" style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + '  class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].Department + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubDepartment + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].VendorCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].AllSearch + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+                                + '</tr>';
+                            $("#dataTablebdy").append(tablerow);
+                        }
+
+                    }
+
+                });
+
+
+
+            });
+
+            $('#ClassName').change(function () {
+
+                var deptcode = $('#DeptName').val();
+                var subdeptcode = $('#SubDeptName').val();
+                var classcode = $('#ClassName').val();
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationOverides/SearchClassCode?deptcode=" + deptcode + "&subdeptcode=" + subdeptcode + "&classcode=" + classcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.OverRides.length; i++) {
+                            $('#from').val(data.OverRides[10].DateFrom);
+                            $('#to').val(data.OverRides[11].DateTo);
+
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+
+
+                                + '<td width="8%" style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + '  class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].Department + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubDepartment + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].VendorCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].AllSearch + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+
+
+                                + '</tr>';
+                            $("#dataTablebdy").append(tablerow);
+                        }
+
+                    }
+
+                });
+
+
+
+            });
+
+            $('#SubClassName').change(function () {
+
+                var deptcode = $('#DeptName').val();
+                var subdeptcode = $('#SubDeptName').val();
+                var classcode = $('#ClassName').val();
+                var subclasscode = $('#SubClassName').val();
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationOverides/SearchSubClassCode?deptcode=" + deptcode + "&subdeptcode=" + subdeptcode + "&classcode=" + classcode + "&subclasscode=" + subclasscode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.OverRides.length; i++) {
+                            $('#from').val(data.OverRides[10].DateFrom);
+                            $('#to').val(data.OverRides[11].DateTo);
+
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+
+
+                                + '<td width="8%" style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + '  class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].Department + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubDepartment + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].VendorCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].AllSearch + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+                                + '</tr>';
+                            $("#dataTablebdy").append(tablerow);
+                        }
+
+                    }
+
+                });
+            });
+
+
+            $('#allsearch').change(function () {
+
+
+               
+                var allcode = $('#allsearch').val();
+
+                $('#btnAllSearch').removeAttr('hidden');
+                $('#btnAllSearch').show();
+
+
+                $("#multpliersetup").hide();
+                $("#btnSave").hide();
+                $('#btnDept').hide();
+                $('#btnSubDept').hide();
+                $('#btnClass').hide();
+                $('#btnSubClass').hide();
+                $('#currentmultiplier').hide();
+                $("#DeptName").val('');
+                $("#SubDeptName").empty();
+                $("#SubDeptName").append('<option value = "">Select Sub-Department</option>');
+                $("#ClassName").empty();
+                $("#ClassName").append('<option value = "">Select Class</option>');
+                $("#SubClassName").empty();
+                $("#SubClassName").append('<option value = "">Select Sub-Class</option>');
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationOverides/SearchAllCateg?allcode=" + allcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.OverRides.length; i++) {
+
+                            $('#from').val(data.OverRides[10].DateFrom);
+                            $('#to').val(data.OverRides[11].DateTo);
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td width="12%">' + data.OverRides[i].ClubNames + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClubCode + '</td>'
+
+
+
+                                + '<td width="8%" style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: right;" onclick="this.select()" name="adjust" id="adjust" value=' + data.OverRides[i].MultiplierAdjustment + '  class="form-control"  onkeypress="return restrictAlphabets(this,event)" /></td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].AllSearch + '</td>'
+
+
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].Department + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubDepartment + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].ClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].SubClassCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;">' + data.OverRides[i].VendorCode + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="datefrom" id="datefrom" onkeyup="getValues1()">' + data.OverRides[i].DateFrom + '</td>'
+                                + '<td width="12%" style="text-align: right;display: none;" name="dateto" id="dateto" onkeyup="getValues1()">' + data.OverRides[i].DateTo + '</td>'
+
+                                + '</tr>';
+
+                            $("#dataTablebdy").append(tablerow);
+
+                        }
+
+
+                    }
+
+
+                });
+            });
+
+
+            $('#SKU').focus(function () {
+                $("#allsearch").prop('checked', false);
+                $("#btnAllSearch").hide();
+                $("#multpliersetup").show();
+                $("#currentmultiplier").show();
+                $("#btnSave").show();
+                $('#btnDept').hide();
+                $('#Description').show();
+                $('#VendorName').hide();
+                $('#btnSubDept').hide();
+                $('#btnClass').hide();
+                $('#btnSubClass').hide();
+                $("#dataTablebdy").empty();
+                $("#DeptName").val('');
+                $("#SubDeptName").empty();
+                $("#SubDeptName").append('<option value = "">Select Sub-Department</option>');
+                $("#ClassName").empty();
+                $("#ClassName").append('<option value = "">Select Class</option>');
+                $("#SubClassName").empty();
+                $("#SubClassName").append('<option value = "">Select Sub-Class</option>');
+            });
+            $('#VendorCode').focus(function () {
+                $("#allsearch").prop('checked', false);
+                $("#btnAllSearch").hide();
+                $("#multpliersetup").hide();
+                $("#currentmultiplier").hide();
+                $('#Description').hide();
+                $('#VendorName').show();
+                $("#btnSave").show();
+                $('#btnDept').hide();
+                $('#btnSubDept').hide();
+                $('#btnClass').hide();
+                $('#btnSubClass').hide();
+                $("#dataTablebdy").empty();
+                $("#DeptName").val('');
+                $("#SubDeptName").empty();
+                $("#SubDeptName").append('<option value = "">Select Sub-Department</option>');
+                $("#ClassName").empty();
+                $("#ClassName").append('<option value = "">Select Class</option>');
+                $("#SubClassName").empty();
+                $("#SubClassName").append('<option value = "">Select Sub-Class</option>');
+            });
+
+
+        });
+
+
+        //....................................
+        //display sku clubs...................
+        $(function () {
+
+            $('#to').datepicker({
+                minDate: 0,
+                dateFormat: 'mm-dd-yy',
+                onSelect: function (selectedDate) {
+                    var nextDay = new Date(selectedDate);
+                    nextDay.setDate(nextDay.getDate());
+
+                    $('#dateto').keyup();
+                }
+
+            });
+
+
+
+            $('#from').datepicker({
+
+                dateFormat: 'mm-dd-yy',
+
+                minDate: 0,
+                onSelect: function (selectedDate) {
+                    var nextDay = new Date(selectedDate);
+                    nextDay.setDate(nextDay.getDate());
+                    $("#to").datepicker("option", "minDate", nextDay);
+
+                    $('#datefrom').keyup();
+
+                }
+
+            });
+
+        });
+
+
+
+        function getValues1() {
+
+            var rows = document.querySelectorAll("tr.package-row");
+            rows.forEach(function (currentRow) {
+
+                var fromd = $('#from').val();
+                var tod = $('#to').val();
+
+                currentRow.querySelector("#datefrom").innerHTML = fromd;
+                currentRow.querySelector("#dateto").innerHTML = tod;
+
+
+            });
+        }
+
+
+
+
+        $(document).ready(function () {
+
+
+            $('#DeptName').change(function () {
+                var deptcode = $('#DeptName').val();
+                $("#allsearch").prop('checked', false);
+                $('#Description').hide();
+                $('#VendorName').hide();
+                $("#multpliersetup").hide();
+                $("#currentmultiplier").hide();
+                $("#btnAllSearch").hide();
+                $("#btnSave").hide();
+                $('#btnSubDept').hide();
+                $('#btnClass').hide();
+                $('#btnSubClass').hide();
+                $('#btnDept').removeAttr('hidden');
+                $('#btnDept').show();
+                $("#SubDeptName").empty();
+                $("#SubDeptName").append('<option value = "">Select Sub-Department</option>');
+                $("#ClassName").empty();
+                $("#ClassName").append('<option value = "">Select Class</option>');
+                $("#SubClassName").empty();
+                $("#SubClassName").append('<option value = "">Select Sub-Class</option>');
+                $.ajax({
+                    url: "/AllocationOverides/SearchSubDept?deptcode=" + deptcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            $("#SubDeptName").append('<option value = "' + data[i].Value + '">' + data[i].Text + '</option>');
+                        }
+                    }
+
+                });
+
+            });
+        });
+
+        $(document).ready(function () {
+
+
+            $('#SubDeptName').change(function () {
+                $("#allsearch").prop('checked', false);
+                $('#btnSubDept').removeAttr('hidden');
+                $('#btnSubDept').show();
+                $('#btnDept').hide();
+                $('#btnClass').hide();
+                $('#btnSubClass').hide();
+                $('#Description').hide();
+                $('#VendorName').hide();
+                $("#btnAllSearch").hide();
+                var deptcode = $('#DeptName').val();
+                var subcode = $('#SubDeptName').val();
+
+                $("#ClassName").empty();
+                $("#ClassName").append('<option value = "">Select Class</option>');
+                $("#SubClassName").empty();
+                $("#SubClassName").append('<option value = "">Select Sub-Class</option>');
+
+                $.ajax({
+                    url: "/AllocationOverides/SearchClass?deptcode=" + deptcode + " &subcode=" + subcode,
+
+                    type: "Get",
+                    success: function (data) {
+
+
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            $("#ClassName").append('<option value = "' + data[i].Value + '">' + data[i].Text + '</option>');
+                        }
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+
+
+            $('#ClassName').change(function () {
+                $("#allsearch").prop('checked', false);
+                $('#Description').hide();
+                $('#VendorName').hide();
+                $('#btnClass').removeAttr('hidden');
+                $('#btnClass').show();
+                $('#btnSubDept').hide();
+                $('#btnSubClass').hide();
+                $("#btnAllSearch").hide();
+                var deptcode = $('#DeptName').val();
+                var subcode = $('#SubDeptName').val();
+                var classcode = $('#ClassName').val();
+
+                $("#SubClassName").empty();
+                $("#SubClassName").append('<option value = "">Select Sub-Class</option>');
+                $.ajax({
+                    url: "/AllocationOverides/SearchSubClass?deptcode=" + deptcode + " &subcode=" + subcode + " &classcode=" + classcode,
+
+                    type: "Get",
+                    success: function (data) {
+
+
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            $("#SubClassName").append('<option value = "' + data[i].Value + '">' + data[i].Text + '</option>');
+                        }
+                    }
+                });
+            });
+
+        });
+
+
+        $(document).ready(function () {
+
+
+            $('#SubClassName').change(function () {
+                $("#allsearch").prop('checked', false);
+                $('#Description').hide();
+                $('#VendorName').hide();
+                $('#btnSubClass').removeAttr('hidden');
+                $('#btnSubClass').show();
+                $('#btnClass').hide();
+                $("#btnAllSearch").hide();
+            });
+
+        });
+
+        $(document).ready(function () {
+            $("#btnSave").on("click", function () {
+                if ($('#VendorCode').val() == "") {
+                    var counterT = 0;
+                    var skus = new Array();
+                    $("#dataTable TBODY TR").each(function () {
+                        var row = $(this);
+                        var skuslist = {};
+
+
+
+                        if (row.find('td:eq(4) input').val() == '') {
+
+                            Swal.fire(
+                                'Please input all blank fields in multiplier adjustment!',
+                                'Please try again',
+                                'error'
+                            )
+                            counterT++;
+                        }
+
+
+                        skuslist.ClubCode = row.find("TD").eq(1).html();
+                        skuslist.CurrentMultiplier = row.find("TD").eq(3).html();
+                        skuslist.MultiplierAdjustment = row.find('td:eq(4) input').val();
+                        skuslist.SKU = row.find("TD").eq(5).html();
+                        skuslist.DateFrom = row.find("TD").eq(6).html();
+                        skuslist.DateTo = row.find("TD").eq(7).html();
+
+                        skus.push(skuslist);
+                    });
+
+                    if (counterT > 0) {
+
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "Post",
+                        url: "/AllocationOverides/InsertOverRides",
+                        dataType: 'json',
+                        data: JSON.stringify(skus),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.success == true) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.message,
+                                    text: 'Please try again...'
+                                })
+                            }
+                        }
+                    });
+                }
+                else if ($('#SKU').val() == "") {
+                    var counterT = 0;
+                    var skus = new Array();
+                    $("#dataTable TBODY TR").each(function () {
+                        var row = $(this);
+                        var skuslist = {};
+
+
+
+                        if (row.find('td:eq(3) input').val() == '') {
+
+                            Swal.fire(
+                                'Please input all blank fields in multiplier adjustment!',
+                                'Please try again',
+                                'error'
+                            )
+                            counterT++;
+                        }
+
+
+                        skuslist.ClubCode = row.find("TD").eq(1).html();
+
+                        skuslist.MultiplierAdjustment = row.find('td:eq(2) input').val();
+                        skuslist.VendorCode = row.find("TD").eq(3).html();
+                        skuslist.Department = row.find("TD").eq(4).html();
+                        skuslist.SubDepartment = row.find("TD").eq(5).html();
+                        skuslist.ClassCode = row.find("TD").eq(6).html();
+                        skuslist.SubClassCode = row.find("TD").eq(7).html();
+                        skuslist.AllSearch = row.find("TD").eq(8).html();
+                        skuslist.DateFrom = row.find("TD").eq(9).html();
+                        skuslist.DateTo = row.find("TD").eq(10).html();
+
+                        skus.push(skuslist);
+                    });
+
+                    if (counterT > 0) {
+
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "Post",
+                        url: "/AllocationOverides/InsertOverRidesVendor",
+                        dataType: 'json',
+                        data: JSON.stringify(skus),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.success == true) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: data.message,
+                                    text: 'Please try again...'
+                                })
+                            }
+                        }
+                    });
+                }
+
+            });
+
+
+        });
+
+
+        $(document).ready(function () {
+            $("#btnDept").on("click", function () {
+
+                var counterT = 0;
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    if (row.find('td:eq(3) input').val() == '') {
+
+                        Swal.fire(
+                            'Please input all blank fields in multiplier adjustment!',
+                            'Please try again',
+                            'error'
+                        )
+                        counterT++;
+                    }
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+
+                    skuslist.MultiplierAdjustment = row.find('td:eq(2) input').val();
+                    skuslist.Department = row.find("TD").eq(3).html();
+                    skuslist.SubDepartment = row.find("TD").eq(4).html();
+                    skuslist.ClassCode = row.find("TD").eq(5).html();
+                    skuslist.SubClassCode = row.find("TD").eq(6).html();
+                    skuslist.VendorCode = row.find("TD").eq(7).html();
+                    skuslist.AllSearch = row.find("TD").eq(8).html();
+                    skuslist.DateFrom = row.find("TD").eq(9).html();
+                    skuslist.DateTo = row.find("TD").eq(10).html();
+                    skus.push(skuslist);
+                });
+
+                if (counterT > 0) {
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationOverides/InsertOverDept",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+
+        $(document).ready(function () {
+            $("#btnSubDept").on("click", function () {
+                var counterT = 0;
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    if (row.find('td:eq(3) input').val() == '') {
+
+                        Swal.fire(
+                            'Please input all blank fields in multiplier adjustment!',
+                            'Please try again',
+                            'error'
+                        )
+                        counterT++;
+                    }
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.MultiplierAdjustment = row.find('td:eq(2) input').val();
+                    skuslist.Department = row.find("TD").eq(3).html();
+                    skuslist.SubDepartment = row.find("TD").eq(4).html();
+                    skuslist.ClassCode = row.find("TD").eq(5).html();
+                    skuslist.SubClassCode = row.find("TD").eq(6).html();
+                    skuslist.VendorCode = row.find("TD").eq(7).html();
+                    skuslist.AllSearch = row.find("TD").eq(8).html();
+                    skuslist.DateFrom = row.find("TD").eq(9).html();
+                    skuslist.DateTo = row.find("TD").eq(10).html();
+                    skus.push(skuslist);
+                });
+
+                if (counterT > 0) {
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationOverides/InsertOverSubDept",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+
+        $(document).ready(function () {
+            $("#btnClass").on("click", function () {
+                var counterT = 0;
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    if (row.find('td:eq(3) input').val() == '') {
+
+                        Swal.fire(
+                            'Please input all blank fields in multiplier adjustment!',
+                            'Please try again',
+                            'error'
+                        )
+                        counterT++;
+                    }
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.MultiplierAdjustment = row.find('td:eq(2) input').val();
+                    skuslist.Department = row.find("TD").eq(3).html();
+                    skuslist.SubDepartment = row.find("TD").eq(4).html();
+                    skuslist.ClassCode = row.find("TD").eq(5).html();
+                    skuslist.SubClassCode = row.find("TD").eq(6).html();
+                    skuslist.VendorCode = row.find("TD").eq(7).html();
+                    skuslist.AllSearch = row.find("TD").eq(8).html();
+                    skuslist.DateFrom = row.find("TD").eq(9).html();
+                    skuslist.DateTo = row.find("TD").eq(10).html();
+                    skus.push(skuslist);
+                });
+
+                if (counterT > 0) {
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationOverides/InsertOverClass",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#btnSubClass").on("click", function () {
+                var counterT = 0;
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    if (row.find('td:eq(3) input').val() == '') {
+
+                        Swal.fire(
+                            'Please input all blank fields in multiplier adjustment!',
+                            'Please try again',
+                            'error'
+                        )
+                        counterT++;
+                    }
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.MultiplierAdjustment = row.find('td:eq(2) input').val();
+                    skuslist.Department = row.find("TD").eq(3).html();
+                    skuslist.SubDepartment = row.find("TD").eq(4).html();
+                    skuslist.ClassCode = row.find("TD").eq(5).html();
+                    skuslist.SubClassCode = row.find("TD").eq(6).html();
+                    skuslist.VendorCode = row.find("TD").eq(7).html();
+                    skuslist.AllSearch = row.find("TD").eq(8).html();
+                    skuslist.DateFrom = row.find("TD").eq(9).html();
+                    skuslist.DateTo = row.find("TD").eq(10).html();
+                    skus.push(skuslist);
+                });
+
+                if (counterT > 0) {
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationOverides/InsertOverSubClass",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+
+        $(document).ready(function () {
+            $("#btnAllSearch").on("click", function () {
+                var counterT = 0;
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    if (row.find('td:eq(3) input').val() == '') {
+
+                        Swal.fire(
+                            'Please input all blank fields in multiplier adjustment!',
+                            'Please try again',
+                            'error'
+                        )
+                        counterT++;
+                    }
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.MultiplierAdjustment = row.find('td:eq(2) input').val();
+                    skuslist.Department = row.find("TD").eq(3).html();
+                    skuslist.SubDepartment = row.find("TD").eq(4).html();
+                    skuslist.ClassCode = row.find("TD").eq(5).html();
+                    skuslist.SubClassCode = row.find("TD").eq(6).html();
+                    skuslist.VendorCode = row.find("TD").eq(7).html();
+                    skuslist.AllSearch = row.find("TD").eq(8).html();
+                    skuslist.DateFrom = row.find("TD").eq(9).html();
+                    skuslist.DateTo = row.find("TD").eq(10).html();
+
+
+                    skus.push(skuslist);
+                });
+
+                if (counterT > 0) {
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationOverides/InsertAllCateg",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+
+        $("#SKU").keyup(function (event) {
+            if (event.which === 13) {
+                $("#search").click();
+            }
+        });
+        $("#VendorCode").keyup(function (event) {
+            if (event.which === 13) {
+                $("#search").click();
+            }
+        });
+
+        $(document).ready(function () {
+            $('#myTab a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+            // wire up shown event
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            // read hash from page load and change tab
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+            }
+        });
+
+        $('#options').change(function () {
+         
+            if ($("#options").val() == 1)
+            {
+                $('#fileupload').show();
+                $('#btnUpload').show();
+                $('#fileupload2').hide();
+                $('#btnUpload2').hide();
+                $('#fileupload3').hide();
+                $('#btnUpload3').hide();
+                $('#deptcol').show();
+                $('#subdeptcol').show();
+                $('#classcol').show();
+                $('#subclasscol').show();
+                $('#skucol').hide();
+                $('#vendorcol').hide();
+                $("#tbodyid").empty();
+                
+               // window.location.reload(true);
+            }
+            else if ($("#options").val() == 2) {
+                $('#fileupload').hide();
+                $('#btnUpload').hide();
+                $('#fileupload3').hide();
+                $('#btnUpload3').hide();
+                $('#fileupload2').show();
+                $('#btnUpload2').show();
+                $('#fileupload2').removeAttr('hidden');
+                $('#btnUpload2').removeAttr('hidden');
+                $('#deptcol').hide();
+                $('#subdeptcol').hide();
+                $('#classcol').hide();
+                $('#subclasscol').hide();
+                $('#skucol').hide();
+                $('#vendorcol').show();
+                $('#fileupload2').empty();
+                $('#vendorcol').removeAttr('hidden');
+                
+                $("#tbodyid").empty();
+            }
+            else if ($("#options").val() == 3) {
+                $('#fileupload').hide();
+                $('#btnUpload').hide();
+                $('#fileupload2').hide();
+                $('#btnUpload2').hide();
+                $('#fileupload3').show();
+                $('#btnUpload3').show();
+                $('#fileupload3').removeAttr('hidden');
+                $('#btnUpload3').removeAttr('hidden');
+                $('#deptcol').hide();
+                $('#subdeptcol').hide();
+                $('#classcol').hide();
+                $('#subclasscol').hide();
+                $('#skucol').show();
+                $('#vendorcol').hide();
+                $('#skucol').removeAttr('hidden');
+                
+                $("#tbodyid").empty();
+            }
+
+            
+        });
+
+    </script>
+
+}
+
+
+
+

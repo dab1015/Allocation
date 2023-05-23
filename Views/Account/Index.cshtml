@@ -1,0 +1,251 @@
+﻿@model SNRWMSPortal.Models.LoginModels
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="modalRegisterForm" class="modal fade" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Register Auditor</h4>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Action("Register", "Account")" method="post">
+                    <div class="input-wrapper usernameerr">
+                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { placeholder = "Username", @class = "form-control loginform", required = "required" } })
+                        @*<input type="text" class="form-control loginform" name="loginuser" id="loginusername" placeholder="Username">*@
+                        <label for="username" class="fa fa-user input-icon">
+                        </label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    <div class="input-wrapper passerrr">
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { placeholder = "Password", @class = "form-control loginform stuffs", required = "required" } })
+                        <!--<input type="password"--> @*pattern="[0-9]*" inputmode="numeric"*@ <!--class="form-control loginform stuffs" name="loginpass" id="loginuserpass" placeholder="Password">-->
+                        <label for="password" class="fa fa-lock input-icon">
+                        </label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })<br />
+                    <div class="align-items-center justify-content-center mt-3">
+                        <span class="text-danger">@ViewBag.error</span>
+                        <span class="text-danger">@ViewBag.NotLoggedIn</span>
+
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-primary align-items-center justify-content-center m-1">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalResetPassword" class="modal fade" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Reset Password</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/examples/actions/confirmation.php" method="post">
+                    <div class="input-wrapper usernameerr">
+                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { placeholder = "Username", @class = "form-control loginform", required = "required" } })
+                        @*<input type="text" class="form-control loginform" name="loginuser" id="loginusername" placeholder="Username">*@
+                        <label for="username" class="fa fa-user input-icon">
+                        </label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                    <div class="input-wrapper passerrr">
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { placeholder = "Password", @class = "form-control loginform stuffs", required = "required" } })
+                        <!--<input type="password"--> @*pattern="[0-9]*" inputmode="numeric"*@ <!--class="form-control loginform stuffs" name="loginpass" id="loginuserpass" placeholder="Password">-->
+                        <label for="password" class="fa fa-lock input-icon">
+                        </label>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })<br />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-primary align-items-center justify-content-center m-1">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="p-5 mb-4">
+
+    <div class="container-fluid py-5 ">
+        <div class="row justify-content-center">
+
+            <div class="col-md-6 d-flex flex-column align-items-center justify-content-center mb-5">
+                <img src="~/Content/Images/snr.png" class="img-fluid m-auto" />
+            </div>
+            <div class="col-md-6 d-flex flex-column align-items-center justify-content-center bg-light rounded-3 p-5">
+
+                <h1 class="fw-bold text-center">Login</h1>
+                <form method="post" action="@Url.Action("Login", "Account")">
+                    <div class="container">
+                        <div class="fontuser mt-2">
+                            <label><b>Username</b></label>
+                            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { placeholder = "Username", @class = "form-control ", required = "required", @id = "loginID" } })
+                            <i class="fa fa-user fa-lg"></i>
+                        </div>
+
+
+
+
+                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+
+                        <div class="fontpassword">
+                            <label><b>Password</b></label>
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { placeholder = "Enter Password", @class = "form-control hidePIN", required = "required", @id = "passID" } })
+                            <i class="fa fa-key fa-lg"></i>
+                            <i class="fa fa-eye-slash fa-lg showPIN" id="showPIN" style="left:220px;"></i>
+                        </div>
+
+
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        <div class="align-items-center justify-content-center mt-3">
+                            <span class="text-danger">@ViewBag.error</span>
+                            <span class="text-danger">@ViewBag.NotLoggedIn</span>
+
+                        </div>
+                        <button type="submit" id="submitbtn" class="btn btn-outline-primary align-items-center justify-content-center m-1" onclick="addloadingtobutton(); return false;">Submit</button>
+                        <button id="loadingbtn" class="btn btn-primary" type="button" disabled hidden>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
+
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        @*<p class="col-md-8 fs-4">Using a series of utilities, you can create this jumbotron, just like the one in previous versions of Bootstrap. Check out the examples below for how you can remix and restyle it to your liking.</p>
+            <button class="btn btn-primary btn-lg" type="button">Example button</button>*@
+    </div>
+</div>
+
+
+@section scripts{
+    @if (ViewBag.ForResetMessage != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@ViewBag.ForResetMessage'
+            })
+        @*Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Successfully Login',
+            text: '@ViewBag.UserSessionName',
+            showConfirmButton: false,
+            timer: 1500
+        });*@
+        </script>
+    }
+
+    else if (ViewBag.SuccessResetPass == "Successfully Updated Password")
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'center',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@ViewBag.SuccessResetPass'
+            })
+        @*Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Successfully Login',
+            text: '@ViewBag.UserSessionName',
+            showConfirmButton: false,
+            timer: 1500
+        });*@
+        </script>
+    }
+
+    else if (ViewBag.NotLoggedIn == "You are not logged in")
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'center',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'info',
+                title: 'You need to login first before proceeding.'
+            })
+        @*Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Successfully Login',
+            text: '@ViewBag.UserSessionName',
+            showConfirmButton: false,
+            timer: 1500
+        });*@
+        </script>
+    }
+
+
+    <script>
+        $(function () {
+            $('#showPIN').click(function () {
+                var thisPIN = $(this);
+                console.log(thisPIN);
+
+
+                thisPIN.promise(
+                    $('.hidePIN').attr("type", "text"),
+                    $('#showPIN').removeClass('fa fa-eye-slash fa-lg').addClass('fa fa-eye fa-lg')
+                ).done(function () {
+                    setTimeout(function () {
+                        $('.hidePIN').attr('type', 'password');
+                        $('#showPIN').removeClass('fa fa-eye fa-lg').addClass('fa fa-eye-slash fa-lg')
+                    }, 3000);
+                });
+            });
+            $('#submitbtn').click(function () {
+                if (loginID.val() == "" || loginID.val() == null) {
+                    return;
+                }
+                $('#submitbtn').css("display", "none");
+                $('#loadingbtn').removeAttr('hidden');
+            })
+        });
+    </script>
+}

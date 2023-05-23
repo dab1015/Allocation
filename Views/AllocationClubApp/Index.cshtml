@@ -1,0 +1,1182 @@
+﻿
+@model SNRWMSPortal.Models.AllocationClub
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Club Approver";
+
+
+}
+@{
+
+
+
+
+
+
+
+    try
+    {
+
+
+
+        <h2 class="text-white">@ViewBag.Title</h2>
+        @*container starts here*@
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-1">
+
+                <div class="row m-0">
+                    <div class="col-4  mb-3">
+                        <div class="row g-2">
+                            @Html.LabelFor(m => m.ClubName, htmlAttributes: new { @class = "control-label col-md-6 " })
+                            @Html.DropDownListFor(m => m.ClubName, new SelectList(ViewBag.ClubRequest, "Value", "Text"), "Select Club", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                            @Html.ValidationMessageFor(m => m.ClubName, "", new { @class = "badge badge-danger text-danger" })
+
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-3  mb-3">
+                        <div class="row g-0">
+                            <label for="Option" class="form-label">Select Status</label>
+                            <select name="status" style="height:46px;" class="form-select" id="Status">
+
+                                <option value="PENDING">PENDING</option>
+                                <option value="APPROVED">APPROVED</option>
+                                <option value="DISAPPROVED">DISAPPROVED</option>
+                            </select>
+
+
+                        </div>
+                    </div>
+                    <div class="col-3  mb-3">
+                        <div class="row g-0">
+                            <label for="Option" class="form-label m-3"></label>
+                            <p>
+                                <button type="button" class="btn btn-primary" id="btnClubSearch" style="width: 200px; height: 45px;"><i class="fa fa-search" style="margin-right:5px;"></i>Search</button>
+                            </p>
+                        </div>
+                    </div>
+
+
+
+                </div>
+               
+
+                @*<div class="row m-0">
+                    
+                            <p>
+                                <button type="button" class="btn btn-success" id="modalRegisterBtn" style="width: 200px; height: 45px;"><i class="fa fa-plus" style="margin-right:5px;"></i>Add New Request</button>
+                            </p>
+                        
+                </div>*@
+
+
+
+                        <div id="modalRegisterForm" class="modal fade" aria-modal="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Request Information</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div class="row m-0">
+                                            <label for="SKU" class="form-label">SKU</label>
+                                            <input type="text" onkeypress='return restrictAlphabets(event)' onclick="this.select()" class="form-control" id="SKU" style="display: block; width: 350px; height: 50px; margin: 0px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left; " placeholder="Search SKU" name="SKU">
+                                            <button type="submit" class="btn btn-primary" id="btnSearch" name="btnSearch" style="display: block; margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 50px; height: 50px; padding: 0px; "><i class="fa fa-search"></i></button>
+                                            <input type="hidden" name="SKU1" id="SKU1">
+                                        </div>
+                                        <br />
+                                        <div class="row m-0">
+                                            <div class="col-6  mb-3">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-8 mb-0" })
+                                                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+                                            <div class="col-6  mb-3">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.DConfigName, htmlAttributes: new { @class = "control-label col-md-8 mb-0" })
+                                                    @Html.TextBoxFor(m => m.DConfigName, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="row m-0">
+
+                                            <div class="col-3  mb-3">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.PConfig, htmlAttributes: new { @class = "control-label col-md-8 mb-0" })
+                                                    @Html.TextBoxFor(m => m.PConfig, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-3  mb-3">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.PQty, htmlAttributes: new { @class = "control-label col-md-6 mb-0" })
+                                                    @Html.TextBoxFor(m => m.PQty, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-3  mb-3">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.StoreOH, htmlAttributes: new { @class = "control-label col-md-8 mb-0" })
+                                                    @Html.TextBoxFor(m => m.StoreOH, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+                                            <div class="col-3  mb-3">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.StoreWS, htmlAttributes: new { @class = "control-label col-md-8 mb-0" })
+                                                    @Html.TextBoxFor(m => m.StoreWS, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="row m-0">
+
+
+
+                                            <div class="col-4  mb-0">
+                                                <div class="row g-2">
+                                                    @Html.LabelFor(m => m.Reason, htmlAttributes: new { @class = "control-label col-md-8 mb-1" })
+                                                    @Html.DropDownListFor(m => m.Reason, new SelectList(ViewBag.Reason, "Value", "Text"), "Select Reason", htmlAttributes: new { @class = "form-select input-md-8", @style = "height:46px;" })
+                                                    @Html.ValidationMessageFor(m => m.Reason, "", new { @class = "badge badge-danger text-danger" })
+
+                                                </div>
+                                            </div>
+                                            @*<div class="col-4  mb-0">
+                                    <div class="row g-1">
+                                        <label for="Option" class="form-label">Status</label>
+                                        <select name="status" style="height:46px;" class="form-select" id="Status">
+                                            <option id="ss" value="PENDING">PENDING</option>
+
+                                            <option id ="aa" value="APPROVED">APPROVED</option>
+                                            <option id="dd" value="DISAPPROVED">DISAPPROVED</option>
+                                        </select>
+
+
+                                    </div>
+                                </div>*@
+
+                                            <div class="col-4  mb-0">
+                                                <div class="row g-1">
+                                                    @Html.LabelFor(m => m.Quantity, htmlAttributes: new { @class = "control-label col-md-12 mb-1" })
+                                                    @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", onkeypress = "return restrictAlphabets(event)", onkeyup = "getValues()", @id = "Quantity" })
+                                                    @Html.ValidationMessageFor(m => m.Quantity, "", new { @class = "badge badge-danger text-danger" })
+
+                                                </div>
+                                            </div>
+                                            <div class="col-4  mb-3">
+                                                <div class="row g-3">
+                                                    <label class="control-label col-md-8 mb-1">Requested Date:</label>
+
+                                                    <input placeholder="Choose Date" type="text" class="form-control" id="RequestedDate" name="RequestedDate" style="height: 46px;padding: 10px;" readonly>
+
+
+
+                                                </div>
+                                            </div>
+                                            <div class="row m-0">
+                                                <div class="col-4  mb-3">
+                                                    <div class="row g-3">
+                                                        @Html.HiddenFor(m => m.ISTDPK, new { @id = "unitpercase" })
+
+
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-4  mb-3">
+                                                    <div class="row g-3">
+                                                        @Html.HiddenFor(m => m.IVPLTI, new { @id = "pallettie" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-4  mb-3">
+                                                    <div class="row g-3">
+                                                        @Html.HiddenFor(m => m.IVPLHI, new { @id = "pallethigh" })
+                                                        @Html.HiddenFor(m => m.SKU, new { @id = "skuid" })
+                                                        @Html.HiddenFor(m => m.Pallet, new { @id = "pallettotal" })
+                                                        @Html.HiddenFor(m => m.InTransit, new { @id = "InTransit" })
+                                                        @Html.HiddenFor(m => m.AveSales, new { @id = "AveSales" })
+                                                        @Html.HiddenFor(m => m.ReasonName, new { @id = "ReasonName" })
+                                                        @Html.HiddenFor(m => m.DCMOH, new { @id = "DCMOH" })
+
+                                                        <input hidden type="text" id="ApprovedDateTemp" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row m-0">
+
+                                                <div class="col-12  mb-3">
+                                                    <div class="row g-3">
+                                                        @Html.LabelFor(m => m.Remarks, htmlAttributes: new { @class = "control-label col-md-12 mb-1" })
+                                                        @Html.TextBoxFor(m => m.Remarks, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;" })
+                                                        @Html.ValidationMessageFor(m => m.Remarks, "", new { @class = "badge badge-danger text-danger" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" id="btnsave" data-dismiss="modal">Save</button>
+                                            <button type="button" hidden class="btn btn-danger" id="disapprovedBtn" data-dismiss="modal">DISAPROVED</button>
+                                            <button type="submit" hidden class="btn btn-primary" id="approvedBtn" data-dismiss="modal">APPROVED</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">CLUB Request</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table cell-border table-responsive table-hover" id="dataTable" style="width:100%" cellspacing="0">
+                                        <thead >
+                                            <tr class="table-info">
+                                                <th>DATE REQUESTED</th>
+                                                <th style="text-align: center;">SKU</th>
+                                                <th style="text-align: center;">DESCRIPTION</th>
+                                                <th style="text-align: center;">PALLET CONFIG</th>
+
+                                                <th style="text-align: center;">REQ QTY(UNITS)</th>
+                                                <th style="text-align: center;">REQ QTY(PALLETS)</th>
+                                              
+                                                <th style="text-align: center;">REASON</th>
+                                                <th style="text-align: center;">STATUS</th>
+                                                @*<th style="text-align: center;">DATE APPROVED</th>*@
+                                                <th style="text-align: center;">REMARKS</th>
+                                                <th id="Actions" style="text-align: center;">ACTIONS</th>
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dataTablebdy"></tbody>
+                                        
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <a href="@Url.Action("ClubRequest", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+
+                        @*<button type="submit" class="btn btn-primary" id="btnSave" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>*@
+
+
+
+
+
+                    </div>
+
+                </div>
+
+
+    }
+    catch (Exception)
+    {
+    }
+}
+
+@* javascript start here*@
+
+@section scripts{
+
+
+
+    @if (TempData["Success"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@TempData["Success"]'
+            })
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: '@TempData["Error"]'
+            })
+        </script>
+    }
+
+
+    <link href="~/jquery-ui-1.13.2.custom/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        //avoid input string..............
+        function restrictAlphabets(e) {
+            var x = e.which || e.keycode;
+            if ((x >= 48 && x <= 57))
+                return true;
+            else
+                return false;
+        }
+        //....................................
+        //display sku clubs...................
+        $(document).ready(function () {
+
+            
+            
+
+            
+            $('#Status').change(function () {
+
+               
+
+                if ($('#ClubName').val() == 0) {
+                    Swal.fire(
+                        'Please select Club to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    
+                    return;
+                }
+
+                var clubcode = $('#ClubName').val();
+                var stat = $('#Status').val();
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationClubReq/SearchClubReq?clubcode=" + clubcode + "&status=" + stat,
+                    type: "Get",
+                    success: function (data) {
+
+                        if (data.success == false) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                            
+                        }
+                        for (var i = 0; i < data.Clubs.length; i++) {
+
+
+                            var tablerow;
+
+                            
+                            if ($('#Status').val() == "PENDING") {
+
+                                 $('#Actions').show();
+                                tablerow = '<tr class="package-row">'
+
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].RequestedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].SKU + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Description + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PConfig + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Quantity + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PQty + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Reasons + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Status + '</td>'
+                                    //  + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].ApprovedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Remarks + '</td>'
+                                    + '<td><a  onclick="GetDetails1(' + data.Clubs[i].SKU + ')"><i class="btn btn-primary">Approval</i></a>' + '</td>' +
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+                            
+                            else if ($('#Status').val() == "APPROVED") {
+
+                                $('#Actions').hide();
+                                tablerow = '<tr class="package-row">'
+
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].RequestedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].SKU + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Description + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PConfig + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Quantity + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PQty + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Reasons + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Status + '</td>'
+                                    //  + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].ApprovedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Remarks + '</td>'
+                                    /*+ '<td><a  onclick="GetDetails1(' + data.Clubs[i].SKU + ')"><i class="btn btn-primary">Approval</i></a>' + '</td>' +*/
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+                            else if ($('#Status').val() == "DISAPPROVED") {
+
+                                $('#Actions').hide();
+                                tablerow = '<tr class="package-row">'
+
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].RequestedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].SKU + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Description + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PConfig + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Quantity + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PQty + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Reasons + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Status + '</td>'
+                                    //  + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].ApprovedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Remarks + '</td>'
+                                    /*+ '<td><a  onclick="GetDetails1(' + data.Clubs[i].SKU + ')"><i class="btn btn-primary">Approval</i></a>' + '</td>' +*/
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+                            
+
+                        }
+
+                        $('#dataTable').DataTable();
+                       
+                    }
+
+                });
+
+            });
+
+            $('#btnClubSearch').click(function () {
+
+                $('#btnClubSearch').prop("disabled", true);
+
+                if ($('#ClubName').val() == 0) {
+                    Swal.fire(
+                        'Please select Club to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    $('#btnClubSearch').prop("disabled", false);
+                    return;
+                }
+
+                var clubcode = $('#ClubName').val();
+                var stat = $('#Status').val();
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationClubReq/SearchClubReq?clubcode=" + clubcode + "&status=" + stat,
+                    type: "Get",
+                    success: function (data) {
+
+                        if (data.success == false) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                            $('#btnClubSearch').prop("disabled", false);
+                        }
+                        for (var i = 0; i < data.Clubs.length; i++) {
+
+
+                            var tablerow;
+
+                            
+                            if ($('#Status').val() == "PENDING") {
+
+                                $('#Actions').show();
+                                tablerow = '<tr class="package-row">'
+
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].RequestedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].SKU + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Description + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PConfig + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Quantity + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PQty + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Reasons + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Status + '</td>'
+                                    //  + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].ApprovedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Remarks + '</td>'
+                                    + '<td><a  onclick="GetDetails1(' + data.Clubs[i].SKU + ')"><i class="btn btn-primary">Approval</i></a>' + '</td>' +
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+                            
+                            else if ($('#Status').val() == "APPROVED") {
+
+                                $('#Actions').hide();
+                                tablerow = '<tr class="package-row">'
+
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].RequestedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].SKU + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Description + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PConfig + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Quantity + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PQty + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Reasons + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Status + '</td>'
+                                    //  + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].ApprovedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Remarks + '</td>'
+                                    /*+ '<td><a  onclick="GetDetails1(' + data.Clubs[i].SKU + ')"><i class="btn btn-primary">Approval</i></a>' + '</td>' +*/
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+                            
+                            else if ($('#Status').val() == "DISAPPROVED") {
+
+                                $('#Actions').hide();
+                                tablerow = '<tr class="package-row">'
+
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].RequestedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].SKU + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Description + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PConfig + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Quantity + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].PQty + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Reasons + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Status + '</td>'
+                                    //  + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].ApprovedDate + '</td>'
+                                    + '<td style="background-color: #e9ecef;"width="20%">' + data.Clubs[i].Remarks + '</td>'
+                                    /*+ '<td><a  onclick="GetDetails1(' + data.Clubs[i].SKU + ')"><i class="btn btn-primary">Approval</i></a>' + '</td>' +*/
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+
+                            
+                        }
+                        
+                        $('#dataTable').DataTable();
+                        $('#btnClubSearch').prop("disabled", false);
+                    }
+
+                });
+
+           });  
+        });
+
+       
+
+
+        
+
+        $(document).ready(function () {
+
+            $('#btnSearch').click(function () {
+                var skuid = $('#SKU').val();
+                var clubcode = $('#ClubName').val();
+
+                if ($('#SKU').val() == "") {
+                    Swal.fire(
+                        'Please input SKU field to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    
+                    return;
+                }
+
+
+                $.ajax({
+                    url: "/AllocationClubReq/SearchSKU?skuid=" + skuid + "&clubcode=" + clubcode,
+                    type: "Get",
+                    success: function (data) {
+
+                        if (data.success == false) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+
+                        
+
+                        $('#SKU1').val(data.SKU);
+                        $('#SKU').val(data.SKU);
+                        $('#Description').val(data.Description);
+                        $('#DConfigName').val(data.DConfigName);
+                        if ($('#DConfigName').val() == "") {
+                            $('#DConfigName').val('CASE');
+                        }
+                        else {
+                            $('#DConfigName').val(data.DConfigName);
+                        }
+                        $('#PConfig').val(data.PConfig);
+                        $('#StoreOH').val(data.StoreOH);
+                        $('#InTransit').val(data.InTransit);
+                        $('#AveSales').val(data.AveSales);
+                       
+                        
+                        $('#Reason').val(data.Reason);
+                        $('#ReasonName').val(data.ReasonName);
+                        //  $('#Status').val(data.Status);
+                        $('#Quantity').val(data.Quantity);
+                        $('#RequestedDate').val(data.RequestedDate);
+                        $('#Remarks').val(data.Remarks);
+                        $('#pallettotal').val(data.Pallet);
+                        $('#unitpercase').val(data.ISTDPK);
+                        $('#pallettie').val(data.IVPLTI);
+                        $('#pallethigh').val(data.IVPLHI);
+                        $('#DCMOH').val(data.DCMOH);
+
+                        var oh = $('#StoreOH').val();
+                        var it = $('#InTransit').val();
+                        var ave = $('#AveSales').val();
+                        var res = 0;
+
+                        res = (oh + it) / (ave);
+                        $('#StoreWS').val(res.toFixed(2));
+                        if ($('#AveSales').val() == 0) {
+                            $('#StoreWS').val(0);
+                        }
+                        else {
+                            $('#StoreWS').val(res.toFixed(2));
+                        }
+                        
+
+                        getValues();
+                    }
+                });
+            });
+
+            var qty = document.getElementById('Quantity');
+            qty.addEventListener('change', function () { getValues(); });
+        });
+
+
+
+        function GetDetails(id) {
+            $.ajax({
+                url: "/AllocationClubReq/EditSKU/" + id,
+                type: "GET",
+
+                success: function (data) {
+
+                    $('#SKU').val(data.SKU);
+
+                    $("#btnSearch").click();
+                    $('#modalRegisterForm').modal('show');
+                    $("#btnsave").show();
+                    $("#approvedBtn").hide();
+                    $("#disapprovedBtn").hide();
+                    
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+            return false;
+
+        }
+
+        function GetDetails1(id) {
+            $.ajax({
+                url: "/AllocationClubReq/EditSKU/" + id,
+                type: "GET",
+
+                success: function (data) {
+
+                    $('#SKU').val(data.SKU);
+                    $("#ApprovedDateTemp").val($.datepicker.formatDate("mm-dd-yy", new Date()));
+                    $("#btnSearch").click();
+                    $('#modalRegisterForm').modal('show');
+                    $('#approvedBtn').removeAttr('hidden');
+                    $('#disapprovedBtn').removeAttr('hidden');
+
+                    $("#btnsave").hide();
+                    $("#approvedBtn").show();
+                    $("#disapprovedBtn").show();
+
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+            return false;
+
+        }
+
+        $(document).ready(function () {
+            $("#btnsave").on("click", function () {
+                var skus = new Array();
+                var skuslist = {};
+
+
+
+                if ($('#SKU').val() == "") {
+
+                    Swal.fire(
+                        'Please input sku first before saving data!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+                else if ($('#SKU1').val() == "") {
+
+                    Swal.fire(
+                        'Please search sku first before saving data!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+
+                else if ($('#DConfigName').val() == 0) {
+
+                    Swal.fire(
+                        'Please select distribution config before saving data!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+                else if ($('#Reason').val() == 0) {
+
+                    Swal.fire(
+                        'Please select a reason before saving data!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+                }
+
+
+
+                else if ($('#Quantity').val() == 0) {
+
+                    Swal.fire(
+                        'Please input unit quantity before saving data!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+                }
+
+                //else if ($('#Remarks').val() == "") {
+
+                //    Swal.fire(
+                //        'Please input remarks before saving data!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    return;
+
+                //}
+
+                else if ($('#RequestedDate').val() == "") {
+
+                    Swal.fire(
+                        'Please select date request before saving data!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+                }
+
+
+
+                skuslist.SKU = $('#SKU').val();
+                skuslist.CLubCode = $('#ClubName').val();
+                skuslist.Description = $('#Description').val();
+                skuslist.Reason = $('#Reason').val();
+                // skuslist.Status = $('#Status').val();
+                skuslist.Quantity = $('#Quantity').val();
+                skuslist.PQty = $('#PQty').val();
+                skuslist.RequestedDate = $('#RequestedDate').val();
+                skuslist.Remarks = $('#Remarks').val();
+                skuslist.PConfig = $('#PConfig').val();
+                skuslist.DConfigName = $('#DConfigName').val();
+                
+
+
+                skus.push(skuslist);
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationClubReq/InsertRequest",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+
+
+                            Swal.fire({
+                                title: 'Sucessfully Saved!',
+                                icon: 'success',
+                                confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                if (result['isConfirmed']) {
+                                    $('#modalRegisterForm').modal('hide');
+                                    $('#btnClubSearch').click();
+
+                                }
+                            })
+
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+
+                });
+
+            });
+
+            $("#approvedBtn").on("click", function () {
+                var skus = new Array();
+                var skuslist = {};
+
+
+
+                if ($('#SKU').val() == "") {
+
+                    Swal.fire(
+                        'Please make sure sku field is not empty before approving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+                if ($('#DCMOH').val() == 0) {
+
+                    Swal.fire(
+                        'Cannot approved request with 0 OnHand in DCM!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+
+                else if ($('#SKU1').val() == "") {
+
+                    Swal.fire(
+                        'Please make sure sku field is not empty before approving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+                else if ($('#Reason').val() == 0) {
+
+                    Swal.fire(
+                        'Please make sure reason field is not empty before approving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+                }
+
+
+
+                else if ($('#Quantity').val() == 0) {
+
+                    Swal.fire(
+                        'Please make sure quantity field is not empty or 0 before approving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+                }
+
+                //else if ($('#Remarks').val() == "") {
+
+                //    Swal.fire(
+                //        'Please make sure remarks field is not empty before approving request!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    return;
+
+                //}
+
+                skuslist.SKU = $('#SKU').val();
+                skuslist.CLubCode = $('#ClubName').val();
+                skuslist.ApprovedDate = $('#ApprovedDateTemp').val();
+                skuslist.Quantity = $('#Quantity').val();
+                skuslist.DConfigName = $('#DConfigName').val();
+                skuslist.ReasonName = $('#ReasonName').val();
+                skuslist.DCMOH = $('#DCMOH').val();
+
+
+
+
+                skus.push(skuslist);
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationClubApp/ApprovedRequest",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+
+
+                            Swal.fire({
+                                title: 'Sucessfully Approved!',
+                                icon: 'success',
+                                confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                if (result['isConfirmed']) {
+                                    $('#modalRegisterForm').modal('hide');
+                                    $('#btnClubSearch').click();
+
+                                }
+                            })
+
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+
+                });
+
+            });
+
+            $("#disapprovedBtn").on("click", function () {
+                var skus = new Array();
+                var skuslist = {};
+
+
+
+                if ($('#SKU').val() == "") {
+
+                    Swal.fire(
+                        'Please make sure sku field is not empty before disapproving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+                else if ($('#SKU1').val() == "") {
+
+                    Swal.fire(
+                        'Please make sure sku field is not empty before disapproving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+
+
+                }
+                else if ($('#Reason').val() == 0) {
+
+                    Swal.fire(
+                        'Please make sure reason field is not empty before disapproving request!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+                }
+
+
+
+                
+
+                //else if ($('#Remarks').val() == "") {
+
+                //    Swal.fire(
+                //        'Please make sure remarks field is not empty before disapproving request!',
+                //        'Please try again',
+                //        'error'
+                //    )
+                //    return;
+
+                //}
+                skuslist.SKU = $('#SKU').val();
+                skuslist.CLubCode = $('#ClubName').val();
+                skus.push(skuslist);
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationClubApp/DisApprovedRequest",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+
+
+                            Swal.fire({
+                                title: 'Sucessfully Disapproved!',
+                                icon: 'success',
+                                confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                if (result['isConfirmed']) {
+                                    $('#modalRegisterForm').modal('hide');
+                                    $('#btnClubSearch').click();
+
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+
+                });
+
+            });
+
+
+            $(function () {
+
+                $('#RequestedDate').datepicker({
+                    minDate: 0,
+                    dateFormat: 'mm-dd-yy'
+
+
+                });
+
+            });
+
+        });
+        
+        $('#closeModalBtn').click(function () {
+            $('#modalRegisterForm').modal('hide');
+
+        })
+
+        $('#modalRegisterForm').on('shown', function () {
+            $('#Quantity').focus();
+        })
+        $('#modalRegisterBtn').click(function () {
+
+            if ($("#ClubName").val() == 0) {
+                Swal.fire(
+                    'Please select Club first before adding a request!',
+                    'Please try again',
+                    'error'
+                )
+                return;
+            }
+            else {
+                $('#modalRegisterForm').modal('show');
+                $("#SKU").focus();
+                $("#btnsave").show();
+                $("#approvedBtn").hide();
+                $("#disapprovedBtn").hide();
+                $("#Description").val('');
+                $("#DConfigName").val('');
+                $("#PConfig").val('');
+                $("#Quantity").val('');
+                $("#Remarks").val('');
+                $("#StoreOH").val('');
+                $("#StoreWS").val('');
+                $("#SKU1").val('');
+                $("#Reason").val('');
+                $("#PQty").val('');
+                $("#pallettotal").val('');
+                $("#RequestedDate").val($.datepicker.formatDate("mm-dd-yy", new Date()));
+                $("#ApprovedDateTemp").val($.datepicker.formatDate("mm-dd-yy", new Date()));
+            }
+            
+         
+        });
+
+
+
+        function getValues() {
+
+
+            var unitqty = $("#Quantity").val();
+            var qtotal = $('#pallettotal').val();
+            var ispk = $('#unitpercase').val();
+            var tie = $('#pallettie').val();
+            var hie = $('#pallethigh').val();
+
+            var palletqty = unitqty / (tie * hie * ispk);
+            $("#PQty").val(parseInt(palletqty));
+
+            if ($('#Quantity').val() == 0) {
+                $('#PQty').val(0);
+            }
+
+            else {
+
+                $("#PQty").val(parseInt(palletqty));
+            }
+        }
+
+        $("#SKU").keyup(function (event) {
+            if (event.which === 13) {
+                $("#btnSearch").click();
+            }
+        });
+
+    </script>
+
+}
+
+
+
+

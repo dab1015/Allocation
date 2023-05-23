@@ -1,0 +1,361 @@
+﻿@model SNRWMSPortal.Models.UserInfosDetail
+@{
+    ViewBag.Title = "Home Page";
+}
+@{
+    //@Model.userProfile
+    var pickingSup = @Model.userProfile.Split(',').Contains("Picking Supervisor"); //true
+    var letdownSup = @Model.userProfile.Split(',').Contains("Letdown Supervisor"); // false
+    var auditor = @Model.userProfile.Split(',').Contains("Auditor"); // true
+    var lossprevention = @Model.userProfile.Split(',').Contains("Loss Prevention"); //true
+    var sysadmin = @Model.userProfile.Split(',').Contains("System Administrator"); // true
+    var allocation = @Model.userProfile.Split(',').Contains("Allocation"); // true
+    var merchandise = @Model.userProfile.Split(',').Contains("Merchandise Requestor"); // true
+    var clubs = @Model.userProfile.Split(',').Contains("Club Requestor"); // true
+    var clubs_approver = @Model.userProfile.Split(',').Contains("Club Approver"); // true
+    var outbound_picking = @Model.userProfile.Split(',').Contains("Outbound Picking"); // true
+    <div class="p-5 mb-4 bg-light rounded-3 mt-4">
+        <div class="container-fluid py-1">
+
+            <div class="list-group">
+                <h4>Allocation</h4>
+                @if (allocation == true && sysadmin == true)
+                {
+                    <a href="#" class="list-group-item active">
+                        Where to?
+                    </a>
+                    <a href="~/AllocationSKU/Index" class="list-group-item">
+                        <i class="fa fa-list-alt" aria-hidden="true"></i>
+                        SKU Setup
+                    </a>
+
+                    <a href="~/AllocationOverides/Index" class="list-group-item">
+                        <i class="fa fa-forward" aria-hidden="true"></i>
+                        Multiplier Overrides
+                    </a>
+                    @*<a href="~/AllocationNearExpiry/Index" class="list-group-item">
+                <i class="fa fa-warning" aria-hidden="true"></i>
+                Near Expiry
+            </a>*@
+
+                    <a href="~/AllocationRequest/Index" class="list-group-item">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                        Allocation Request
+                    </a>
+                    <a href="~/Home/ClubRequest" class="list-group-item">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                        Club Request
+                    </a>
+                    <a href="~/AllocationMerchandise/Index" class="list-group-item">
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>
+                        Merchandise Request
+                    </a>
+
+                    <a href="~/Home/OutboundPicking" class="list-group-item">
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                        Outbound Picking
+                    </a>
+
+                    <a href="~/AllocationReports/Index" class="list-group-item">
+                        <i class="fa fa-address-book-o" aria-hidden="true"></i>
+                        Reports
+                    </a>
+
+                    @*<a href="~/AllocationReport/Index" class="list-group-item">
+                <i class="fa fa-address-book-o" aria-hidden="true"></i>
+                Reports
+            </a>*@
+                    <!--<div class="accordion" id="accordionExample">
+        <div class="accordion-item" style="border-top-left-radius: 0px; border-top-right-radius: 0px;">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="height: 45px;">
+                    <i class="fa fa-address-book" aria-hidden="true" style="margin-right: 5px;"></i>
+                    Reports
+                </button>
+            </h2>
+
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <a href="#" class="list-group-item">-->
+                    @*<i class="fa fa-level-up" aria-hidden="true"></i>*@
+                    <!--1. Daily Service Level Report
+
+                        </a>
+
+                        <a href="#" class="list-group-item">
+
+                            2. Unserved SKUs
+                        </a>
+
+                        <a href="~/AllocationNewSKU/Index" class="list-group-item">
+
+                            3. New SKU for Set-up
+                        </a>
+
+                        <a href="~/AllocationOHZero/Index" class="list-group-item">
+
+                            4. SKUs with Zero OH in clubs
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            5. SKUs with Zero Average sales
+                        </a>
+
+                        <a href="#" class="list-group-item">
+
+                            6. SKUs below Trigger Point (w/ DC OH)
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            7. SKUs above Build To
+                        </a>
+
+                        <a href="#" class="list-group-item">
+
+                            8. SKUs for re-distribution
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            9. Near Expiry Report
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            10. Unserved SKUs (frequency)
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            11. Top 20 Items in DC Based on Pallet Count
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            12. Top 20 Items in DC Based on Total Week supply
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>-->
+                }
+                else if (allocation == true && merchandise == false && clubs == false && clubs_approver == false && outbound_picking == false)
+                {
+                    <a href="#" class="list-group-item active">
+                        Where to?
+                    </a>
+                    <a href="~/AllocationSKU/Index" class="list-group-item">
+                        <i class="fa fa-list-alt" aria-hidden="true"></i>
+                        SKU Setup
+                    </a>
+
+                    <a href="~/AllocationOverides/Index" class="list-group-item">
+                        <i class="fa fa-forward" aria-hidden="true"></i>
+                        Multiplier Overrides
+                    </a>
+                    @*<a href="~/AllocationNearExpiry/Index" class="list-group-item">
+                <i class="fa fa-warning" aria-hidden="true"></i>
+                Near Expiry
+            </a>*@
+
+                    <a href="~/AllocationRequest/Index" class="list-group-item">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                        Allocation Request
+                    </a>
+
+
+
+                    <a href="~/AllocationReports/Index" class="list-group-item">
+                        <i class="fa fa-address-book-o" aria-hidden="true"></i>
+                        Reports
+                    </a>
+                    @*<a href="~/AllocationReport/Index" class="list-group-item">
+                <i class="fa fa-address-book-o" aria-hidden="true"></i>
+                Reports
+            </a>*@
+                    <!--<div class="accordion" id="accordionExample">
+        <div class="accordion-item" style="border-top-left-radius: 0px; border-top-right-radius: 0px;">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="height: 45px;">
+                    <i class="fa fa-address-book" aria-hidden="true" style="margin-right: 5px;"></i>
+                    Reports
+                </button>
+            </h2>
+
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+
+                    <a href="#" class="list-group-item">-->
+                    @*<i class="fa fa-level-up" aria-hidden="true"></i>*@
+                    <!--1. Daily Service Level Report
+
+                        </a>
+
+                        <a href="#" class="list-group-item">
+
+                            2. Unserved SKUs
+                        </a>
+
+                        <a href="~/AllocationNewSKU/Index" class="list-group-item">
+
+                            3. New SKU for Set-up
+                        </a>
+
+                        <a href="~/AllocationOHZero/Index" class="list-group-item">
+
+                            4. SKUs with Zero OH in clubs
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            5. SKUs with Zero Average sales
+                        </a>
+
+                        <a href="#" class="list-group-item">
+
+                            6. SKUs below Trigger Point (w/ DC OH)
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            7. SKUs above Build To
+                        </a>
+
+                        <a href="#" class="list-group-item">
+
+                            8. SKUs for re-distribution
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            9. Near Expiry Report
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            10. Unserved SKUs (frequency)
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            11. Top 20 Items in DC Based on Pallet Count
+                        </a>
+                        <a href="#" class="list-group-item">
+
+                            12. Top 20 Items in DC Based on Total Week supply
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>-->
+                }
+                else if (allocation == true && merchandise == true && clubs == false)
+                {
+                    <a href="#" class="list-group-item active">
+
+                    </a>
+                    <a href="~/AllocationMerchandise/Index" class="list-group-item">
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>
+                        Merchandise Request
+                    </a>
+                }
+
+                else if (allocation == true && merchandise == false && clubs == true)
+                {
+                    <a href="#" class="list-group-item active">
+
+                    </a>
+                    <a href="~/AllocationClubReq/Index" class="list-group-item">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        Club Requestor
+                    </a>
+
+                }
+                else if (allocation == true && merchandise == false && clubs == false && clubs_approver == true)
+                {
+                    <a href="#" class="list-group-item active">
+
+                    </a>
+                    <a href="~/AllocationClubApp/Index" class="list-group-item">
+                        <i class="fa fa-user-circle" aria-hidden="true"></i>
+                        Club Approver
+                    </a>
+
+                }
+                else if (allocation == true && merchandise == false && clubs == false && clubs_approver == false && outbound_picking == true)
+                {
+                    <a href="#" class="list-group-item active">
+
+                    </a>
+                    <a href="~/Home/OutboundPicking" class="list-group-item">
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                        Outbound Picking
+                    </a>
+
+                }
+            </div>
+
+
+
+            
+
+            @*<div class="col-md">
+            <div class="form-floating">
+                <select class="form-select" id="stagingcodesSelect" aria-label="Floating label">
+                    <option selected>-</option>
+
+                </select>
+                <label for="floatingSelectGrid">Select Staging Code</label>
+            </div>
+        </div>
+        <div class="container">
+            @Html.Partial("StagingArea")
+
+        </div>
+        <div class="container-fluid py-5">
+            <button class="btn btn-primary px-3 py-2">Review Loaded</button>
+            <button class="btn btn-primary px-3 py-2" disabled>Post</button>
+            <button class="btn btn-primary px-3 py-2">Batch Summary</button>
+
+        </div>*@
+        </div>
+    </div>
+}
+@section scripts{
+    <script type="text/javascript">
+        //window.onload = function () { alert('window.onload alert'); };
+        window.onunload = function () { window.location.reload(); };
+
+    </script>
+
+    @if (@ViewBag.FirstName != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            //window.onpageshow = function (event) {
+            //    if (event.persisted) {
+            //        window.location.reload();
+            //    }
+            //};
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Signed in successfully'
+            })
+        @*Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Successfully Login',
+            text: '@ViewBag.UserSessionName',
+            showConfirmButton: false,
+            timer: 1500
+        });*@
+        </script>
+    }
+
+    <script src="~/Scripts/AccountHomePage/LoginSuccessScripts.js"></script>
+}

@@ -1,0 +1,417 @@
+﻿
+@model SNRWMSPortal.Models.AllocationMerchandiseModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Allocation Request";
+
+
+}
+@{
+
+
+
+
+    try
+    {
+        <h2 class="text-white">@ViewBag.Title</h2>
+        @*container starts here*@
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-1">
+
+
+
+
+
+
+
+                <div class="row m-0">
+                    <label for="SKU" class="form-label">SKU</label>
+                    <input type="text" onkeypress='return restrictAlphabets(event)' onclick="this.select()" onfocus="this.value=''" class="form-control" id="SKU" style="display: block; width: 350px; height: 50px; margin: 0px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; padding: 10px; float: left; " placeholder="Search SKU" name="SKU">
+                    <button type="submit" class="btn btn-primary" id="skubtn" name="skubtn" style="display: block; margin: 0px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; width: 50px; height: 50px; padding: 0px; "><i class="fa fa-search"></i></button>
+                    <input type="hidden" name="SKU1" id="SKU1">
+                </div>
+                <br />
+
+
+                <div class="row m-0">
+                    <div class="col-6  mb-3">
+                        <div class="row g-3">
+                            @Html.LabelFor(m => m.Description, htmlAttributes: new { @class = "control-label col-md-8 mb-2" })
+                            @Html.TextBoxFor(m => m.Description, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "badge badge-danger text-danger" })
+                            @Html.HiddenFor(m => m.DConfigName, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+                        </div>
+                    </div>
+                    <div class="col-3 mb-3">
+                        <div class="row g-2">
+                            <label for="Option" class="form-label">PIC</label>
+                            <select name="status" disabled style="height:46px;" class="form-control input-md-6" id="PIC">
+
+                                
+                                <option id="aa" value="ALLOCATION">ALLOCATION</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-3 mb-3">
+                        <div class="row g-3">
+                            @Html.LabelFor(m => m.Reason, htmlAttributes: new { @class = "control-label col-md-8 " })
+                            @Html.DropDownListFor(m => m.Reason, new SelectList(ViewBag.Reason, "Value", "Text"), "Select Reason", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                            @Html.ValidationMessageFor(m => m.Reason, "", new { @class = "badge badge-danger text-danger" })
+
+                        </div>
+                    </div>
+
+                    
+
+
+
+                </div>
+
+                <div class="row m-0">
+                    <div class="col-3  mb-3">
+                        <div class="row g-3">
+                            @Html.LabelFor(m => m.DCMOH, htmlAttributes: new { @class = "control-label col-md-8 mb-2" })
+                            @Html.TextBoxFor(m => m.DCMOH, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                        </div>
+                    </div>
+                    <div class="col-3 mb-3">
+                        <div class="row g-3">
+                            @Html.LabelFor(m => m.DCLOH, htmlAttributes: new { @class = "control-label col-md-8 mb-2" })
+                            @Html.TextBoxFor(m => m.DCLOH, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-3 mb-3">
+                        <div class="row g-3">
+                            @Html.LabelFor(m => m.DCPOH, htmlAttributes: new { @class = "control-label col-md-8 mb-2" })
+                            @Html.TextBoxFor(m => m.DCPOH, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                        </div>
+                    </div>
+                    <div class="col-3 mb-3">
+                        <div class="row g-3">
+                            @Html.LabelFor(m => m.DCBOH, htmlAttributes: new { @class = "control-label col-md-8 mb-2" })
+                            @Html.TextBoxFor(m => m.DCBOH, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">CLUB Records</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table cell-border table-responsive table-hover" id="dataTable" style="width:100%" cellspacing="0">
+                                <thead>
+                                    <tr class="table-info">
+
+                                        <th>Club Name</th>
+
+                                        <th style="text-align:center">Pieces</th>
+                                        <th hidden style="text-align:center">Inputs</th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTablebdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+
+                <button type="submit" class="btn btn-primary" id="btnSave" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+                @*}*@
+
+
+
+
+
+            </div>                   
+            </div>
+        @*end of container*@
+    }
+    catch (Exception)
+    {
+    }
+}
+
+@* javascript start here*@
+
+@section scripts{
+
+    @if (TempData["Success"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@TempData["Success"]'
+            })
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: '@TempData["Error"]'
+            })
+        </script>
+    }
+    
+
+    
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        //avoid input string..............
+        function restrictAlphabets(e) {
+            var x = e.which || e.keycode;
+            if ((x >= 48 && x <= 57))
+                return true;
+            else
+                return false;
+        }
+        //....................................
+        //display sku clubs...................
+        $(document).ready(function () {
+
+
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            $('#skubtn').click(function () {
+                $('#skubtn').prop("disabled", true);
+                var id = $('#SKU').val();
+                if ($('#SKU').val() == "") {
+                    Swal.fire(
+                        'Please input SKU field to search!',
+                        'Please try again',
+                        'warning'
+                    )
+                    $('#skubtn').prop("disabled", false);
+                    return;
+                }
+
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationRequest/SearchSKU?id=" + id,
+                    type: "Get",
+                    success: function (data) {
+
+                        if (data.success == false) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                            $('#skubtn').prop("disabled", false);
+                        }
+
+
+                        $('#SKU1').val(data.SKU);
+                        $('#Description').val(data.Description);
+                        $('#Reason').val(data.Reason);
+                        
+                        $('#DCMOH').val(data.DCMOH);
+                        $('#DCLOH').val(data.DCLOH);
+                        $('#DCPOH').val(data.DCPOH);
+                        $('#DCBOH').val(data.DCBOH);
+                        $('#DConfig').val(data.DConfig);
+                        $('#DConfigName').val(data.DConfigName);
+                        if ($('#DConfigName').val() == "") {
+                            $('#DConfigName').val('CASE');
+                        }
+                        else {
+                            $('#DConfigName').val(data.DConfigName);
+                        }
+
+                        
+
+
+
+                        for (var i = 0; i < data.MerchandiseSKU.length; i++) {
+                            
+
+
+                                var tablerow = '<tr class="package-row">'
+                                    + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                   
+                                    + '<td style="text-align: center;"><input type="text" style="padding:10px;height: 40px;text-align: center;" onclick="this.select()" name="adjust" id="adjust" value=' + data.MerchandiseSKU[i].Inputs + '  class="form-control"  onkeypress="return restrictAlphabets(event)" /></td>'
+                                    + '<td style="display:none;"><input type="text" style="padding:10px;height: 40px;text-align: center;" onclick="this.select()" name="adjust" id="adjust" value=' + data.MerchandiseSKU[i].Pieces + '  class="form-control"  onkeypress="return restrictAlphabets(event)" /></td>'
+                                    + '<td style="display:none;">' + data.MerchandiseSKU[i].SKU + '</td>'
+                                    + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubCode + '</td>'
+                                    + '<td style="display:none;" name="colreason" id="colreason" onkeyup="getValues()">' + data.MerchandiseSKU[i].Reason + '</td>'
+                                     + '<td style="display:none;" name="colreason" id="colreason" onkeyup="getValues()">' + data.MerchandiseSKU[i].Reason + '</td>'
+                                   
+                                    
+                                    + '</tr>';
+                                $("#dataTablebdy").append(tablerow);
+                            }
+                        $('#skubtn').prop("disabled", false);
+                    }
+
+                });
+
+
+
+            });
+
+            $('#Reason').change(function () {
+                $('#colreason').keyup();
+            });
+
+            $('#DConfig').change(function () {
+                $('#dconfigs').keyup();
+            });
+
+        });
+
+
+
+       
+        $("#SKU").keyup(function (event) {
+            if (event.which === 13) {
+                $("#skubtn").click();
+            }
+        });
+
+        $(document).ready(function () {
+            $("#btnSave").on("click", function () {
+
+                if ($('#DCMOH').val() == 0) {
+
+                    Swal.fire(
+                        'Cannot request with 0 OnHand in DCM!',
+                        'Please try again',
+                        'error'
+                    )
+                    return;
+                }
+
+                var counterT = 0;
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+                    
+                    if (row.find("TD").eq(5).html() == 0) {
+
+                        Swal.fire(
+                            'Please select a reason options first before saving a data!',
+                            'Please try again',
+                            'error'
+                        )
+                        counterT++;
+                    }
+
+                    
+                    
+
+                    
+
+                    
+                    skuslist.Inputs = row.find('td:eq(1) input').val();
+                    skuslist.Pieces = row.find('td:eq(2) input').val();
+                    skuslist.SKU = row.find("TD").eq(3).html();
+                    skuslist.ClubCode = row.find("TD").eq(4).html();
+                    skuslist.Reason = row.find("TD").eq(5).html();
+                    skuslist.DConfigName = $('#DConfigName').val();
+                    skuslist.ReasonName = $("#Reason option:selected").text();
+                    skuslist.DCMOH = $('#DCMOH').val();
+                    skuslist.Description = $('#Description').val();
+                    skus.push(skuslist);
+                });
+
+                if (counterT > 0) {
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationRequest/InsertMerchandise",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+            });
+        });
+
+        function getValues() {
+
+            var rows = document.querySelectorAll("tr.package-row");
+            rows.forEach(function (currentRow) {
+
+                var reasons = $('#Reason').val();
+                
+                
+
+                currentRow.querySelector("#colreason").innerHTML = reasons;
+                
+               
+
+
+            });
+        }
+
+       
+
+    </script>
+
+}
+
+
+
+

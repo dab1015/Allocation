@@ -1,0 +1,1151 @@
+﻿
+@model SNRWMSPortal.Models.AllocationMerchandiseModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Outbound Picking";
+
+
+}
+@{
+
+
+
+
+    try
+    {
+        <h2 class="text-white">@ViewBag.Title</h2>
+        @*container starts here*@
+        <br />
+        <div class="row m-0">
+
+            <div class="col-4  mb-3">
+                <div class="row g-2">
+                   
+                    @Html.LabelFor(m => m.ClubName, htmlAttributes: new { @class = "text-white col-md-6 " })
+                    @Html.DropDownListFor(m => m.ClubName, new SelectList(ViewBag.ClubRequest, "Value", "Text"), "Select Club", htmlAttributes: new { @class = "form-select input-md-6", @style = "height:46px;" })
+                    @Html.ValidationMessageFor(m => m.ClubName, "", new { @class = "badge badge-danger text-danger" })
+
+                </div>
+            </div>
+            <div class="col-8  mt-4">
+                <div class="row g-2">
+                    <label></label>
+                    <button type="submit" class="btn btn-success" id="btnGenerate" style="width: 105px; height: 45px;">Generate</button>
+                    <button type="submit" hidden class="btn btn-primary" id="btnGenerate1" style="width: 105px; height: 45px;">Generate</button>
+                    <button type="submit" hidden class="btn btn-primary" id="btnGenerate2" style="width: 105px; height: 45px;">Generate</button>
+                    <div class="justify-content-lg-start col-4 text-light" id="loader" style="display: none;">
+                        <div class="spinner-border" role="status">
+
+                        </div>
+                        <span>Please wait while generating...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="p-5 mb-4 bg-light rounded-3">
+            <div class="card-header py-4">*@
+
+
+
+                <br />
+
+
+
+
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        
+                        <h6 style="text-align:end" hidden class="m-0 font-weight-bold text-primary" id="Totalslbl">Total No. of Pallet</h6>
+                        <h6 style="text-align:end" class="m-0 font-weight-bold text-primary" id="Totals"></h6>
+
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table cell-border table-responsive table-hover" id="dataTable" style="width: 100%;" cellspacing="0">
+                                <thead>
+                                    <tr class="table-info">
+
+                                        <th style="text-align:center"><div><input id="checkall" type="checkbox" /> Select</div></th>
+                                        <th hidden>CLUB CODE</th>
+                                        <th>SKU</th>
+                                        <th>DESC</th>
+                                        <th>ALLOC QTY</th>
+                                        <th>PRIORITIZATION</th>
+                                        <th>NO.OF CASES</th>
+                                        <th>NO.OF PALLET</th>
+                                        <th hidden>QTY TO PICK</th>
+                                        <th hidden></th>
+                                        <th hidden></th>
+                                        <th hidden></th>
+                                        <th hidden></th>
+                                        <th hidden></th>
+                                        <th hidden></th>
+                                        <th hidden></th>
+                                        <th hidden>WEIGHT (kg)</th>
+                                        <th hidden></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTablebdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+               
+
+
+                @*modal for simulate*@
+                <div id="modalRegisterForm" class="modal hide fade in" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Picklist</h4>
+                                
+
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        @*<h6 class="m-0 font-weight-bold text-primary">Picklist</h6>*@
+                                        <div class="justify-content-lg-start text-primary" id="loader2" style="display: none;">
+                                            <div class="spinner-border" role="status">
+
+                                            </div>
+                                            <span>Please wait...</span>
+                                        </div>
+                                    </div>
+
+                                    <div id="pick1" class="card-body">
+                                        <div id="pick2" class="table-responsive">
+                                            <table class="table cell-border table-responsive table-hover" id="dataTablePick" style="width:100%" cellspacing="0" table-layout:fixed;>
+                                                <thead style="white-space:nowrap;">
+                                                    <tr class="table-info">
+                                                        <th hidden>BATCH CODE</th>
+                                                        <th hidden>CLUB CODE</th>
+                                                        <th>SKU</th>
+                                                        <th>DESC</th>
+                                                        <th hidden>ALLOC QTY</th>
+                                                        <th hidden>PRIORITIZATION</th>
+                                                        <th hidden>NO.OF CASES</th>
+                                                        <th hidden>NO.OF PALLET</th>
+                                                        <th>QTY TO PICK</th>
+                                                        <th>DCONFIG</th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+
+
+
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="dataTablebdyPick"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div id="pick3" class="card-body">
+                                        
+                                        <div id="pick4" class="table-responsive">
+                                            <h6 style="text-align:end" hidden class="m-0 font-weight-bold text-primary" id="Totalslbl1">Total No. of Pallet</h6>
+                                            <h6 style="text-align:end" class="m-0 font-weight-bold text-primary" id="Totals1"></h6>
+                                            <table hidden class="table cell-border table-responsive table-hover" id="dataTablePicklist" style="width:100%" cellspacing="0" table-layout:fixed;>
+                                                <thead style="white-space:nowrap;">
+                                                    <tr class="table-info">
+                                                        <th>BATCH CODE</th>
+                                                        <th hidden>CLUB CODE</th>
+                                                        <th>SKU</th>
+                                                        <th>DESC</th>
+                                                        <th hidden>ALLOC QTY</th>
+                                                        <th hidden>PRIORITIZATION</th>
+                                                        <th hidden>NO.OF CASES</th>
+                                                        <th hidden>NO.OF PALLET</th>
+                                                        <th>SLOT LOC</th>
+
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden></th>
+                                                        <th hidden>SEQUENCE</th>
+
+
+
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="dataTablebdyPicklist"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table cell-border table-responsive table-hover" id="dataTable1" style="width: 100%; display: none;" cellspacing="0" table-layout:fixed;>
+                                            <thead>
+                                                <tr class="table-info">
+
+                                                    <th>SKU</th>
+                                                    <th>LPN</th>
+                                                    <th>Slot Location</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="dataTablebdy1"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <div class="justify-content-lg-start text-primary" id="loader3" style="display: none;">
+            <div class="spinner-border" role="status">
+
+            </div>
+            <span>Please wait while checking...</span>
+        </div>
+                                <button type="button" class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
+
+                                <button type="button" class="btn btn-primary" id="btnGen">Go to Inventory</button>
+                                <button type="button" hidden class="btn btn-primary" id="btnGen1">Generate</button>
+                                <button type="button" hidden class="btn btn-success" id="btnGen2">Generate</button>
+                                <button type="button" hidden class="btn btn-success" id="btnWMS">Generate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*end of modal*@
+
+
+
+                <a href="@Url.Action("OutboundPicking", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+                <button type="submit" class="btn btn-success" id="btnSave" style="width: 105px; height: 45px;">Go<i class="fa fa-arrow-right" style="margin-left:5px;"></i></button>
+
+
+
+
+
+
+
+
+            @*</div>
+        </div>*@
+        @*end of container*@
+    }
+    catch (Exception)
+    {
+    }
+}
+
+@* javascript start here*@
+
+@section scripts{
+
+    @if (TempData["Success"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: '@TempData["Success"]'
+            })
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script type="text/javascript" lang="javascript">
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'error',
+                title: '@TempData["Error"]'
+            })
+        </script>
+    }
+
+
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script>
+        //avoid input string..............
+        function restrictAlphabets(e) {
+            var x = e.which || e.keycode;
+            if ((x >= 48 && x <= 57))
+                return true;
+            else
+                return false;
+        }
+        //....................................
+        //display sku clubs...................
+        $(document).ready(function () {
+
+
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            $('#btnGenerate').click(function () {
+                $('#loader').css("display", "block");
+                $('#btnGenerate').prop("disabled", true);
+                
+
+                var clubcode = $('#ClubName').val();
+                if ($('#ClubName').val() == "") {
+                    Swal.fire(
+                        'Please select club field to generate!',
+                        'Please try again',
+                        'warning'
+                    )
+                    $('#btnGenerate').prop("disabled", false);
+                    $('#loader').css("display", "none");
+                    return;
+                }
+                $("#dataTablebdy").empty();
+                $.ajax({
+                    url: "/AllocationCreation/SearchAllocationClubCode?clubcode=" + clubcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.MerchandiseSKU.length; i++) {
+
+                            var dconfigs = data.MerchandiseSKU[i].DConfigName;
+                            var reqqtys = data.MerchandiseSKU[i].RequestedQty;
+                            var ispk = data.MerchandiseSKU[i].ISTDPK;
+                            var tie = data.MerchandiseSKU[i].IVPLTI;
+                            var hie = data.MerchandiseSKU[i].IVPLHI;
+                            var pallets = reqqtys / (tie * hie * ispk);
+                            var perpallets = reqqtys / pallets
+                            var itemwght = data.MerchandiseSKU[i].IWGHT * 0.02834952;
+                            var percases = tie * hie;
+                            var palletwght = 22;
+
+                            var totalwght = (itemwght * percases) + palletwght;
+                            data.MerchandiseSKU[i].IWGHT = totalwght;
+                            
+
+                            
+                            data.MerchandiseSKU[i].NoPallets = pallets;
+                            data.MerchandiseSKU[i].QtyPerPallet = perpallets;
+                            var kgs = 0;
+                            if (pallets < 3 && pallets >= 1) {
+                               kgs =  totalwght * pallets;
+                                data.MerchandiseSKU[i].IWGHT = kgs;
+                            }
+                            else if (pallets >= 3) {
+                                kgs = totalwght * 3;
+                                data.MerchandiseSKU[i].IWGHT = kgs;
+                            }
+                            
+
+                            if (dconfigs == "PALLET") {
+                                data.MerchandiseSKU[i].QtyToPick = 1;
+                                var result1 = Math.ceil(reqqtys / ispk);
+                                data.MerchandiseSKU[i].NoCases = result1;
+
+                                
+
+                            }
+                            else if (dconfigs == "CASE" || dconfigs == "LAYER") {
+
+                                var result = reqqtys / ispk;
+                                data.MerchandiseSKU[i].QtyToPick = result;
+
+                                var result1 = Math.ceil(reqqtys / ispk);
+                                data.MerchandiseSKU[i].NoCases = result1;
+
+                                
+                            }
+                            
+                            
+
+
+                            var tablerow = '<tr class="package-row">'
+                                + '<td width="10%" style="text-align: center;background-color: #e9ecef;"><input type="checkbox"   id= "check1' + i + '" value=' + data.MerchandiseSKU[i].Checked + '  /></td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubCode + '</td>'
+                                + '<td width="10%" style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].INUMBR + '</td>'
+                                + '<td width="20%" style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].IDESCR + '</td>'
+                                + '<td width="10%" style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].RequestedQty + '</td>'
+                                + '<td width="10%" style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].PrioritizationName + '</td>'
+                                + '<td width="10%" style="background-color: #e9ecef;">' + parseInt(data.MerchandiseSKU[i].NoCases) + '</td>'
+                                + '<td width="10%" class="pallettotal" style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].NoPallets.toFixed(2) + '</td>'
+                                + '<td style="display:none;">' + parseInt(data.MerchandiseSKU[i].QtyToPick) + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].DConfigName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ISTDPK + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Prioritization + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IVPLHI + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IVPLTI + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].QtyPerPallet + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IWGHT.toFixed(2) + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Remarks + '</td>'
+                               
+                                
+                                
+                                
+                                
+                                
+                                //.toFixed(2)
+                                + '</tr>';
+                            $("#dataTablebdy").append(tablerow);
+                            $("#checkall").prop("checked", true);
+                            var firsty = 1;
+                            
+                            if (firsty == 1) {
+                                $("#check1" + i + "").prop("checked", true);
+
+                            }
+                            $("#checkall").change(function () {
+                                var totsall = 0;
+                               
+                                $("input:checkbox").prop('checked', $(this).prop("checked"));
+                                $("input:checkbox").val(this.checked ? 1 : 0);
+                                 
+                                if (this.checked) {
+                                    var total = 0;
+                                    $(".pallettotal").each(function () {
+                                        total += parseFloat($(this).text());
+                                    });
+
+                                    $("#Totals").html(total.toFixed(2));
+                                   
+
+                                    
+                                    
+                                }
+                                else {
+                                    $("#Totals").html(totsall.toFixed(2));
+                                    
+                                }
+                                
+                            });
+
+
+                            var checkbox = document.getElementById('check1' + i + '');
+                            checkbox.addEventListener("change", function () {
+                                this.value = this.checked ? 1 : 0;
+                                //var tb = $("#dataTable TBODY TR");
+                                //var size = tb.find("td:eq(7)").html();
+                                var cols = 0;
+                                var total = $("#Totals").text();
+                                if (this.checked) {
+                                    var currentRow = $(this).closest("tr");
+                                    var col1 = currentRow.find("td:eq(7)").text();
+                                    cols = parseFloat(col1);
+                                    var cols1 = parseFloat(total);
+                                    var tots = 0;
+                                    tots = cols1 + cols;
+                                    $("#Totals").html(tots.toFixed(2));
+                                }
+                                else {
+                                    var currentRow = $(this).closest("tr");
+                                    var col1 = currentRow.find("td:eq(7)").text();
+                                    cols = parseFloat(col1);
+                                    var cols1 = parseFloat(total);
+                                    var tots = 0;
+                                    tots = cols1 - cols;
+                                    $("#Totals").html(tots.toFixed(2));
+                                }
+                                                  
+                            });
+
+                            
+                           
+                            
+                        }
+                        $('#Totalslbl').removeAttr('hidden');
+                        $('#Totalslbl').show();
+                        var total = 0;
+                        $(".pallettotal").each(function () {
+                            total += parseFloat($(this).text());
+                        });
+
+
+                        $("#Totals").html(total.toFixed(2));
+                        $('#btnGenerate').prop("disabled", false);
+                        $('#loader').css("display", "none");
+
+                    }
+
+
+
+                });
+
+                
+
+
+            });
+
+            
+
+        });
+        
+        
+        
+
+
+        $(document).ready(function () {
+
+
+            $('#dataTablePick').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            $('#btnGenerate1').click(function () {
+                $('#loader2').css("display", "block");
+                $('#btnGen').prop("disabled", true);
+                
+                
+                var clubcode = $('#ClubName').val();
+                $("#dataTablebdyPick").empty();
+                $.ajax({
+                    url: "/AllocationCreation/SearchAllocationClubCodeToPick?clubcode=" + clubcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.MerchandiseSKU.length; i++) {
+
+                            var dconfigs = data.MerchandiseSKU[i].DConfigName;
+                            var reqqtys = data.MerchandiseSKU[i].RequestedQty;
+                            var ispk = data.MerchandiseSKU[i].ISTDPK;
+                            var tie = data.MerchandiseSKU[i].IVPLTI;
+                            var hie = data.MerchandiseSKU[i].IVPLHI;
+                            var pallets = reqqtys / (tie * hie * ispk);
+                            var perpallets = reqqtys / pallets
+
+                            data.MerchandiseSKU[i].NoPallets = pallets;
+                            data.MerchandiseSKU[i].QtyPerPallet = perpallets;
+
+                            if (dconfigs == "PALLET") {
+                                data.MerchandiseSKU[i].QtyToPick = 1;
+                                var result1 = reqqtys / ispk;
+                                data.MerchandiseSKU[i].NoCases = result1;
+
+
+                            }
+                            else if (dconfigs == "CASE" || dconfigs == "LAYER") {
+
+                                var result = reqqtys / ispk;
+                                data.MerchandiseSKU[i].QtyToPick = result;
+
+                                var result1 = reqqtys / ispk;
+                                data.MerchandiseSKU[i].NoCases = result1;
+                            }
+
+
+
+
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubCode + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].INUMBR + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].IDESCR + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].RequestedQty + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].PrioritizationName + '</td>'
+                                + '<td style="display:none;">' + parseInt(data.MerchandiseSKU[i].NoCases) + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].NoPallets.toFixed(2) + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + parseInt(data.MerchandiseSKU[i].QtyToPick) + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].DConfigName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ISTDPK + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Prioritization + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IVPLHI + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IVPLTI + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].QtyPerPallet + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Status + '</td>'
+                                
+
+                                + '</tr>';
+                            $("#dataTablebdyPick").append(tablerow);
+
+                        }
+
+                        
+                        
+                        
+                      //  $('#btnGen').prop("disabled", true);
+                        $('#loader2').css("display", "none");
+                        
+                    }
+
+
+
+                });
+                
+                $("#dataTablebdy1").empty();
+                $('#loader3').css("display", "block");
+                $.ajax({
+                    url: "/AllocationCreation/SearchAllocationSKU?clubcode=" + clubcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.MerchandiseWMS.length; i++) {
+
+
+                            var tablerow1 = '<tr class="package-row">'
+
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseWMS[i].INUMBR + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseWMS[i].LPN + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseWMS[i].SlotLoc + '</td>'
+
+
+                                + '</tr>';
+                            $("#dataTablebdy1").append(tablerow1);
+
+                        }
+                     //   $('#btnGen').prop("disabled", true);
+                      //  $('#loader3').css("display", "block");
+                        
+
+
+
+                    }
+
+
+                });
+
+                $("#dataTablebdy1").empty();
+              //  $('#loader3').css("display", "block");
+                $.ajax({
+                    url: "/AllocationCreation/SearchAllocationSKUCase?clubcode=" + clubcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.MerchandiseWMSCase.length; i++) {
+
+
+                            var tablerow2 = '<tr class="package-row">'
+
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseWMSCase[i].INUMBR + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseWMSCase[i].LPN + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseWMSCase[i].SlotLoc + '</td>'
+
+
+                                + '</tr>';
+                            $("#dataTablebdy1").append(tablerow2);
+
+                        }
+                        $('#btnGen').prop("disabled", false);
+                        $('#loader3').css("display", "none");
+                        
+
+
+
+                    }
+
+                    
+                });
+
+               
+             
+
+            });
+
+            
+
+            
+
+        });
+
+
+
+        $(document).ready(function () {
+
+
+            $('#dataTablePicklist').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+            $('#btnGen1').click(function () {
+
+
+                
+                var clubcode = $('#ClubName').val();
+                $("#dataTablebdyPicklist").empty();
+                $.ajax({
+                    url: "/AllocationCreation/SearchAllocationClubCodeToPickReady?clubcode=" + clubcode,
+                    type: "Get",
+                    success: function (data) {
+
+
+                        for (var i = 0; i < data.MerchandiseSKU.length; i++) {
+
+                            var dconfigs = data.MerchandiseSKU[i].DConfigName;
+                            var reqqtys = data.MerchandiseSKU[i].RequestedQty;
+                            var ispk = data.MerchandiseSKU[i].ISTDPK;
+                            var tie = data.MerchandiseSKU[i].IVPLTI;
+                            var hie = data.MerchandiseSKU[i].IVPLHI;
+                            var pallets = reqqtys / (tie * hie * ispk);
+                            var perpallets = reqqtys / pallets
+
+                            data.MerchandiseSKU[i].NoPallets = pallets;
+                            data.MerchandiseSKU[i].QtyPerPallet = perpallets;
+
+                            if (dconfigs == "PALLET") {
+                                data.MerchandiseSKU[i].QtyToPick = 1;
+                                var result1 = reqqtys / ispk;
+                                data.MerchandiseSKU[i].NoCases = result1;
+
+
+                            }
+                            else if (dconfigs == "CASE" || dconfigs == "LAYER") {
+
+                                var result = reqqtys / ispk;
+                                data.MerchandiseSKU[i].QtyToPick = result;
+
+                                var result1 = reqqtys / ispk;
+                                data.MerchandiseSKU[i].NoCases = result1;
+                            }
+
+
+
+
+                            var tablerow = '<tr class="package-row">'
+
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubCode + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].INUMBR + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].IDESCR + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].RequestedQty + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].PrioritizationName + '</td>'
+                                + '<td style="display:none;">' + parseInt(data.MerchandiseSKU[i].NoCases) + '</td>'
+                                + '<td width="10%" class="pallettotal1" style="display:none;">' + data.MerchandiseSKU[i].NoPallets.toFixed(2) + '</td>'
+                               
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].SlotLoc + '</td>'
+                               
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].LPN + '</td>'
+                                + '<td style="display:none;">' + parseInt(data.MerchandiseSKU[i].QtyToPick) + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].DConfigName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ISTDPK + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubName + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Prioritization + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IVPLHI + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].IVPLTI + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].QtyPerPallet + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Status + '</td>'
+                                + '<td style="display:none;">' + data.MerchandiseSKU[i].Sequence + '</td>'
+                               
+
+
+                                + '</tr>';
+                            $("#dataTablebdyPicklist").append(tablerow);
+
+                        }
+
+                        
+                        $('#dataTablePicklist').removeAttr('hidden');
+                        $('#dataTablePicklist').show();
+                        $('#dataTablePick').hide();
+                        $('#pick1').hide();
+                        $('#pick2').hide();
+                        $('#pick3').show();
+                        
+                        $('#pick4').show();
+                        $('#btnGen2').removeAttr('hidden');
+                        $('#btnGen2').show();
+                        $('#btnGen').hide();
+
+                        $('#Totalslbl1').removeAttr('hidden');
+                        $('#Totalslbl1').show();
+                        var total = 0;
+                        $(".pallettotal1").each(function () {
+                            total += parseFloat($(this).text());
+                        });
+
+
+                        $("#Totals1").html(total.toFixed(2));
+
+                    }
+
+
+
+                });
+
+                
+
+
+
+            });
+
+
+
+
+
+        });
+
+
+
+
+
+        $(document).ready(function () {
+            $("#btnGen2").on("click", function () {
+
+                
+                var skus = new Array();
+                $("#dataTablePicklist TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+                    skuslist.ClubName = row.find("TD").eq(0).html();
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.INUMBR = row.find("TD").eq(2).html();
+                    skuslist.IDESCR = row.find("TD").eq(3).html();
+                    skuslist.RequestedQty = row.find("TD").eq(4).html();
+                    skuslist.PrioritizationName = row.find("TD").eq(5).html();
+                   // skuslist.NoCases = row.find("TD").eq(6).html();
+                   // skuslist.NoPallets = row.find("TD").eq(7).html();
+                    skuslist.SlotLoc = row.find("TD").eq(8).html();
+                    skuslist.LPN = row.find("TD").eq(9).html();
+                    skuslist.QtyToPick = row.find("TD").eq(10).html();
+                    skuslist.DConfigName = row.find("TD").eq(11).html();
+                    skuslist.ISTDPK = row.find("TD").eq(12).html();
+                    //skuslist.ClubName = row.find("TD").eq(13).html();
+                    //skuslist.Prioritization = row.find("TD").eq(14).html();
+                  //  skuslist.IVPLHI = row.find("TD").eq(15).html();
+                 //   skuslist.IVPLTI = row.find("TD").eq(16).html();
+                  //  skuslist.QtyPerPallet = row.find("TD").eq(17).html();
+                    // skuslist.Status = row.find("TD").eq(18).html();
+                    skuslist.Sequence = row.find("TD").eq(19).html();
+                    
+
+
+                    
+
+                    skus.push(skuslist);
+                });
+
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationCreation/InsertPicklist",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        if (data.success == true) {
+
+
+                            Swal.fire({
+                                title: 'Sucessfully Saved!',
+                                icon: 'success',
+                                confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                if (result['isConfirmed']) {
+
+                                    $('#btnGenerate2').click();
+                                    $('#modalRegisterForm').modal('hide');
+
+                                    
+                                    location.reload();
+
+                                }
+                            })
+
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                    }
+                });
+
+
+
+            });
+
+
+            $("#closeModalBtn").on("click", function () {
+
+
+
+                var skus = new Array();
+                $("#dataTablePick TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.INUMBR = row.find("TD").eq(2).html();
+                    skuslist.RequestedQty = row.find("TD").eq(4).html();
+                    skuslist.Prioritization = row.find("TD").eq(12).html();
+                    skuslist.Status = row.find("TD").eq(16).html();
+
+                   // skuslist.LPN = row.find("TD").eq(11).html();
+                   // skuslist.SlotLoc = row.find("TD").eq(12).html();
+                    
+
+
+
+                    skus.push(skuslist);
+                });
+
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationCreation/UpdateSlotLocStop",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        $('#modalRegisterForm').modal('hide');
+                        $('#dataTablePicklist').hide();
+                        $('#dataTablePick').show();
+                        $('#pick1').show();
+                        $('#pick2').show();
+                        $('#pick3').hide();
+                        
+                        $('#pick4').hide();
+                        $('#btnGen2').hide();
+                        $('#btnGen').show();
+                    }
+                });
+
+
+
+            });
+
+
+            
+
+            $("#btnGenerate2").on("click", function () {
+
+
+
+                var skus = new Array();
+                $("#dataTablePicklist TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+                    skuslist.ClubName = row.find("TD").eq(0).html();
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.INUMBR = row.find("TD").eq(2).html();
+                    skuslist.Prioritization = row.find("TD").eq(14).html();
+                    
+
+
+
+
+
+
+                    skus.push(skuslist);
+                });
+
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationCreation/UpdateAllocatedStatus",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+
+                    }
+                });
+
+
+
+            });
+
+
+
+
+
+            
+
+
+
+        });
+
+        $(document).ready(function () {
+            $("#btnGen").on("click", function () {
+
+
+               
+
+                var skus = new Array();
+                $("#dataTable1 TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+                    skuslist.ClubCode = $('#ClubName').val();
+                    skuslist.INUMBR = row.find("TD").eq(0).html();
+                    skuslist.LPN = row.find("TD").eq(1).html();
+                    skuslist.SlotLoc = row.find("TD").eq(2).html();
+
+
+                    skus.push(skuslist);
+                });
+
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationCreation/UpdateSlotLoc",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        
+                        $('#btnGen1').click();
+                    }
+                });
+
+
+
+
+            });
+
+
+
+
+        });
+
+        $(document).ready(function () {
+            $("#btnSave").on("click", function () {
+
+               
+
+                if ($('#ClubName').val() == "") {
+
+                    Swal.fire(
+                        'Please select a Club first!',
+                        'Please try again',
+                        'error'
+                    )
+                   
+                    return;
+                }
+
+                var skus = new Array();
+                $("#dataTable TBODY TR").each(function () {
+                    var row = $(this);
+                    var skuslist = {};
+
+
+                    skuslist.Checked = row.find('td:eq(0) input').val();
+                    skuslist.ClubCode = row.find("TD").eq(1).html();
+                    skuslist.INUMBR = row.find("TD").eq(2).html();
+                    /*skuslist.IDESCR = row.find("TD").eq(2).html();*/
+                    skuslist.RequestedQty = row.find("TD").eq(4).html();
+                    /*skuslist.PrioritizationName = row.find("TD").eq(4).html();*/
+                    skuslist.NoCases = row.find("TD").eq(6).html();
+                    skuslist.NoPallets = row.find("TD").eq(7).html();
+                    skuslist.QtyToPick = row.find("TD").eq(8).html();
+                    skuslist.DConfigName = row.find("TD").eq(9).html();
+                   /* skuslist.ISTDPK = row.find("TD").eq(9).html();*/
+                    /*skuslist.ClubName = row.find('td:eq(10) input').val();*/
+                    skuslist.Prioritization = row.find("TD").eq(12).html();
+                    skuslist.IVPLHI = row.find("TD").eq(13).html();
+                    skuslist.IVPLTI = row.find("TD").eq(14).html();
+                   
+                    skuslist.QtyPerPallet = row.find("TD").eq(15).html();
+                    skuslist.IWGHT = row.find("TD").eq(16).html();
+                    skuslist.Remarks = row.find("TD").eq(17).html();
+
+                    
+                   
+
+                    skus.push(skuslist);
+                });
+
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/AllocationCreation/InsertPicklistReady",
+                    dataType: 'json',
+                    data: JSON.stringify(skus),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data.success == true) {
+                            $('#modalRegisterForm').modal('show');
+                            
+                            $('#btnGenerate1').click();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: data.message,
+                                text: 'Please try again...'
+                            })
+                        }
+                        
+
+                    }
+                });
+
+
+
+
+            });
+
+
+
+
+        });
+
+        $(function () {
+
+
+
+            $('#closeModalBtn').click(function () {
+                $('#modalRegisterForm').modal('hide');
+            })
+        });
+
+
+
+
+
+    </script>
+
+}
+
+
+
+

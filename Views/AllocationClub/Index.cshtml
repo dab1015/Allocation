@@ -1,0 +1,264 @@
+﻿
+@model SNRWMSPortal.Models.AllocationSKUModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Allocation Clubs";
+}
+
+
+
+@{
+
+    try
+    {
+
+
+        <h2 class="text-white">@ViewBag.Title</h2>
+
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-1">
+
+                <div id="modalRegisterForm" class="modal fade" aria-modal="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Club Information</h4>
+                            </div>
+                            <div class="modal-body">
+
+                                
+                               
+                                <div class="row m-0">
+                                    <div class="col-6  mb-3">
+                                        <div class="row g-2">
+                                            @Html.LabelFor(m => m.ClubCode, htmlAttributes: new { @class = "control-label col-md-6 mb-0" })
+                                            @Html.TextBoxFor(m => m.ClubCode, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-6  mb-3">
+                                        <div class="row g-2">
+                                            @Html.LabelFor(m => m.ClubName, htmlAttributes: new { @class = "control-label col-md-6 mb-0" })
+                                            @Html.TextBoxFor(m => m.ClubName, new { @class = "form-control input-md-6", required = "required", @style = "padding: 10px;", @disabled = "disabled" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-6  mb-3">
+                                        <div class="row g-0">
+                                            @Html.HiddenFor(m => m.STRNUM, new { @id = "Id" })
+                                            <label for="Option" class="form-label">User Type</label>
+                                            <select name="status" style="height:46px;" class="form-select" id="status">
+
+                                                <option value="1">Active</option>
+                                                <option value="0">DeActivate</option>
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-6  mb-3">
+                                        <div class="row g-0">
+                                            <label for="Option" class="form-label">Is Province</label>
+                                            <select name="isprovince" style="height:46px;" class="form-select" id="isprovince">
+
+                                                <option value="1">IsProvincial</option>
+                                                <option value="0">NotProvincial</option>
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                
+                                <div  class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success" id="btnUpdate" data-dismiss="modal">Update</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">CLUB Records</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table cell-border table-responsive table-hover" id="dataTable" style="width:100%" cellspacing="0">
+                                <thead>
+                                    <tr class="table-info">
+                                        <th>Club Code</th>
+                                        <th>Club Name</th>
+                                        <th>Actions</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ClubSKU)
+                                    {
+                                        <tr class="package-row">
+                                            <td>@Html.DisplayFor(module => item.STRNUM)</td>
+                                            <td>@Html.DisplayFor(module => item.STRNAM)</td>
+                                            <td>
+                                                <a onclick="GetDetails(@item.STRNUM)">
+
+                                                    <i class="btn btn-success ">Update</i>
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+                @*<button type="button" class="btn btn-success" id="modalRegisterBtn" style="width: 120px; height: 45px;"><i class="fa fa-check" style="margin-right:5px;"></i>Simulate</button>*@
+                <button type="submit" class="btn btn-primary" id="btnSave" style="width: 105px; height: 45px;"><i class="fa fa-save" style="margin-right:5px;"></i>Save</button>
+
+            </div>
+        </div>
+    }
+    catch (Exception)
+    {
+    }
+}
+
+
+
+@section scripts{
+
+
+
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    
+
+    <script>
+
+        $("#btnSave").on("click", function () {
+            
+            //Loop through the Table rows and build a JSON array.
+            var skus = new Array();
+            $("#dataTable TBODY TR").each(function () {
+                var row = $(this);
+                var skuslist = {};
+                skuslist.ClubCode = row.find("TD").eq(0).html();
+                skuslist.ClubName = row.find("TD").eq(1).html();
+                skus.push(skuslist);
+            });
+            $.ajax({
+                type: "Post",
+                url: "/AllocationClub/InsertClub",
+                dataType: 'json',
+                data: JSON.stringify(skus),
+                contentType: "application/json; charset=utf-8",
+                success: function (r) {
+                    Swal.fire(
+                        'Successfully Saved!',
+                        '',
+                        'success'
+                    )
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false });
+        });
+
+        function GetDetails(id) {
+            $.ajax({
+                url: "/AllocationClub/EditClub/" + id,
+                typr: "GET",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#Id').val(response.STRNUM);
+                    $('#ClubCode').val(response.STRNUM);
+                    $('#ClubName').val(response.STRNAM);
+                    $('#status').val(response.ClubStatus);
+                    $('#isprovince').val(response.IsProvince);
+                    
+                    $('#modalRegisterForm').modal('show');
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+            return false;
+        }
+
+        $('#closeModalBtn').click(function () {
+            $('#modalRegisterForm').modal('hide');
+
+        })
+
+        $("#btnUpdate").on("click", function () {
+            var skus = new Array();
+            var skuslist = {};
+
+            
+            skuslist.CLubCode = $('#ClubCode').val();
+            skuslist.ClubStatus = $('#status').val();
+            skuslist.IsProvince = $('#isprovince').val();
+            skus.push(skuslist);
+
+
+            $.ajax({
+                type: "Post",
+                url: "/AllocationClub/UpdateProvince",
+                dataType: 'json',
+                data: JSON.stringify(skus),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    if (data.success == true) {
+
+
+                        Swal.fire({
+                            title: 'Sucessfully Updated!',
+                            icon: 'success',
+                            confirmButtonText: 'Okay'
+                        }).then((result) => {
+                            if (result['isConfirmed']) {
+                                $('#modalRegisterForm').modal('hide');
+                                
+
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.message,
+                            text: 'Please try again...'
+                        })
+                    }
+                }
+
+            });
+
+        });
+        
+
+    </script>
+
+
+
+
+
+}
+
+
+
