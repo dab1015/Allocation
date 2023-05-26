@@ -490,7 +490,7 @@ namespace SNRWMSPortal.Controllers
                     weightpersku = (double)item.IWGHT;
                     remarks = item.Remarks;
 
-                    if (nopallet > 0 && checkeds == 1)
+                    if (nopallet > 0 && checkeds == 1 && dconfig == "PALLET")
                     {
 
                         for (double innopallet = 1; innopallet <= nopallet;)

@@ -228,6 +228,19 @@
 
     <script>
 
+        function retrieveDataLoading() {
+            Swal.fire({
+                title: 'Please Wait !',
+                html: 'Retrieving Report ... ',// add html attribute if you want or remove
+                allowOutsideClick: false,
+                buttons: false,
+                showConfirmButton: false,
+                timer: 1000,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                },
+            });
+        }
 
         $(document).ready(function () {
 
@@ -239,31 +252,40 @@
                 var fr = $('#fromtemp').val();
                 var t = $('#totemp').val();
                 var report = $('#report-id').val();
+                $('#Generate').prop("disabled", true);
+                  //  
 
-                    window.open('@Url.Action("SearchSKU", "AllocationReports")?from=' + fr + '&to=' + t + '&report=' + report);
+                
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json;charset=UTF-8",
+                    url: "/AllocationReports/SearchSKU?from=" + fr + "&to=" + t + "&report=" + report,
+                    type: "Get",
+
+                    success: function (response) {
+
+                        if (response.success == false) {
+
+                            Swal.fire({
+                                title: 'No data found!',
+                                icon: 'warning',
+                                html: 'No data was found in the date <em>selection</em>.',
+                                allowOutsideClick: false,
+                                buttons: false,
+                                showConfirmButton: false,
+                                timer: 4000,
+                            });
+                            //setTimeout(window.location.href = "/Fulfillment/_GenerateReportsVendorOrderSummary", 10000);
 
 
-                //$.ajax({
-                //    type: "Post",
-                //    url: "/AllocationNewSKU/SearchSKU?from=" + fr + "&to=" + t,
-                //    type: "Get",
-
-                //    //success: function (data) {
-
-                //    //    if (data.success == true) {
-                //    //        Swal.fire({
-                //    //            icon: 'success',
-                //    //            title: data.message
-                //    //        })
-                //    //    } else {
-                //    //        Swal.fire({
-                //    //            icon: 'error',
-                //    //            title: data.message,
-                //    //            text: 'Please try again...'
-                //    //        })
-                //    //    }
-                //    //}
-                //});
+                        }
+                        else {
+                            retrieveDataLoading();
+                            window.location = "/AllocationReports/SearchSKU?from=" + fr + "&to=" + t + "&report=" + report;
+                        }
+                        $('#Generate').prop("disabled", false);
+                    }
+                });
 
 
             });

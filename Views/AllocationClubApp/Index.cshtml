@@ -371,7 +371,7 @@
             
             
 
-            
+            $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
             $('#Status').change(function () {
 
                
@@ -470,7 +470,7 @@
 
                         }
 
-                        $('#dataTable').DataTable();
+                        
                        
                     }
 
@@ -577,7 +577,7 @@
                             
                         }
                         
-                        $('#dataTable').DataTable();
+                       // $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
                         $('#btnClubSearch').prop("disabled", false);
                     }
 

@@ -199,7 +199,7 @@
 
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table cell-border table-responsive table-hover" id="dataTable1" style="width: 100%; display: none;" cellspacing="0" table-layout:fixed;>
+                                        <table class="table cell-border table-responsive table-hover" id="dataTable1" style="width: 100%; display:none;" cellspacing="0" table-layout:fixed;>
                                             <thead>
                                                 <tr class="table-info">
 
@@ -711,21 +711,21 @@
                             var pallets = reqqtys / (tie * hie * ispk);
                             var perpallets = reqqtys / pallets
 
-                            data.MerchandiseSKU[i].NoPallets = pallets;
+                            
                             data.MerchandiseSKU[i].QtyPerPallet = perpallets;
 
                             if (dconfigs == "PALLET") {
                                 data.MerchandiseSKU[i].QtyToPick = 1;
                                 var result1 = reqqtys / ispk;
                                 data.MerchandiseSKU[i].NoCases = result1;
-
+                                data.MerchandiseSKU[i].NoPallets = 1;
 
                             }
                             else if (dconfigs == "CASE" || dconfigs == "LAYER") {
 
                                 var result = reqqtys / ispk;
                                 data.MerchandiseSKU[i].QtyToPick = result;
-
+                                data.MerchandiseSKU[i].NoPallets = pallets;
                                 var result1 = reqqtys / ispk;
                                 data.MerchandiseSKU[i].NoCases = result1;
                             }
@@ -1059,6 +1059,16 @@
                         'error'
                     )
                    
+                    return;
+                }
+                else if ($("#Totals").html() == 0.00) {
+
+                    Swal.fire(
+                        'Please select atleast one SKU to proceed!',
+                        'Please try again',
+                        'error'
+                    )
+
                     return;
                 }
 

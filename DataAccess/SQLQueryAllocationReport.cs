@@ -254,7 +254,7 @@ namespace SNRWMSPortal.DataAccess
         {
             List<AllocationSKUModel> datemodel = new List<AllocationSKUModel>();
 
-            MSsql = $"select ClubCode,SKU,DateCreated,RequestedQty as AllocatedQty, RequestedQty as UnservedQty, (case when Remarks is null then '' else Remarks end) as Remarks from CreateAllocationHistory where Status is null and DateCreated BETWEEN '{from}' and '{to}' order by ClubCode ";
+            MSsql = $"select ClubCode,SKU,DateCreated,Description,SkuStatus,DepartmentName,SubDepartmentName,LI,RequestedQty as AllocatedQty, RequestedQty as UnservedQty, (case when Remarks is null then '' else Remarks end) as Remarks from CreateAllocationHistory where Status is null and DateCreated BETWEEN '{from}' and '{to}' order by ClubCode ";
             cmd = new SqlCommand(MSsql, con);
             con.Open();
             reader = cmd.ExecuteReader();
@@ -271,38 +271,44 @@ namespace SNRWMSPortal.DataAccess
                 datelist.AllocatedQty = Convert.ToInt32(reader["AllocatedQty"]);
                 datelist.UnservedQty = Convert.ToInt32(reader["UnservedQty"]);
                 datelist.Remarks = Convert.ToString(reader["Remarks"]);
+                datelist.Description = Convert.ToString(reader["Description"]);
+                datelist.Status = Convert.ToString(reader["SkuStatus"]);
+
+                datelist.DepartementMMS = Convert.ToString(reader["DepartmentName"]);
+                datelist.SubDepartementMMS = Convert.ToString(reader["SubDepartmentName"]);
+                datelist.IATRB1 = Convert.ToString(reader["LI"]);
                 //datelist.DateCreated = formattedDateTime;
-                var MSsql2 = $"select IDESCR, IDSCCD,IDEPT, IATRB1,ISDEPT from mmjdalib.invmst where INUMBR = {Convert.ToInt32(reader["SKU"])}";
-                olecmd = new OleDbCommand(MSsql2, conmms);
-                conmms.Open();
-                olereader = olecmd.ExecuteReader();
-                while (olereader.Read())
-                {
-                    
-                    
-                    datelist.Description = Convert.ToString(olereader["IDESCR"]);
-                    datelist.Status = Convert.ToString(olereader["IDSCCD"]);
-                    
-                    datelist.IDEPT = Convert.ToInt32(olereader["IDEPT"]);
-                    datelist.ISDEPT = Convert.ToInt32(olereader["ISDEPT"]);
-                    datelist.IATRB1 = Convert.ToString(olereader["IATRB1"]);
-                    //var MSsql3 = $"select (a.isdept || '-' || b.dptnam) as SubDepartment from mmjdalib.invmst a left join mmjdalib.invdpt b on a.isdept = b.isdept  WHERE b.idept = {Convert.ToInt32(olereader["IDEPT"])} and b.iclas = 0 and b.isclas = 0 and a.INUMBR = {Convert.ToInt32(reader["SKU"])}";
-                    //olecmd = new OleDbCommand(MSsql3, conmms);
-                    
-                    //olereader = olecmd.ExecuteReader();
-                    //while (olereader.Read())
-                    //{
-
-                    //    //var MSsql2 = $"select a.IDESCR, a.IDSCCD,a.IDEPT, a.IATRB1, (a.idept || '-' || b.dptnam) as Department from mmjdalib.invmst a left join mmjdalib.invdpt b on a.idept = b.idept  WHERE b.isdept = 0 and b.iclas = 0 and b.isclas = 0 and a.INUMBR = {Convert.ToInt32(reader["SKU"])}";
-
-                    //    datelist.SubDepartementMMS = Convert.ToString(olereader["SubDepartment"]);
-                        
+                //var MSsql2 = $"select IDESCR, IDSCCD,IDEPT, IATRB1,ISDEPT from mmjdalib.invmst where INUMBR = {Convert.ToInt32(reader["SKU"])}";
+                //olecmd = new OleDbCommand(MSsql2, conmms);
+                //conmms.Open();
+                //olereader = olecmd.ExecuteReader();
+                //while (olereader.Read())
+                //{
 
 
-                    //}
+                //    datelist.Description = Convert.ToString(olereader["IDESCR"]);
+                //    datelist.Status = Convert.ToString(olereader["IDSCCD"]);
 
-                }
-                conmms.Close();
+                //    datelist.IDEPT = Convert.ToInt32(olereader["IDEPT"]);
+                //    datelist.ISDEPT = Convert.ToInt32(olereader["ISDEPT"]);
+                //    datelist.IATRB1 = Convert.ToString(olereader["IATRB1"]);
+                //    //var MSsql3 = $"select (a.isdept || '-' || b.dptnam) as SubDepartment from mmjdalib.invmst a left join mmjdalib.invdpt b on a.isdept = b.isdept  WHERE b.idept = {Convert.ToInt32(olereader["IDEPT"])} and b.iclas = 0 and b.isclas = 0 and a.INUMBR = {Convert.ToInt32(reader["SKU"])}";
+                //    //olecmd = new OleDbCommand(MSsql3, conmms);
+
+                //    //olereader = olecmd.ExecuteReader();
+                //    //while (olereader.Read())
+                //    //{
+
+                //    //    //var MSsql2 = $"select a.IDESCR, a.IDSCCD,a.IDEPT, a.IATRB1, (a.idept || '-' || b.dptnam) as Department from mmjdalib.invmst a left join mmjdalib.invdpt b on a.idept = b.idept  WHERE b.isdept = 0 and b.iclas = 0 and b.isclas = 0 and a.INUMBR = {Convert.ToInt32(reader["SKU"])}";
+
+                //    //    datelist.SubDepartementMMS = Convert.ToString(olereader["SubDepartment"]);
+
+
+
+                //    //}
+
+                //}
+                //conmms.Close();
                 datemodel.Add(datelist);
 
             }

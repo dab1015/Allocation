@@ -253,9 +253,9 @@ namespace SNRWMSPortal.Controllers
 
                     ws.Cell(currentrow, 1).WorksheetColumn().Width = 10;
                     ws.Cell(currentrow, 2).WorksheetColumn().Width = 10;
-                    ws.Cell(currentrow, 3).WorksheetColumn().Width = 25;
-                    ws.Cell(currentrow, 4).WorksheetColumn().Width = 15;
-                    ws.Cell(currentrow, 5).WorksheetColumn().Width = 15;
+                    ws.Cell(currentrow, 3).WorksheetColumn().Width = 30;
+                    ws.Cell(currentrow, 4).WorksheetColumn().Width = 30;
+                    ws.Cell(currentrow, 5).WorksheetColumn().Width = 30;
                     ws.Cell(currentrow, 6).WorksheetColumn().Width = 8;
                     ws.Cell(currentrow, 7).WorksheetColumn().Width = 8;
                     ws.Cell(currentrow, 8).WorksheetColumn().Width = 13;
@@ -275,8 +275,8 @@ namespace SNRWMSPortal.Controllers
                         ws.Cell(currentrow, 1).Value = rep.ClubCode;
                         ws.Cell(currentrow, 2).Value = rep.SKU;
                         ws.Cell(currentrow, 3).Value = rep.Description;
-                        ws.Cell(currentrow, 4).Value = rep.IDEPT;
-                        ws.Cell(currentrow, 5).Value = rep.ISDEPT;
+                        ws.Cell(currentrow, 4).Value = rep.DepartementMMS;
+                        ws.Cell(currentrow, 5).Value = rep.SubDepartementMMS;
                         ws.Cell(currentrow, 6).Value = rep.Status;
                         ws.Cell(currentrow, 7).Value = rep.IATRB1;
                         ws.Cell(currentrow, 8).Value = rep.UnservedDAte;
