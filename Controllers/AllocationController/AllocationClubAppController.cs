@@ -83,7 +83,7 @@ namespace SNRWMSPortal.Controllers
 
                 };
                 ViewBag.Description = skus;
-                return Json(skus, JsonRequestBehavior.AllowGet);
+            return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
         }
 
         [HttpGet]
@@ -123,7 +123,7 @@ namespace SNRWMSPortal.Controllers
                     
                 };
                 ViewBag.Description = skus;
-                return Json(skus, JsonRequestBehavior.AllowGet);
+                return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
             }
             else
             {
@@ -267,7 +267,7 @@ namespace SNRWMSPortal.Controllers
                     }
                     else if(insertAllocbool == false)
                     {
-                        queryskus.InsertAllocation(skucode, clubcode, totals, 5, dconfig, reasonname, dcmoh, todaysDate);
+                        queryskus.InsertAllocation(skucode, clubcode, totals, 5,5, dconfig, reasonname, dcmoh, todaysDate);
                     }
 
                    

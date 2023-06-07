@@ -130,7 +130,7 @@
                                                         <th hidden>CLUB CODE</th>
                                                         <th>SKU</th>
                                                         <th>DESC</th>
-                                                        <th hidden>ALLOC QTY</th>
+                                                        <th>QTY IN PCS</th>
                                                         <th hidden>PRIORITIZATION</th>
                                                         <th hidden>NO.OF CASES</th>
                                                         <th hidden>NO.OF PALLET</th>
@@ -236,7 +236,7 @@
 
 
 
-                <a href="@Url.Action("OutboundPicking", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-danger" style="width: 105px; height: 45px; text-align:center; line-height:31px;"><i class="fa fa-arrow-left" style="margin-right:5px;"></i>Back</a>
                 <button type="submit" class="btn btn-success" id="btnSave" style="width: 105px; height: 45px;">Go<i class="fa fa-arrow-right" style="margin-left:5px;"></i></button>
 
 
@@ -350,6 +350,7 @@
                             var tie = data.MerchandiseSKU[i].IVPLTI;
                             var hie = data.MerchandiseSKU[i].IVPLHI;
                             var pallets = reqqtys / (tie * hie * ispk);
+                            
                             var perpallets = reqqtys / pallets
                             var itemwght = data.MerchandiseSKU[i].IWGHT * 0.02834952;
                             var percases = tie * hie;
@@ -359,7 +360,7 @@
                             data.MerchandiseSKU[i].IWGHT = totalwght;
                             
 
-                            
+
                             data.MerchandiseSKU[i].NoPallets = pallets;
                             data.MerchandiseSKU[i].QtyPerPallet = perpallets;
                             var kgs = 0;
@@ -574,7 +575,7 @@
                                 + '<td style="display:none;">' + data.MerchandiseSKU[i].ClubCode + '</td>'
                                 + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].INUMBR + '</td>'
                                 + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].IDESCR + '</td>'
-                                + '<td style="display:none;">' + data.MerchandiseSKU[i].RequestedQty + '</td>'
+                                + '<td style="background-color: #e9ecef;">' + data.MerchandiseSKU[i].RequestedQty + '</td>'
                                 + '<td style="display:none;">' + data.MerchandiseSKU[i].PrioritizationName + '</td>'
                                 + '<td style="display:none;">' + parseInt(data.MerchandiseSKU[i].NoCases) + '</td>'
                                 + '<td style="display:none;">' + data.MerchandiseSKU[i].NoPallets.toFixed(2) + '</td>'

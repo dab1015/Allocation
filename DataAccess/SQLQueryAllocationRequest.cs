@@ -606,14 +606,14 @@ namespace SNRWMSPortal.DataAccess
 
         }
 
-        public bool InsertMerchanAllocation(int SKU, int ClubCode, int Pieces,string ReasonName, int Prioritization,double DCMOH, string Todays,string DConfig)
+        public bool InsertMerchanAllocation(int SKU, int ClubCode, int Pieces,string ReasonName, int Prioritization,int OriginalPrio,double DCMOH, string Todays,string DConfig)
         {
 
             try
             {
                 DateTime formattedday = DateTime.Parse(Todays);
 
-                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation(SKU,ClubCode,RequestedQty,Remarks,Prioritization,OnHand,DateCreated,DistributionConfig) VALUES(@SKU,@ClubCode,@Pieces,@ReasonName,@Prioritization,@DCMOH,@Todays,@DConfig)", con);
+                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation(SKU,ClubCode,RequestedQty,Remarks,Prioritization,OriginalPrio,OnHand,DateCreated,DistributionConfig) VALUES(@SKU,@ClubCode,@Pieces,@ReasonName,@Prioritization,@OriginalPrio,@DCMOH,@Todays,@DConfig)", con);
                 cmd.CommandType = CommandType.Text;
                 con.Open();
 
@@ -623,6 +623,7 @@ namespace SNRWMSPortal.DataAccess
                 cmd.Parameters.AddWithValue("@ReasonName", ReasonName);
                 
                 cmd.Parameters.AddWithValue("@Prioritization", Prioritization);
+                cmd.Parameters.AddWithValue("@OriginalPrio", OriginalPrio);
                 cmd.Parameters.AddWithValue("@DCMOH", DCMOH);
                 cmd.Parameters.AddWithValue("@Todays", formattedday);
                 cmd.Parameters.AddWithValue("@DConfig", DConfig);

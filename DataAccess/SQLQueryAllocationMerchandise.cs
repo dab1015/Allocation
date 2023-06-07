@@ -1709,6 +1709,21 @@ namespace SNRWMSPortal.DataAccess
             con.Close();
         }
 
+        public void DeleteAlreadyPosted()
+        {
+
+
+            MSsql = "delete from CreateAllocation where Id in (select c.Id from (select a.SKU,a.Slotloc,a.Status,b.id from PickList a inner join CreateAllocation b on a.SKU = b.SKU and a.SlotLoc = b.SlotLoc where a.Status = 9) c)";
+            con.Open();
+            cmd = new SqlCommand(MSsql, con);
+
+
+
+
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
 
 
 

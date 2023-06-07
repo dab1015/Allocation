@@ -362,7 +362,7 @@ namespace SNRWMSPortal.Controllers
                         ws.Cell(currentrow, 4).Value = rep.SubDepartementMMS;
                         ws.Cell(currentrow, 5).Value = rep.Status;
                         ws.Cell(currentrow, 6).Value = rep.IATRB1;
-                        ws.Cell(currentrow, 7).Value = rep.DateReceipt;
+                        ws.Cell(currentrow, 7).Value = rep.IMDATE;
                         ws.Cell(currentrow, 8).Value = rep.DCInv;
                         ws.Cell(currentrow, 9).Value = rep.Case;
                         ws.Cell(currentrow, 10).Value = rep.Layer;

@@ -88,7 +88,7 @@ namespace SNRWMSPortal.Controllers
 
                 };
                 ViewBag.Description = skus;
-                return Json(skus, JsonRequestBehavior.AllowGet);
+                return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
             }
             else
             {

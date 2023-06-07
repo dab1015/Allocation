@@ -144,43 +144,65 @@ namespace SNRWMSPortal.DataAccess
 
         public List<AllocationSKUModel> GetNewSKUDate(string from,string to)
         {
-            List<AllocationSKUModel> datemodel = new List<AllocationSKUModel>();
-
-            MSsql = $"SELECT G.INUMBR AS SKU, G.IDESCR AS Description, Concat(Concat(G.IDEPT,' - '), G.DEPT) AS Department, Concat(Concat(G.ISDEPT,' - '), + H.DPTNAM) AS SUBDEPT,G.IDSCCD AS Status, G.IATRB1, (case when G.IBALD2 is null then 0 else G.IBALD2 end)  as DateReceipt, (case when G.DCINV is null then 0 else G.DCINV end)  as DCInventory, G.ISTDPK, G.Layer, G.Pallet FROM (SELECT E.*, F.DPTNAM AS DEPT FROM (SELECT C.*, D.DCINV FROM (SELECT A.INUMBR,IDESCR,IDEPT,ISDEPT,IDSCCD,IATRB1,B.IBALD2,ISTDPK,ISTDPK*IVPLTI AS LAYER, (ISTDPK * IVPLTI) * IVPLHI AS PALLET  FROM MMJDALIB.INVMST A LEFT JOIN (SELECT ISTORE,INUMBR,IBHAND,IBALD2 FROM MMJDALIB.INVBAL WHERE ISTORE=880) B ON A.INUMBR=B.INUMBR WHERE A.IMCRDT between '{from}' and '{to}') C LEFT JOIN (SELECT INUMBR,SUM(IBHAND) AS DCINV FROM MMJDALIB.INVBAL WHERE ISTORE BETWEEN 880 AND 893 GROUP BY INUMBR) D ON C.INUMBR=D.INUMBR) E INNER JOIN MMJDALIB.INVDPT F ON E.IDEPT=F.IDEPT AND F.ISDEPT=0 AND F.ICLAS=0 AND F.ISCLAS=0) G INNER JOIN MMJDALIB.INVDPT H ON G.IDEPT=H.IDEPT AND G.ISDEPT=H.ISDEPT AND H.ICLAS=0 AND H.ISCLAS=0";
-            olecmd = new OleDbCommand(MSsql, conmms);
-            conmms.Open();
-            olereader = olecmd.ExecuteReader();
-            while (olereader.Read())
+            try
             {
-                var datelist = new AllocationSKUModel();
+                List<AllocationSKUModel> datemodel = new List<AllocationSKUModel>();
 
-               // string drRow = olereader["IMDATE"].ToString();
-               // DateTime dateTime = DateTime.ParseExact(drRow, "yyMMdd", CultureInfo.InvariantCulture);
-              //  string formattedDateTime = dateTime.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
-                // clublist.INUMBR = Convert.ToInt32(olereader["INUMBR"]);
-                // skuslist.Description = olereader["IDESCR"].ToString();
-                
+                MSsql = $"SELECT G.INUMBR AS SKU, G.IDESCR AS Description, Concat(Concat(G.IDEPT,' - '), G.DEPT) AS Department, Concat(Concat(G.ISDEPT,' - '), + H.DPTNAM) AS SUBDEPT,G.IDSCCD AS Status, G.IATRB1, (case when G.IBALD2 is null then 0 else G.IBALD2 end)  as DateReceipt, (case when G.DCINV is null then 0 else G.DCINV end)  as DCInventory, G.ISTDPK, G.Layer, G.Pallet FROM (SELECT E.*, F.DPTNAM AS DEPT FROM (SELECT C.*, D.DCINV FROM (SELECT A.INUMBR,IDESCR,IDEPT,ISDEPT,IDSCCD,IATRB1,B.IBALD2,ISTDPK,ISTDPK*IVPLTI AS LAYER, (ISTDPK * IVPLTI) * IVPLHI AS PALLET  FROM MMJDALIB.INVMST A LEFT JOIN (SELECT ISTORE,INUMBR,IBHAND,IBALD2 FROM MMJDALIB.INVBAL WHERE ISTORE=880) B ON A.INUMBR=B.INUMBR WHERE A.IMCRDT between '{from}' and '{to}') C LEFT JOIN (SELECT INUMBR,SUM(IBHAND) AS DCINV FROM MMJDALIB.INVBAL WHERE ISTORE BETWEEN 880 AND 893 GROUP BY INUMBR) D ON C.INUMBR=D.INUMBR) E INNER JOIN MMJDALIB.INVDPT F ON E.IDEPT=F.IDEPT AND F.ISDEPT=0 AND F.ICLAS=0 AND F.ISCLAS=0) G INNER JOIN MMJDALIB.INVDPT H ON G.IDEPT=H.IDEPT AND G.ISDEPT=H.ISDEPT AND H.ICLAS=0 AND H.ISCLAS=0";
+                olecmd = new OleDbCommand(MSsql, conmms);
+                conmms.Open();
+                olereader = olecmd.ExecuteReader();
+                while (olereader.Read())
+                {
+                    var datelist = new AllocationSKUModel();
 
-                datelist.SKU = Convert.ToInt32(olereader["SKU"]);
-                datelist.Description = Convert.ToString(olereader["DESCRIPTION"]);
-                
-                datelist.DepartementMMS= Convert.ToString(olereader["DEPARTMENT"]);
-                //datelist.DepartementMMS = Convert.ToString(olereader["dptnam"]);
-                datelist.SubDepartementMMS = Convert.ToString(olereader["SUBDEPT"]);
-                datelist.Status = Convert.ToString(olereader["STATUS"]);
-                datelist.IATRB1 = Convert.ToString(olereader["IATRB1"]);
-                datelist.DCInv = Convert.ToDouble(olereader["DCInventory"]);
-                //IMDATE = Convert.ToString(dr["IMDATE"]),
-                // datelist.IMDATE = formattedDateTime;
-                datelist.DateReceipt = Convert.ToInt32(olereader["DateReceipt"]);
-                datelist.Case = Convert.ToDouble(olereader["ISTDPK"]);
-                datelist.Layer = Convert.ToDouble(olereader["Layer"]);
-                datelist.Pallet = Convert.ToDouble(olereader["Pallet"]);
-                datemodel.Add(datelist);
+                    // string drRow = olereader["DateReceipt"].ToString();
+                    // DateTime dateTime = DateTime.ParseExact(drRow, "yyMMdd", CultureInfo.InvariantCulture);
+                    //  string formattedDateTime = dateTime.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
+                    // clublist.INUMBR = Convert.ToInt32(olereader["INUMBR"]);
+                    // skuslist.Description = olereader["IDESCR"].ToString();
 
+
+                    datelist.SKU = Convert.ToInt32(olereader["SKU"]);
+                    datelist.Description = Convert.ToString(olereader["DESCRIPTION"]);
+
+                    datelist.DepartementMMS = Convert.ToString(olereader["DEPARTMENT"]);
+                    //datelist.DepartementMMS = Convert.ToString(olereader["dptnam"]);
+                    datelist.SubDepartementMMS = Convert.ToString(olereader["SUBDEPT"]);
+                    datelist.Status = Convert.ToString(olereader["STATUS"]);
+                    datelist.IATRB1 = Convert.ToString(olereader["IATRB1"]);
+                    datelist.DCInv = Convert.ToDouble(olereader["DCInventory"]);
+                    //IMDATE = Convert.ToString(dr["IMDATE"]),
+                    //datelist.DateModified = formattedDateTime;
+
+                    datelist.DateReceipt = Convert.ToInt32(olereader["DateReceipt"]);
+                    if (datelist.DateReceipt == 0)
+                    {
+                        datelist.IMDATE = "";
+                    }
+                    else
+                    {
+                        string drRow = datelist.DateReceipt.ToString();
+                        DateTime dateTime = DateTime.ParseExact(drRow, "yyMMdd", CultureInfo.InvariantCulture);
+                        string formattedDateTime = dateTime.ToString("MM/dd/yy", CultureInfo.InvariantCulture);
+                        datelist.IMDATE = formattedDateTime;
+                    }
+
+                    datelist.Case = Convert.ToDouble(olereader["ISTDPK"]);
+                    datelist.Layer = Convert.ToDouble(olereader["Layer"]);
+                    datelist.Pallet = Convert.ToDouble(olereader["Pallet"]);
+                    datemodel.Add(datelist);
+
+                }
+                conmms.Close();
+                return datemodel;
             }
-            conmms.Close();
-            return datemodel;
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
 
         }
 

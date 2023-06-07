@@ -21,7 +21,7 @@ using System.Web.UI;
 
 namespace SNRWMSPortal.Controllers
 {
-    [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
+   [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
     public class AllocationRequestController : Controller
     {
 
@@ -87,7 +87,7 @@ namespace SNRWMSPortal.Controllers
 
                 };
                 ViewBag.Description = skus;
-                return Json(skus, JsonRequestBehavior.AllowGet);
+                return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
             }
             else
             {
@@ -101,7 +101,7 @@ namespace SNRWMSPortal.Controllers
         [HttpPost]
         public ActionResult InsertMerchandise(List<AllocationMerchandiseModel> allocationOverModels)
         {
-          //  string userName = "Junes";
+            //string userName = "Junes";
             string userName = Session["Username"].ToString();
             DateTime date = DateTime.Now;
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");
@@ -170,7 +170,7 @@ namespace SNRWMSPortal.Controllers
 
                         if (units != 0)
                         {
-                            queryskus.InsertMerchanAllocation(skucode, clubcode, totals,reasonname, 6,dcmoh, todaysDate,dconfig);
+                            queryskus.InsertMerchanAllocation(skucode, clubcode, totals,reasonname, 6,6,dcmoh, todaysDate,dconfig);
                         }
                         
                     }

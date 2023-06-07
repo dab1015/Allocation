@@ -51,7 +51,7 @@
                         Merchandise Request
                     </a>
 
-                    <a href="~/Home/OutboundPicking" class="list-group-item">
+                    <a href="~/AllocationCreation/Index" class="list-group-item">
                         <i class="fa fa-file" aria-hidden="true"></i>
                         Outbound Picking
                     </a>
@@ -245,9 +245,9 @@
                 }
                 else if (allocation == true && merchandise == true && clubs == false)
                 {
-                    <a href="#" class="list-group-item active">
-
-                    </a>
+            <a href="#" class="list-group-item active">
+                Where to?
+            </a>
                     <a href="~/AllocationMerchandise/Index" class="list-group-item">
                         <i class="fa fa-user-circle" aria-hidden="true"></i>
                         Merchandise Request
@@ -256,9 +256,9 @@
 
                 else if (allocation == true && merchandise == false && clubs == true)
                 {
-                    <a href="#" class="list-group-item active">
-
-                    </a>
+            <a href="#" class="list-group-item active">
+                Where to?
+            </a>
                     <a href="~/AllocationClubReq/Index" class="list-group-item">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         Club Requestor
@@ -267,21 +267,21 @@
                 }
                 else if (allocation == true && merchandise == false && clubs == false && clubs_approver == true)
                 {
-                    <a href="#" class="list-group-item active">
-
-                    </a>
+            <a href="#" class="list-group-item active">
+                Where to?
+            </a>
                     <a href="~/AllocationClubApp/Index" class="list-group-item">
                         <i class="fa fa-user-circle" aria-hidden="true"></i>
                         Club Approver
                     </a>
 
                 }
-                else if (allocation == true && merchandise == false && clubs == false && clubs_approver == false && outbound_picking == true)
+                else if (allocation == true && outbound_picking == true)
                 {
                     <a href="#" class="list-group-item active">
-
+                        Where to?
                     </a>
-                    <a href="~/Home/OutboundPicking" class="list-group-item">
+                    <a href="~/AllocationCreation/Index" class="list-group-item">
                         <i class="fa fa-file" aria-hidden="true"></i>
                         Outbound Picking
                     </a>

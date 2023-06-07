@@ -37,7 +37,7 @@ namespace SNRWMSPortal.DataAccess
 
             List<AllocationClub> alloclub = new List<AllocationClub>();
 
-            MSsql = $"SELECT  A.SKU,A.Clubcode,A.Description,A.Reason,B.Reason as Reasons,A.Status,A.Quantity,A.PQty,A.RequestedDate,A.Remarks,A.PConfig FROM AllocationClubRequest A inner join AllocationReason B on A.Reason = B.Code where A.Clubcode = {clubcode} and A.Status = '{status}' ";
+            MSsql = $"SELECT  A.SKU,A.Clubcode,A.Description,A.Reason,B.Reason as Reasons,A.Status,A.Quantity,A.PQty,A.RequestedDate,A.Remarks,A.PConfig FROM AllocationClubRequest A left join AllocationReason B on A.Reason = B.Code where A.Clubcode = {clubcode} and A.Status = '{status}' ";
 
             cmd = new SqlCommand(MSsql, con);
             con.Open();
@@ -680,14 +680,14 @@ namespace SNRWMSPortal.DataAccess
         }
 
 
-        public bool InsertAllocation(int SKU, int ClubCode, int Quantity, int Prioritization,string DConfig,string Remarks,double DCMOH,string Todays)
+        public bool InsertAllocation(int SKU, int ClubCode, int Quantity, int Prioritization,int OriginalPrio,string DConfig,string Remarks,double DCMOH,string Todays)
         {
 
             try
             {
                 DateTime formattedday = DateTime.Parse(Todays);
 
-                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation   (SKU,ClubCode,RequestedQty,Prioritization,DistributionConfig,Remarks,OnHand,DateCreated) VALUES(@SKU,@ClubCode,@Quantity, @Prioritization,@DConfig,@Remarks,@DCMOH,@Todays)", con);
+                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation   (SKU,ClubCode,RequestedQty,Prioritization,OriginalPrio,DistributionConfig,Remarks,OnHand,DateCreated) VALUES(@SKU,@ClubCode,@Quantity, @Prioritization,@OriginalPrio,@DConfig,@Remarks,@DCMOH,@Todays)", con);
                 cmd.CommandType = CommandType.Text;
                 con.Open();
 
@@ -697,6 +697,7 @@ namespace SNRWMSPortal.DataAccess
                 
                 
                 cmd.Parameters.AddWithValue("@Prioritization", Prioritization);
+                cmd.Parameters.AddWithValue("@OriginalPrio", OriginalPrio);
                 cmd.Parameters.AddWithValue("@DCMOH", DCMOH);
                 cmd.Parameters.AddWithValue("@DConfig", DConfig);
                 cmd.Parameters.AddWithValue("@Remarks", Remarks);

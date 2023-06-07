@@ -21,7 +21,7 @@ using System.Web.UI;
 
 namespace SNRWMSPortal.Controllers
 {
-    [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
+  //  [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
     public class AllocationCreationController : Controller
     {
 
@@ -59,6 +59,7 @@ namespace SNRWMSPortal.Controllers
             //var res1 = queryskus.GetWMS(sku,count);
             //queryskus.UpdateStatus3(clubcode);
             queryskus.DeleteStatus3andNullSlotLoc(clubcode);
+            queryskus.DeleteAlreadyPosted();
             var res1 = queryskus.GetAllocationClubCode(clubcode);
             
 
@@ -199,8 +200,8 @@ namespace SNRWMSPortal.Controllers
         [HttpPost]
         public ActionResult InsertPicklist(List<AllocationMerchandiseModel> allocationOverModels)
         {
-          //  string userName = "Junes";
-            string userName = Session["Username"].ToString();
+            string userName = "Junes";
+          //  string userName = Session["Username"].ToString();
             DateTime date = DateTime.Now;
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");
             int skucode = 0;
@@ -239,7 +240,14 @@ namespace SNRWMSPortal.Controllers
                     sequence = item.Sequence;
 
 
-
+                    if(dconfig == "LAYER")
+                    {
+                        dconfig = "CASE";
+                    }
+                    else
+                    {
+                        dconfig = item.DConfigName;
+                    }
 
 
 
@@ -490,14 +498,20 @@ namespace SNRWMSPortal.Controllers
                     weightpersku = (double)item.IWGHT;
                     remarks = item.Remarks;
 
+                    
+
                     if (nopallet > 0 && checkeds == 1 && dconfig == "PALLET")
                     {
-
+                        int break_pallet = 0;
+                        //var line_pallet = allocationOverModels.Where(a => a.NoPallets > 0 && a.Checked == 1 && a.DConfigName == "PALLET").Count();
+                        break_pallet = reqty / nopallet;
                         for (double innopallet = 1; innopallet <= nopallet;)
                         {
-                            queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio,remarks, todaysDate);
+                            
+                            queryskus.InsertCreateAllocation(clubcode, skucode, break_pallet, status, dconfig, prio,remarks, todaysDate);
 
                             innopallet++;
+
                         }
                     }
 
