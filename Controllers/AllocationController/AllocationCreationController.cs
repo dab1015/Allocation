@@ -21,11 +21,14 @@ using System.Web.UI;
 
 namespace SNRWMSPortal.Controllers
 {
-  //  [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
+   [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
     public class AllocationCreationController : Controller
     {
 
         SQLQueryAllocationMerchandise queryskus = new SQLQueryAllocationMerchandise();
+        
+
+        //To select dropdown Clublist
         public ActionResult Index()
         {
             try
@@ -49,15 +52,11 @@ namespace SNRWMSPortal.Controllers
 
 
        
-
+        //To search Alocated data on selected club,to delete Status = 3 which batchcode is null, to delete already posted in picklist table
         [HttpGet]
         public ActionResult SearchAllocationClubCode(int clubcode)
         {
 
-            //int sku = 0;
-            //int count = 0;
-            //var res1 = queryskus.GetWMS(sku,count);
-            //queryskus.UpdateStatus3(clubcode);
             queryskus.DeleteStatus3andNullSlotLoc(clubcode);
             queryskus.DeleteAlreadyPosted();
             var res1 = queryskus.GetAllocationClubCode(clubcode);
@@ -81,14 +80,12 @@ namespace SNRWMSPortal.Controllers
 
         }
 
+        //To display the picked clubcode
         [HttpGet]
         public ActionResult SearchAllocationClubCodeToPick(int clubcode)
         {
 
-            //int sku = 0;
-            //int count = 0;
-            //var res1 = queryskus.GetWMS(sku,count);
-
+            
             var res1 = queryskus.GetAllocationClubCodeToPick(clubcode);
 
 
@@ -99,39 +96,24 @@ namespace SNRWMSPortal.Controllers
 
                 MerchandiseSKU = res1
 
-
-
-
-
             };
             ViewBag.Description = skus;
             return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
 
         }
 
-
+        //To display the picked clubcode with slotloc and lpn ready
         [HttpGet]
         public ActionResult SearchAllocationClubCodeToPickReady(int clubcode)
         {
 
-            //int sku = 0;
-            //int count = 0;
-            //var res1 = queryskus.GetWMS(sku,count);
-
             var res1 = queryskus.GetAllocationClubCodeToPickReady(clubcode);
-
-
-
             AllocationMerchandiseModel skus = new AllocationMerchandiseModel()
             {
 
 
                 MerchandiseSKU = res1
 
-
-
-
-
             };
             ViewBag.Description = skus;
             return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
@@ -140,44 +122,30 @@ namespace SNRWMSPortal.Controllers
 
 
 
-
+        //To search Pallet Config in WMS
         [HttpGet]
         public ActionResult SearchAllocationSKU(int clubcode)
         {
 
-            //int sku = 0;
-            //int count = 0;
-            //var res1 = queryskus.GetWMS(sku,count);
-
-            
             var res = queryskus.GetAllocationSKU(clubcode);
 
 
             AllocationMerchandiseModel skus = new AllocationMerchandiseModel()
             {
 
-
-               
                 MerchandiseWMS = res
-
-
-
 
             };
             ViewBag.Description = skus;
             return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
 
         }
-
+        //To search Case config in WMS
         [HttpGet]
         public ActionResult SearchAllocationSKUCase(int clubcode)
         {
 
-            //int sku = 0;
-            //int count = 0;
-            //var res1 = queryskus.GetWMS(sku,count);
-
-
+            
             var res = queryskus.GetAllocationSKUCase(clubcode);
 
 
@@ -189,19 +157,18 @@ namespace SNRWMSPortal.Controllers
                 MerchandiseWMSCase = res
 
 
-
-
             };
             ViewBag.Description = skus;
             return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
 
         }
 
+        //To insert data into picklist table with batchcode 
         [HttpPost]
         public ActionResult InsertPicklist(List<AllocationMerchandiseModel> allocationOverModels)
         {
-            string userName = "Junes";
-          //  string userName = Session["Username"].ToString();
+          //  string userName = "Junes";
+            string userName = Session["Username"].ToString();
             DateTime date = DateTime.Now;
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");
             int skucode = 0;
@@ -230,7 +197,7 @@ namespace SNRWMSPortal.Controllers
                     description = item.IDESCR;
                     reqty = (int)item.RequestedQty;
                     
-                    prioname = item.PrioritizationName;
+                    prioname = item.FinalPrio;
                     slotloc = item.SlotLoc;
                     lpn = item.LPN;
                     qtytopick = (int)item.QtyToPick;
@@ -248,17 +215,13 @@ namespace SNRWMSPortal.Controllers
                     {
                         dconfig = item.DConfigName;
                     }
+                    
+                        queryskus.InsertPicklist(batchcode, clubcode, skucode, description, reqty, prioname,prio, slotloc, lpn, qtytopick, qtypicked, dconfig, stdpk, status, sequence, userName, todaysDate);
 
+                       // queryskus.InsertAllocationPicklist(batchcode, clubcode, skucode, reqty, prio, slotloc, lpn, dconfig, todaysDate);
 
-
-
-
-                    queryskus.InsertPicklist(batchcode,clubcode, skucode,description, reqty,prioname, slotloc, lpn, qtytopick, qtypicked, dconfig, stdpk, status,sequence,userName, todaysDate);
-                   // queryskus.DeleteRemainingZero();
-
-
-
-
+                        queryskus.InsertBatchCode(batchcode, clubcode, todaysDate);
+                    
 
 
                 }
@@ -273,181 +236,10 @@ namespace SNRWMSPortal.Controllers
         }
 
 
-        //[HttpPost]
-        //public ActionResult InsertPicklistReady(List<AllocationMerchandiseModel> allocationOverModels)
-        //{
-
-        //    DateTime date = DateTime.Now;
-        //    string todaysDate = date.ToString("MM-dd-yyyy,H:mm");
-        //    int skucode = 0;
-        //    int clubcode = 0;
-        //    int reqty, prio;
-        //    string dconfig;
-        //    int status = 1;
-        //    double iniP = 0;
-        //    double iniPQ = 0;
-        //    double nopallet = 0;
-        //    double weightpersku = 0;
-        //    int perpallet = 0;
-        //    double total = 0;
-        //    double weightalloc = 0;
-
-        //    AllocationMerchandiseModel skumodel = new AllocationMerchandiseModel();
-        //    try
-        //    {
-
-        //        //var deptModel = allocationOverModels.Select(x => x.INUMBR).FirstOrDefault();
-        //        //var clubCodeModel = allocationOverModels.Select(x => x.ClubCode).FirstOrDefault();
-        //        //var prioModel = allocationOverModels.Select(x => x.Prioritization).FirstOrDefault();
-
-
-        //        foreach (var item in allocationOverModels)
-        //        {
-
-        //            clubcode = (int)item.ClubCode;
-        //            skucode = (int)item.INUMBR;
-
-        //            reqty = (int)item.RequestedQty;
-
-
-
-
-
-        //            dconfig = item.DConfigName;
-
-
-
-
-        //            prio = (int)item.Prioritization;
-        //            nopallet = (double)item.NoPallets;
-        //            perpallet = (int)item.QtyPerPallet;
-        //            weightpersku = (double)item.IWGHT;
-
-        //            bool truckval = queryskus.VerifyTruckLoad(clubcode);
-        //            if(truckval == true)
-        //            {
-        //                if (nopallet < 5 && nopallet >= 1)
-        //                {
-
-        //                    total += nopallet;
-        //                    weightalloc += weightpersku;
-
-        //                    if (total < 42 && weightalloc < 18000)
-        //                    {
-
-        //                        iniPQ = perpallet * nopallet;
-        //                        queryskus.InsertCreateAllocation(clubcode, skucode, iniPQ, status, dconfig, prio, todaysDate);
-        //                        iniP = reqty - iniPQ;
-        //                        queryskus.UpdateAllocatedReady(clubcode, skucode, iniP, prio);
-        //                    }
-
-        //                }
-        //                else if (nopallet < 1 && dconfig == "Case" || dconfig == "Layer")
-        //                {
-
-        //                    total += nopallet;
-        //                    weightalloc += weightpersku;
-
-        //                    if (total < 42 && weightalloc < 18000)
-        //                    {
-
-
-        //                        queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio, todaysDate);
-        //                        reqty = 0;
-        //                        queryskus.UpdateAllocatedReady(clubcode, skucode, reqty, prio);
-        //                    }
-
-        //                }
-
-        //                else if (nopallet >= 5)
-        //                {
-        //                    nopallet = 5;
-        //                    total += nopallet;
-        //                    weightalloc += weightpersku;
-
-        //                    iniPQ = perpallet * nopallet;
-
-        //                    if (total < 42 && weightalloc < 18000)
-        //                    {
-        //                        queryskus.InsertCreateAllocation(clubcode, skucode, iniPQ, status, dconfig, prio, todaysDate);
-        //                        iniP = reqty - iniPQ;
-        //                        queryskus.UpdateAllocatedReady(clubcode, skucode, iniP, prio);
-        //                    }
-
-        //                }
-        //            }
-        //            else if(truckval == false)
-        //            {
-        //                if (nopallet < 3 && nopallet >= 1)
-        //                {
-
-        //                    total += nopallet;
-        //                    weightalloc += weightpersku;
-
-        //                    if (total < 32 && weightalloc < 11000)
-        //                    {
-
-        //                        iniPQ = perpallet * nopallet;
-        //                        queryskus.InsertCreateAllocation(clubcode, skucode, iniPQ, status, dconfig, prio, todaysDate);
-        //                        iniP = reqty - iniPQ;
-        //                        queryskus.UpdateAllocatedReady(clubcode, skucode, iniP, prio);
-        //                    }
-
-        //                }
-        //                else if (nopallet < 1 && dconfig == "Case" || dconfig == "Layer")
-        //                {
-
-        //                    total += nopallet;
-        //                    weightalloc += weightpersku;
-
-        //                    if (total < 32 && weightalloc < 11000)
-        //                    {
-
-
-        //                        queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio, todaysDate);
-        //                        reqty = 0;
-        //                        queryskus.UpdateAllocatedReady(clubcode, skucode, reqty, prio);
-        //                    }
-
-        //                }
-
-        //                else if (nopallet >= 3)
-        //                {
-        //                    nopallet = 3;
-        //                    total += nopallet;
-        //                    weightalloc += weightpersku;
-
-        //                    iniPQ = perpallet * nopallet;
-
-        //                    if (total < 32 && weightalloc < 11000)
-        //                    {
-        //                        queryskus.InsertCreateAllocation(clubcode, skucode, iniPQ, status, dconfig, prio, todaysDate);
-        //                        iniP = reqty - iniPQ;
-        //                        queryskus.UpdateAllocatedReady(clubcode, skucode, iniP, prio);
-        //                    }
-
-        //                }
-        //            }
-
-
-
-
-
-
-
-
-        //        }
-        //        return Json(new { success = true, message = "Successfully Saved!" }, JsonRequestBehavior.AllowGet);
-
-        //    }
-
-        //    catch (Exception)
-        //    {
-        //        return Json(new { success = false, message = $"Please try again empty data cannot be save!" }, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
-
-
+        
+        
+        
+        //To populate the number of entries based on the number of pallets
         [HttpPost]
         public ActionResult InsertPicklistReady(List<AllocationMerchandiseModel> allocationOverModels)
         {
@@ -469,29 +261,13 @@ namespace SNRWMSPortal.Controllers
             AllocationMerchandiseModel skumodel = new AllocationMerchandiseModel();
             try
             {
-
-                //var deptModel = allocationOverModels.Select(x => x.INUMBR).FirstOrDefault();
-                //var clubCodeModel = allocationOverModels.Select(x => x.ClubCode).FirstOrDefault();
-                //var prioModel = allocationOverModels.Select(x => x.Prioritization).FirstOrDefault();
-
-
                 foreach (var item in allocationOverModels)
                 {
                     checkeds = (int)item.Checked;
                     clubcode = (int)item.ClubCode;
                     skucode = (int)item.INUMBR;
-
                     reqty = (int)item.RequestedQty;
-
-
-
-
-
                     dconfig = item.DConfigName;
-
-
-
-
                     prio = (int)item.Prioritization;
                     nopallet = (int)item.NoPallets;
                     perpallet = (int)item.QtyPerPallet;
@@ -508,7 +284,7 @@ namespace SNRWMSPortal.Controllers
                         for (double innopallet = 1; innopallet <= nopallet;)
                         {
                             
-                            queryskus.InsertCreateAllocation(clubcode, skucode, break_pallet, status, dconfig, prio,remarks, todaysDate);
+                            queryskus.InsertCreateAllocation(clubcode, skucode, break_pallet, status, dconfig, prio,prio,remarks, todaysDate);
 
                             innopallet++;
 
@@ -519,26 +295,16 @@ namespace SNRWMSPortal.Controllers
                     {
 
                         
-                            queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio, remarks, todaysDate);
+                            queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio,prio, remarks, todaysDate);
 
                     }
                     else if (checkeds == 1 && dconfig == "LAYER")
                     {
 
 
-                        queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio, remarks, todaysDate);
+                        queryskus.InsertCreateAllocation(clubcode, skucode, reqty, status, dconfig, prio,prio, remarks, todaysDate);
 
                     }
-
-
-
-
-
-
-
-
-
-
 
                 }
                 return Json(new { success = true, message = "Successfully Saved!" }, JsonRequestBehavior.AllowGet);
@@ -552,6 +318,7 @@ namespace SNRWMSPortal.Controllers
         }
 
 
+        //To update Allocated Status
         [HttpPost]
         public ActionResult UpdateAllocatedStatus(List<AllocationMerchandiseModel> allocationOverModels)
         {
@@ -579,12 +346,6 @@ namespace SNRWMSPortal.Controllers
                     skucode = (int)item.INUMBR;
                     
                     prio = (int)item.Prioritization;
-                    
-                    
-                    
-
-
-                    
 
                     bool insertDeptbool = queryskus.VerifyInsertPiclist(skucode, clubcode,prio);
 
@@ -613,6 +374,7 @@ namespace SNRWMSPortal.Controllers
         }
 
 
+        //To update Slotlocation from null
         [HttpPost]
         public ActionResult UpdateSlotLoc(List<AllocationMerchandiseModel> allocationOverModels)
         {
@@ -620,9 +382,6 @@ namespace SNRWMSPortal.Controllers
             int skucode = 0;
             int clubcode = 0;
             string lpn, slotloc;
-
-
-
 
             AllocationMerchandiseModel skumodel = new AllocationMerchandiseModel();
             try
@@ -652,9 +411,6 @@ namespace SNRWMSPortal.Controllers
 
                     }
 
-                    
-
-
                 }
                 return Json(new { success = true, message = "Successfully Saved!" }, JsonRequestBehavior.AllowGet);
 
@@ -666,7 +422,7 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
-
+        //To prevent updating slotlocation with value
         [HttpPost]
         public ActionResult UpdateSlotLocStop(List<AllocationMerchandiseModel> allocationOverModels)
         {
@@ -675,11 +431,7 @@ namespace SNRWMSPortal.Controllers
             int clubcode = 0;
             int prio = 0;
             int status,reqty;
-           // int request = 0;
-
-
-
-
+          
             AllocationMerchandiseModel skumodel = new AllocationMerchandiseModel();
             try
             {
@@ -689,39 +441,14 @@ namespace SNRWMSPortal.Controllers
                 var prioModel = allocationOverModels.Select(x => x.Prioritization).FirstOrDefault();
                 var statModel = allocationOverModels.Select(x => x.Status).FirstOrDefault();
                 
-
-
-
-
                 foreach (var item in allocationOverModels)
                 {
-
-                    
 
                     clubcode = (int)item.ClubCode;
                     skucode = (int)item.INUMBR;
                     reqty = (int)item.RequestedQty;
-                    
                     prio = (int)item.Prioritization;
                     status = (int)item.Status;
-                   
-                    //var reQ = queryskus.CheckQty(clubcode, skucode, prio);
-
-                    //request = reQ;
-
-                    //bool insertDeptbool = queryskus.VerifyUpdateSlotLocStop(skucode, clubcode,prio);
-                    
-
-                    //int total = request+ reqty;
-
-                    //if (insertDeptbool == true)
-                    //{
-
-                    //    queryskus.UpdateSlotLocStop(clubcode, skucode, total, prio);
-                    //    //queryskus.DeleteSlotLocStop(clubcode, skucode, total, prio);
-
-
-                    //}
 
                     queryskus.DeleteSlotLocStop(clubcode, skucode, prio);
 

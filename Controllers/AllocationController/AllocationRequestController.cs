@@ -101,7 +101,7 @@ namespace SNRWMSPortal.Controllers
         [HttpPost]
         public ActionResult InsertMerchandise(List<AllocationMerchandiseModel> allocationOverModels)
         {
-            //string userName = "Junes";
+          //  string userName = "Junes";
             string userName = Session["Username"].ToString();
             DateTime date = DateTime.Now;
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");

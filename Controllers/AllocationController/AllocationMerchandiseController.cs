@@ -102,7 +102,7 @@ namespace SNRWMSPortal.Controllers
         [HttpPost]
         public ActionResult InsertMerchandise(List<AllocationMerchandiseModel> allocationOverModels)
         {
-           // string userName = "Junes";
+          //  string userName = "Junes";
             string userName = Session["Username"].ToString();
             DateTime date = DateTime.Now;
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");
@@ -166,7 +166,7 @@ namespace SNRWMSPortal.Controllers
 
                         if (units != 0)
                         {
-                            queryskus.InsertMerchanAllocation(skucode, clubcode, totals,reasonname, 4,dcmoh, todaysDate, dconfig);
+                            queryskus.InsertMerchanAllocation(skucode, clubcode, totals,reasonname, 4,4,dcmoh, todaysDate, dconfig);
                         }
 
                     }

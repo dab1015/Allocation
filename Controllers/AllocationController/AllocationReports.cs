@@ -32,7 +32,7 @@ using System.Globalization;
 
 namespace SNRWMSPortal.Controllers
 {
-    [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
+  //  [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
     public class AllocationReportsController : Controller
     {
 

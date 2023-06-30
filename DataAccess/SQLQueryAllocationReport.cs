@@ -148,11 +148,11 @@ namespace SNRWMSPortal.DataAccess
             {
                 List<AllocationSKUModel> datemodel = new List<AllocationSKUModel>();
 
-                MSsql = $"SELECT G.INUMBR AS SKU, G.IDESCR AS Description, Concat(Concat(G.IDEPT,' - '), G.DEPT) AS Department, Concat(Concat(G.ISDEPT,' - '), + H.DPTNAM) AS SUBDEPT,G.IDSCCD AS Status, G.IATRB1, (case when G.IBALD2 is null then 0 else G.IBALD2 end)  as DateReceipt, (case when G.DCINV is null then 0 else G.DCINV end)  as DCInventory, G.ISTDPK, G.Layer, G.Pallet FROM (SELECT E.*, F.DPTNAM AS DEPT FROM (SELECT C.*, D.DCINV FROM (SELECT A.INUMBR,IDESCR,IDEPT,ISDEPT,IDSCCD,IATRB1,B.IBALD2,ISTDPK,ISTDPK*IVPLTI AS LAYER, (ISTDPK * IVPLTI) * IVPLHI AS PALLET  FROM MMJDALIB.INVMST A LEFT JOIN (SELECT ISTORE,INUMBR,IBHAND,IBALD2 FROM MMJDALIB.INVBAL WHERE ISTORE=880) B ON A.INUMBR=B.INUMBR WHERE A.IMCRDT between '{from}' and '{to}') C LEFT JOIN (SELECT INUMBR,SUM(IBHAND) AS DCINV FROM MMJDALIB.INVBAL WHERE ISTORE BETWEEN 880 AND 893 GROUP BY INUMBR) D ON C.INUMBR=D.INUMBR) E INNER JOIN MMJDALIB.INVDPT F ON E.IDEPT=F.IDEPT AND F.ISDEPT=0 AND F.ICLAS=0 AND F.ISCLAS=0) G INNER JOIN MMJDALIB.INVDPT H ON G.IDEPT=H.IDEPT AND G.ISDEPT=H.ISDEPT AND H.ICLAS=0 AND H.ISCLAS=0";
-                olecmd = new OleDbCommand(MSsql, conmms);
-                conmms.Open();
-                olereader = olecmd.ExecuteReader();
-                while (olereader.Read())
+                MSsql = $"SELECT INUMBR,IDESCR,Department,SubDepartment,IDSCCD,IATRB1,IBALD2,ISTDPK,LAYER,PALLET,IBHAND FROM OPENQUERY(SNR, 'SELECT A.INUMBR,A.IDESCR,Concat(Concat(A.IDEPT,''-''), F.DPTNAM) AS Department,Concat(Concat(A.ISDEPT,''-''), H.DPTNAM) AS SubDepartment,B.IBALD2,A.IDSCCD,A.IATRB1,A.ISTDPK,(A.ISTDPK * A.IVPLTI) AS LAYER,(A.ISTDPK * A.IVPLTI) * A.IVPLHI AS PALLET,B.IBHAND from mmjdalib.invmst A left join MMJDALIB.INVBAL B on A.INUMBR = B.INUMBR LEFT JOIN MMJDALIB.INVDPT F ON A.IDEPT=F.IDEPT AND F.ISDEPT=0 AND F.ICLAS=0 AND F.ISCLAS=0 LEFT JOIN MMJDALIB.INVDPT H ON A.IDEPT=H.IDEPT AND A.ISDEPT=H.ISDEPT AND H.ICLAS=0 AND H.ISCLAS=0 where B.IBHAND > 0 and B.ISTORE BETWEEN 880 AND 893 and  B.IBALD2 between {from} and {to} ') WHERE INUMBR NOT IN (SELECT SKU FROM AllocationSKU)";
+                cmd = new SqlCommand(MSsql, con);
+                con.Open();
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
                     var datelist = new AllocationSKUModel();
 
@@ -163,19 +163,19 @@ namespace SNRWMSPortal.DataAccess
                     // skuslist.Description = olereader["IDESCR"].ToString();
 
 
-                    datelist.SKU = Convert.ToInt32(olereader["SKU"]);
-                    datelist.Description = Convert.ToString(olereader["DESCRIPTION"]);
+                    datelist.SKU = Convert.ToInt32(reader["INUMBR"]);
+                    datelist.Description = Convert.ToString(reader["IDESCR"]);
 
-                    datelist.DepartementMMS = Convert.ToString(olereader["DEPARTMENT"]);
+                    datelist.DepartementMMS = Convert.ToString(reader["Department"]);
                     //datelist.DepartementMMS = Convert.ToString(olereader["dptnam"]);
-                    datelist.SubDepartementMMS = Convert.ToString(olereader["SUBDEPT"]);
-                    datelist.Status = Convert.ToString(olereader["STATUS"]);
-                    datelist.IATRB1 = Convert.ToString(olereader["IATRB1"]);
-                    datelist.DCInv = Convert.ToDouble(olereader["DCInventory"]);
+                    datelist.SubDepartementMMS = Convert.ToString(reader["SubDepartment"]);
+                    datelist.Status = Convert.ToString(reader["IDSCCD"]);
+                    datelist.IATRB1 = Convert.ToString(reader["IATRB1"]);
+                    datelist.DCInv = Convert.ToDouble(reader["IBHAND"]);
                     //IMDATE = Convert.ToString(dr["IMDATE"]),
                     //datelist.DateModified = formattedDateTime;
 
-                    datelist.DateReceipt = Convert.ToInt32(olereader["DateReceipt"]);
+                    datelist.DateReceipt = Convert.ToInt32(reader["IBALD2"]);
                     if (datelist.DateReceipt == 0)
                     {
                         datelist.IMDATE = "";
@@ -188,13 +188,13 @@ namespace SNRWMSPortal.DataAccess
                         datelist.IMDATE = formattedDateTime;
                     }
 
-                    datelist.Case = Convert.ToDouble(olereader["ISTDPK"]);
-                    datelist.Layer = Convert.ToDouble(olereader["Layer"]);
-                    datelist.Pallet = Convert.ToDouble(olereader["Pallet"]);
+                    datelist.Case = Convert.ToDouble(reader["ISTDPK"]);
+                    datelist.Layer = Convert.ToDouble(reader["Layer"]);
+                    datelist.Pallet = Convert.ToDouble(reader["Pallet"]);
                     datemodel.Add(datelist);
 
                 }
-                conmms.Close();
+                con.Close();
                 return datemodel;
             }
             catch (Exception ex)

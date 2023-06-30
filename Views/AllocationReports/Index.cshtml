@@ -50,72 +50,79 @@
                     </div>*@
                 <br />
                 @*<form method="get" action="@Url.Action("SearchSKU", "AllocationNewSKU")">*@
-                <div class="row m-0">
-                    <div class="col-3">
-                        <label for="report-name">Report List</label>
-                        <div class="input-group mt-1">
-                            <select class="form-select input-md-6 mt-2" style="height: 46px; width: 262px;" name="report-name" id="report-id">
-                                <option value="1">Daily Service Level Report</option>
-                                <option value="2">Summary of Service Level Report</option>
-                                <option value="3">Unserved SKU's</option>
-                                <option value="4">New SKU for Set-up</option>
-                                <option value="5">SKU Club Set-up</option>
-                                <option value="6">Summary of Club Request</option>
-                                <option value="7">Summary of Allocation Request</option>
-                                <option value="8">Summary of Merchandise Request</option>
-                                @*<option value="4">SKU with Zero OH in Clubs</option>
-        <option value="5">SKU with Zero Average Sales</option>*@
-                                @*<option value="6">SKUs Below Trigger Point(w/DC OH)</option>
-        <option value="7">SKUs Above Build To</option>
-        <option value="8">SKUs for Pre-distribution</option>
-        <option value="9">Near Expiry Report</option>
-        <option value="10">Unserved SKUs (frequency)</option>
-        <option value="11">Top 20 Items in DC Based on Pallet Count</option>
-        <option value="12">Top 20 Items in DC Based on Total Weekly Supply</option>*@
-                            </select>
+            <div class="row m-0">
+                <div class="col-3">
+                    <label for="report-name">Report List</label>
+                    <div class="input-group mt-1">
+                        <select class="form-select input-md-6 mt-2" style="height: 46px; width: 262px;" name="report-name" id="report-id">
+                            <option value="1">Daily Service Level Report</option>
+                            <option value="2">Summary of Service Level Report</option>
+                            <option value="3">Unserved SKU's</option>
+                            <option value="4">New SKU for Set-up</option>
+                            <option value="5">SKU Club Set-up</option>
+                            <option value="6">Summary of Club Request</option>
+                            <option value="7">Summary of Allocation Request</option>
+                            <option value="8">Summary of Merchandise Request</option>
+                            @*<option value="4">SKU with Zero OH in Clubs</option>
+                    <option value="5">SKU with Zero Average Sales</option>*@
+                            @*<option value="6">SKUs Below Trigger Point(w/DC OH)</option>
+                    <option value="7">SKUs Above Build To</option>
+                    <option value="8">SKUs for Pre-distribution</option>
+                    <option value="9">Near Expiry Report</option>
+                    <option value="10">Unserved SKUs (frequency)</option>
+                    <option value="11">Top 20 Items in DC Based on Pallet Count</option>
+                    <option value="12">Top 20 Items in DC Based on Total Weekly Supply</option>*@
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label for="to">Period :</label>
+                    <div class="input-group mt-1">
+                        <span class="input-group-text mt-2" style="height: 46px;"><i class="fa fa-calendar" style="color: dodgerblue;"></i></span>
+                        <div class="form-floating">
+                            <input placeholder="Choose Date" type="text" class="form-control" id="from" style="height: 46px; width: 262px;" readonly>
+                            <label for="from">From</label>
+                            <input id="fromtemp" name="fromtemp" hidden>
+                            <input id="totemp" name="totemp" hidden>
                         </div>
                     </div>
-                    <div class="col-3">
-                        <label for="to">Period :</label>
-                        <div class="input-group mt-1">
-                            <span class="input-group-text mt-2" style="height: 46px;"><i class="fa fa-calendar" style="color: dodgerblue;"></i></span>
-                            <div class="form-floating">
-                                <input placeholder="Choose Date" type="text" class="form-control" id="from" style="height: 46px; width: 262px;" readonly>
-                                <label for="from">From</label>
-                                <input id="fromtemp" name="fromtemp" hidden>
-                                <input id="totemp" name="totemp" hidden>
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="col-3  ">
-                        <label for="to"></label>
-                        <div class="input-group mt-1">
-                            <span class="input-group-text mt-2" style="height: 46px;"><i class="fa fa-calendar" style="color: dodgerblue;"></i></span>
-                            <div class="form-floating">
-                                <input placeholder="Choose Date" type="text" onchange="getValues()" class="form-control" id="to" style="height: 46px; width: 262px;" readonly>
-                                <label for="to">To</label>
-
-                            </div>
+                <div class="col-3  ">
+                    <label for="to"></label>
+                    <div class="input-group mt-1">
+                        <span class="input-group-text mt-2" style="height: 46px;"><i class="fa fa-calendar" style="color: dodgerblue;"></i></span>
+                        <div class="form-floating">
+                            <input placeholder="Choose Date" type="text" onchange="getValues()" class="form-control" id="to" style="height: 46px; width: 262px;" readonly>
+                            <label for="to">To</label>
 
                         </div>
 
                     </div>
-
-                    <div class="col-2  ">
-                        <label for="search"></label>
-                        <div class="input-group mt-1">
-                            <button class="btn btn-primary mt-2" id="Generate" style="display: block; margin-right: 5px; border-top-left-radius: 2px;  border-bottom-left-radius: 2px; width: 200px; height: 46px; padding: 0px; "><i class="" style="color: white;"></i>Generate Report</button>
-
-                            @*<a href="@Url.Action("Index", "Home")" class="btn btn-danger mt-2" style="width: 150px; height: 45px; text-align:center; line-height:31px;">Back</a>*@
-
-
-                        </div>
-                    </div>
-
-
 
                 </div>
+
+                <div class="col-2  ">
+                    <label for="search"></label>
+                    <div class="input-group mt-1">
+                        <button class="btn btn-primary mt-2" id="Generate" style="display: block; margin-right: 5px; border-top-left-radius: 2px;  border-bottom-left-radius: 2px; width: 200px; height: 46px; padding: 0px; "><i class="" style="color: white;"></i>Generate Report</button>
+
+                        @*<a href="@Url.Action("Index", "Home")" class="btn btn-danger mt-2" style="width: 150px; height: 45px; text-align:center; line-height:31px;">Back</a>*@
+
+
+                    </div>
+
+                </div>
+
+                <div class="justify-content-lg-start text-primary" id="loader4" style="text-align:center;display:none;">
+                    <br />
+                    <div class="spinner-border" role="status">
+
+                    </div>
+                    <span>Please wait while Generating...</span>
+                </div>
+
+            </div>
 
                 @*<div class="loading" id="div-loading" hideen></div>*@
 
@@ -230,7 +237,7 @@
 
         function retrieveDataLoading() {
             Swal.fire({
-                title: 'Please Wait !',
+                title: 'Downloading Report!',
                 html: 'Retrieving Report ... ',// add html attribute if you want or remove
                 allowOutsideClick: false,
                 buttons: false,
@@ -247,7 +254,7 @@
 
             $('#Generate').prop("disabled", true);
             $('#Generate').on('click', function (e) {
-
+                $('#loader4').css("display", "block");
                 e.preventDefault();
                 var fr = $('#fromtemp').val();
                 var t = $('#totemp').val();
@@ -276,10 +283,11 @@
                                 timer: 4000,
                             });
                             //setTimeout(window.location.href = "/Fulfillment/_GenerateReportsVendorOrderSummary", 10000);
-
+                            $('#loader4').css("display", "none");
 
                         }
                         else {
+                            $('#loader4').css("display", "none");
                             retrieveDataLoading();
                             window.location = "/AllocationReports/SearchSKU?from=" + fr + "&to=" + t + "&report=" + report;
                         }

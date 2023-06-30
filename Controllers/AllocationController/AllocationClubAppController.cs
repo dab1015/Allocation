@@ -38,13 +38,7 @@ namespace SNRWMSPortal.Controllers
             {
                 clublist.Add(new SelectListItem() { Text = i.ClubName, Value = i.CLubCode.ToString() });
             }
-                //var configs = queryskus.GetDConfig();
-                //var configlist = new List<SelectListItem>();
-                //foreach (var i in configs)
-                //{
-                //    configlist.Add(new SelectListItem() { Text = i.Dconfig, Value = i.Code.ToString() });
-                //}
-                //ViewBag.Config = configlist;
+               
                 ViewBag.ClubRequest = clublist;
 
                 var reasons = queryskus.GetReason();

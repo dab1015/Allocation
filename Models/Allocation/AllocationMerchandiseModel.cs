@@ -59,6 +59,10 @@ namespace SNRWMSPortal.Models
 
         public int RequestedQty { get; set; }
         public string Club { get; set; }
+
+        public string OriginalPrio { get; set; }
+
+        public string FinalPrio { get; set; }
         public double ISTDPK { get; set; }
 
         public int IVPLHI { get; set; }

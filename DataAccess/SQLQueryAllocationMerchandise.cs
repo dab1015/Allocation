@@ -314,6 +314,14 @@ namespace SNRWMSPortal.DataAccess
             {
                 batchval = "I";
             }
+            else if (batchlist == "I")
+            {
+                batchval = "J";
+            }
+            else if (batchlist == "J")
+            {
+                batchval = "K";
+            }
 
             int count = 1;
             
@@ -322,7 +330,7 @@ namespace SNRWMSPortal.DataAccess
 
             
 
-           MSsql = $"select left(D.ClubName,3) ClubName,A.DistributionConfig,A.ClubCode,A.SKU,A.RequestedQty,B.Description as Prio,A.LPN,A.SlotLoc,A.Prioritization,(case when A.Remarks is null then 'None' else A.Remarks end) as Remarks from CreateAllocation A left join AllocationClub D on D.ClubCode = A.ClubCode left join Prioritization B on A.Prioritization = B.Code where A.ClubCode = {clubcode} and A.OnHand <> 0 and A.Status is null order by A.Prioritization asc";
+           MSsql = $"select left(D.ClubName,3) ClubName,A.DistributionConfig,A.ClubCode,A.SKU,A.RequestedQty,B.Description as Prio,C.Description as OriginalPrio,A.LPN,A.SlotLoc,A.Prioritization,(case when A.Remarks is null then 'None' else A.Remarks end) as Remarks from CreateAllocation A left join AllocationClub D on D.ClubCode = A.ClubCode left join Prioritization B on A.Prioritization = B.Code left join Prioritization C on A.OriginalPrio = C.Code where A.ClubCode = {clubcode} and A.OnHand > 0 and A.Status is null order by A.Prioritization asc";
 
             cmd = new SqlCommand(MSsql, con);
             con.Open();
@@ -337,8 +345,9 @@ namespace SNRWMSPortal.DataAccess
                 clublist.SKU = Convert.ToInt64(reader["SKU"]);
                 clublist.RequestedQty = Convert.ToInt32(reader["RequestedQty"]);
                 clublist.PrioritizationName = Convert.ToString(reader["Prio"]);
-               
-               clublist.Remarks = Convert.ToString(reader["Remarks"]);
+                clublist.OriginalPrio = Convert.ToString(reader["OriginalPrio"]);
+                clublist.FinalPrio = clublist.PrioritizationName +" - "+ clublist.OriginalPrio;
+                clublist.Remarks = Convert.ToString(reader["Remarks"]);
                 clublist.LPN = Convert.ToString(reader["LPN"]);
                 clublist.SlotLoc = Convert.ToString(reader["SlotLoc"]);
                 clublist.Prioritization = Convert.ToInt32(reader["Prioritization"]);
@@ -415,6 +424,14 @@ namespace SNRWMSPortal.DataAccess
             else if (batchlist == "H")
             {
                 batchval = "I";
+            }
+            else if (batchlist == "I")
+            {
+                batchval = "J";
+            }
+            else if (batchlist == "J")
+            {
+                batchval = "K";
             }
 
             List<AllocationMerchandiseModel> alloclub = new List<AllocationMerchandiseModel>();
@@ -506,6 +523,18 @@ namespace SNRWMSPortal.DataAccess
             {
                 batchval = "H";
             }
+            else if (batchlist == "H")
+            {
+                batchval = "I";
+            }
+            else if (batchlist == "I")
+            {
+                batchval = "J";
+            }
+            else if (batchlist == "J")
+            {
+                batchval = "K";
+            }
 
 
 
@@ -590,7 +619,7 @@ namespace SNRWMSPortal.DataAccess
         public string GetAllocationBatchCode(int clubCode)
         {
 
-            MSsql = $"select top 1 right(BatchCode,1) BatchCode from CreateAllocation where ClubCode = {clubCode} and BatchCode is not null order by id desc";
+            MSsql = $"select top 1 right(BatchCode,1) BatchCode from Allocation_BatchCode where ClubCode = {clubCode} and cast(DateCreated as Date) = cast(GetDate() as Date) and  BatchCode is not null order by Id desc";
             cmd = new SqlCommand(MSsql, con);
             con.Open();
             reader = cmd.ExecuteReader();
@@ -1096,14 +1125,14 @@ namespace SNRWMSPortal.DataAccess
 
         }
 
-        public bool InsertMerchanAllocation(int SKU, int ClubCode, int Pieces, string ReasonName, int Prioritization,double DCMOH, string Todays, string DConfig)
+        public bool InsertMerchanAllocation(int SKU, int ClubCode, int Pieces, string ReasonName, int Prioritization,int OriginalPrio,double DCMOH, string Todays, string DConfig)
         {
 
             try
             {
                 DateTime formattedday = DateTime.Parse(Todays);
 
-                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation(SKU,ClubCode,RequestedQty,Remarks,Prioritization,OnHand,DateCreated,DistributionConfig) VALUES(@SKU,@ClubCode,@Pieces,@ReasonName,@Prioritization,@DCMOH,@Todays,@DConfig)", con);
+                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation(SKU,ClubCode,RequestedQty,Remarks,Prioritization,OriginalPrio,OnHand,DateCreated,DistributionConfig) VALUES(@SKU,@ClubCode,@Pieces,@ReasonName,@Prioritization,@OriginalPrio,@DCMOH,@Todays,@DConfig)", con);
                 cmd.CommandType = CommandType.Text;
                 con.Open();
 
@@ -1111,8 +1140,8 @@ namespace SNRWMSPortal.DataAccess
                 cmd.Parameters.AddWithValue("@ClubCode", ClubCode);
                 cmd.Parameters.AddWithValue("@Pieces", Pieces);
                 cmd.Parameters.AddWithValue("@ReasonName", ReasonName);
-               
                 cmd.Parameters.AddWithValue("@Prioritization", Prioritization);
+                cmd.Parameters.AddWithValue("@OriginalPrio", OriginalPrio);
                 cmd.Parameters.AddWithValue("@DCMOH", DCMOH);
                 cmd.Parameters.AddWithValue("@Todays", formattedday);
                 cmd.Parameters.AddWithValue("@DConfig", DConfig);
@@ -1302,7 +1331,7 @@ namespace SNRWMSPortal.DataAccess
         {
 
 
-            MSsql = "UPDATE [CreateAllocation] SET BatchCode = @BatchCode where ClubCode = @ClubCode and SKU = @SKU and Priritization = @Prio and Slotloc is not null";
+            MSsql = "UPDATE [CreateAllocation] SET BatchCode = @BatchCode where ClubCode = @ClubCode and SKU = @SKU and Prioritization = @Prio and Slotloc is not null";
             con.Open();
             cmd = new SqlCommand(MSsql, con);
 
@@ -1369,14 +1398,14 @@ namespace SNRWMSPortal.DataAccess
         }
 
         //  batchcode,clubcode, skucode,description, reqty,prioname, slotloc, lpn, qtytopick, qtypicked, dconfig, stdpk, status,userName, //todaysDate
-        public bool InsertPicklist(string BatchCode,int ClubCode, int SKU, string Description, int ReqQty,string Remarks, string SlotLoc, string LPN, int QtyToPick, int QtyPicked, string DConfig, double STDPK,int Status,string Sequence,string UserName, string Todays)
+        public bool InsertPicklist(string BatchCode,int ClubCode, int SKU, string Description, int ReqQty,string Remarks,int Prio, string SlotLoc, string LPN, int QtyToPick, int QtyPicked, string DConfig, double STDPK,int Status,string Sequence,string UserName, string Todays)
         {
 
             try
             {
                 DateTime formattedday = DateTime.Parse(Todays);
 
-                SqlCommand cmd = new SqlCommand("INSERT Picklist(BatchCode,StoreCode,SKU,ItemDesc,QtyPcs,QtyPcsEdited,Remarks,Status,DistributionConfig,STDPK,QtyToPick,QtyPicked,LPN,SlotLoc, PickSeq, UserName,DateCreated) VALUES(@BatchCode,@ClubCode,@SKU,@Description,@ReqQty,@QtyPiecesEdited,@Remarks,@Status,@DistributionConfig,@STDPK,@QtyToPick,@QtyPicked,@LPN,@SlotLoc,@Sequence,@UserName,@DateCreated)", con_UAT);
+                SqlCommand cmd = new SqlCommand("INSERT Picklist(BatchCode,StoreCode,SKU,ItemDesc,QtyPcs,QtyPcsEdited,Remarks,Prioritization,Status,DistributionConfig,STDPK,QtyToPick,QtyPicked,LPN,SlotLoc, PickSeq, UserName,DateCreated) VALUES(@BatchCode,@ClubCode,@SKU,@Description,@ReqQty,@QtyPiecesEdited,@Remarks,@Prio,@Status,@DistributionConfig,@STDPK,@QtyToPick,@QtyPicked,@LPN,@SlotLoc,@Sequence,@UserName,@DateCreated)", con_UAT);
                 cmd.CommandType = CommandType.Text;
                 con_UAT.Open();
                 cmd.Parameters.AddWithValue("@BatchCode", BatchCode);
@@ -1387,6 +1416,7 @@ namespace SNRWMSPortal.DataAccess
                 cmd.Parameters.AddWithValue("@ReqQty", ReqQty);
                 cmd.Parameters.AddWithValue("@QtyPiecesEdited", ReqQty);
                 cmd.Parameters.AddWithValue("@Remarks", Remarks);
+                cmd.Parameters.AddWithValue("@Prio", Prio);
                 cmd.Parameters.AddWithValue("@Status", Status);
                 cmd.Parameters.AddWithValue("@DistributionConfig", DConfig);
                 cmd.Parameters.AddWithValue("@STDPK", STDPK);
@@ -1414,15 +1444,83 @@ namespace SNRWMSPortal.DataAccess
 
         }
 
+        //To insert the Generated Allocation to Picklist Table
 
-        public bool InsertCreateAllocation(int ClubCode, int SKU, double ReqQty, int Status, string DConfig, int Prio,string Remarks, string Todays)
+        public bool InsertAllocationPicklist(string BatchCode, int ClubCode, int SKU, int ReqQty, int Prioritization, string SlotLoc, string LPN, string DConfig, string Todays)
         {
 
             try
             {
                 DateTime formattedday = DateTime.Parse(Todays);
 
-                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation(clubCode,SKU,RequestedQty,Status,DistributionConfig,Prioritization,Remarks,DateCreated) VALUES(@ClubCode,@SKU,@ReqQty,@Status,@DistributionConfig,@Prio,@Remarks,@DateCreated)", con);
+                SqlCommand cmd = new SqlCommand("INSERT AllocationPicklist(BatchCode,ClubCode,SKU,RequestedQty,Prioritization,SlotLoc,LPN,DistributionConfig,DateCreated) VALUES(@BatchCode,@ClubCode,@SKU,@ReqQty,@Prioritization,@SlotLoc,@LPN,@DistributionConfig,@DateCreated)", con_UAT);
+                cmd.CommandType = CommandType.Text;
+                con_UAT.Open();
+                cmd.Parameters.AddWithValue("@BatchCode", BatchCode);
+                cmd.Parameters.AddWithValue("@ClubCode", ClubCode);
+                cmd.Parameters.AddWithValue("@SKU", SKU);
+                cmd.Parameters.AddWithValue("@Prioritization", Prioritization);
+                cmd.Parameters.AddWithValue("@ReqQty", ReqQty);
+                cmd.Parameters.AddWithValue("@DistributionConfig", DConfig);
+                cmd.Parameters.AddWithValue("@LPN", LPN);
+                cmd.Parameters.AddWithValue("@SlotLoc", SlotLoc);
+                cmd.Parameters.AddWithValue("@DateCreated", formattedday);
+                cmd.ExecuteNonQuery();
+
+                con_UAT.Close();
+                return true;
+
+
+            }
+            catch (Exception)
+            {
+                con_UAT.Close();
+                return false;
+
+            }
+
+        }
+        // To insert the BathcCode on Allocation BatchCode table to detirmine the latest Batchcode served for the day
+
+        public bool InsertBatchCode(string BatchCode, int ClubCode,string Todays)
+        {
+
+            try
+            {
+                DateTime formattedday = DateTime.Parse(Todays);
+
+                SqlCommand cmd = new SqlCommand("INSERT Allocation_BatchCode(BatchCode,ClubCode,DateCreated) VALUES(@BatchCode,@ClubCode,@DateCreated)", con_UAT);
+                cmd.CommandType = CommandType.Text;
+                con_UAT.Open();
+                cmd.Parameters.AddWithValue("@BatchCode", BatchCode);
+                cmd.Parameters.AddWithValue("@ClubCode", ClubCode);
+                
+                cmd.Parameters.AddWithValue("@DateCreated", formattedday);
+                cmd.ExecuteNonQuery();
+
+                con_UAT.Close();
+                return true;
+
+
+            }
+            catch (Exception)
+            {
+                con_UAT.Close();
+                return false;
+
+            }
+
+        }
+
+        // To insert Create Allocation table with the number of loop per pallet
+        public bool InsertCreateAllocation(int ClubCode, int SKU, double ReqQty, int Status, string DConfig, int Prio,int OriginalPrio,string Remarks, string Todays)
+        {
+
+            try
+            {
+                DateTime formattedday = DateTime.Parse(Todays);
+
+                SqlCommand cmd = new SqlCommand("INSERT CreateAllocation(clubCode,SKU,RequestedQty,Status,DistributionConfig,Prioritization,OriginalPrio,Remarks,DateCreated) VALUES(@ClubCode,@SKU,@ReqQty,@Status,@DistributionConfig,@Prio,@OriginalPrio,@Remarks,@DateCreated)", con);
                 cmd.CommandType = CommandType.Text;
                 con.Open();
                
@@ -1436,6 +1534,7 @@ namespace SNRWMSPortal.DataAccess
                 
                 cmd.Parameters.AddWithValue("@DistributionConfig", DConfig);
                 cmd.Parameters.AddWithValue("@Prio", Prio);
+                cmd.Parameters.AddWithValue("@OriginalPrio", OriginalPrio);
                 cmd.Parameters.AddWithValue("@Remarks", Remarks);
 
 
@@ -1456,7 +1555,7 @@ namespace SNRWMSPortal.DataAccess
 
         }
 
-
+        // To verify first the SlotLocation if it is already existing to select a new one for Pallet Distribution Config
         public bool VerifyUpdateSlotLoc(int skucode, int clubcode)
         {
             MSsql = $"select * FROM CreateAllocation where SKU = {skucode} and Clubcode = {clubcode} and SLotLoc is null order by Prioritization";
@@ -1494,6 +1593,8 @@ namespace SNRWMSPortal.DataAccess
             }
         }
 
+
+        // To verify first the SlotLocation if it is already existing to select a new one for Case Distribution Config
         public bool VerifyUpdateSlotLocStop(int skucode, int clubcode,int prio)
         {
             MSsql = $"select * FROM CreateAllocation where SKU = {skucode} and Clubcode = {clubcode} and Prioritization = @Prio and Status IS NULL order by Prioritization";
@@ -1537,6 +1638,7 @@ namespace SNRWMSPortal.DataAccess
             }
         }
 
+        //To update Slotlocation and LPN from null values
         public void UpdateSlotLoc(int ClubCode, int SKU, string LPN, string SlotLoc)
         {
             
@@ -1579,6 +1681,7 @@ namespace SNRWMSPortal.DataAccess
             con.Close();
         }
 
+        // To update the Requested Qty where Status is null
         public void UpdateSlotLocStop(int ClubCode, int SKU,int ReqQty,int Prio)
         {
 
@@ -1621,7 +1724,7 @@ namespace SNRWMSPortal.DataAccess
             con.Close();
         }
 
-
+        //To delete Data on create allocation which Status is 3 and no BatchCode generated
         public void DeleteSlotLocStop(int ClubCode, int SKU, int Prio)
         {
 
@@ -1659,7 +1762,7 @@ namespace SNRWMSPortal.DataAccess
             con.Close();
         }
 
-
+        //To delete Data on create allocation which Status is null when the generated modal close and not continue
 
         public void DeleteStatusNull(int ClubCode,int SKUID)
         {
@@ -1687,7 +1790,7 @@ namespace SNRWMSPortal.DataAccess
             con.Close();
         }
 
-
+        //To delete Data on create allocation which Status is null and Batchcode is null when the generated modal close and not continue
         public void DeleteStatus3andNullSlotLoc(int ClubCode)
         {
 
@@ -1709,6 +1812,7 @@ namespace SNRWMSPortal.DataAccess
             con.Close();
         }
 
+        //To delete Data on create allocation which has status 3 and it's already picked in picklist table to use another sloct location 
         public void DeleteAlreadyPosted()
         {
 
