@@ -32,13 +32,7 @@ namespace SNRWMSPortal.Controllers
             { 
             var reasons = queryskus.GetReason();
             var reasonlist = new List<SelectListItem>();
-                //var configs = queryskus.GetDConfig();
-                //var configlist = new List<SelectListItem>();
-                //foreach (var i in configs)
-                //{
-                //    configlist.Add(new SelectListItem() { Text = i.Dconfig, Value = i.Code.ToString() });
-                //}
-                //ViewBag.Config = configlist;
+                
                 foreach (var i in reasons)
             {
                 reasonlist.Add(new SelectListItem() { Text = i.Reasons, Value = i.Reason.ToString() });
@@ -55,6 +49,8 @@ namespace SNRWMSPortal.Controllers
 
 
         [HttpGet]
+
+        //To search request
         public ActionResult SearchSKU(long id)
         {
             var verify = queryskus.CheckSKUId(id);
@@ -99,6 +95,8 @@ namespace SNRWMSPortal.Controllers
 
 
         [HttpPost]
+
+        //To insert and update request
         public ActionResult InsertMerchandise(List<AllocationMerchandiseModel> allocationOverModels)
         {
           //  string userName = "Junes";

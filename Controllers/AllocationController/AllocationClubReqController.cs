@@ -26,6 +26,8 @@ namespace SNRWMSPortal.Controllers
     {
 
         SQLQueryAllocationClubReq queryskus = new SQLQueryAllocationClubReq();
+
+        //To display and select all dropdown list in the form
         public ActionResult Index()
         {
            
@@ -37,13 +39,7 @@ namespace SNRWMSPortal.Controllers
             {
                 clublist.Add(new SelectListItem() { Text = i.ClubName, Value = i.CLubCode.ToString() });
             }
-                //var configs = queryskus.GetDConfig();
-                //var configlist = new List<SelectListItem>();
-                //foreach (var i in configs)
-                //{
-                //    configlist.Add(new SelectListItem() { Text = i.Dconfig, Value = i.Code.ToString() });
-                //}
-                //ViewBag.Config = configlist;
+             
                 ViewBag.ClubRequest = clublist;
 
                 var reasons = queryskus.GetReason();
@@ -63,8 +59,8 @@ namespace SNRWMSPortal.Controllers
         }
 
 
-       
 
+        //To search Club Request list
         [HttpGet]
         public ActionResult SearchClubReq(int clubcode,string status)
         {
@@ -85,6 +81,8 @@ namespace SNRWMSPortal.Controllers
             return new JsonResult() { Data = skus, JsonRequestBehavior = JsonRequestBehavior.AllowGet, MaxJsonLength = Int32.MaxValue };
         }
 
+
+        //To search SKU in INVMST table in MMS
         [HttpGet]
         public ActionResult SearchSKU(long skuid,int clubcode)
         {
@@ -132,6 +130,8 @@ namespace SNRWMSPortal.Controllers
 
 
         }
+
+        //To edit selected SKU 
         [HttpGet]
         public JsonResult EditSKU(int id)
         {
@@ -141,7 +141,7 @@ namespace SNRWMSPortal.Controllers
             return Json(equipment, JsonRequestBehavior.AllowGet);
         }
 
-
+        //To insert and save the request when already exist update
         [HttpPost]
         public ActionResult InsertRequest(List<AllocationClub> allocationClubModels)
         {
@@ -215,6 +215,8 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
+
+        //To update the Status to Approved when request is being approved
         [HttpPost]
         public ActionResult ApprovedRequest(List<AllocationClub> allocationClubModels)
         {
@@ -282,7 +284,7 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
-
+        //To update the Status to DisApproved when request is being disapproved
         [HttpPost]
         public ActionResult DisApprovedRequest(List<AllocationClub> allocationClubModels)
         {

@@ -32,7 +32,7 @@ using System.Globalization;
 
 namespace SNRWMSPortal.Controllers
 {
-  //  [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
+    [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
     public class AllocationReportsController : Controller
     {
 
@@ -52,6 +52,7 @@ namespace SNRWMSPortal.Controllers
 
 
         [HttpGet]
+        //To serach different report based on selected report
         public ActionResult SearchSKU(string from,string to,int report)
         {
            
@@ -778,7 +779,7 @@ namespace SNRWMSPortal.Controllers
 
 
 
-
+        //For Crsytal report puposes
         public DataSet GeneratePdf(string from,string to)
         {
             DS_NewSKU reportDS = new DS_NewSKU();

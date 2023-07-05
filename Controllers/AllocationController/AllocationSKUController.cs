@@ -27,13 +27,15 @@ namespace SNRWMSPortal.Controllers
     {
 
         SQLQueryAllocationSKU queryskus = new SQLQueryAllocationSKU();
+        
+        //To display and select all dropdown list
         public ActionResult Index()
         {
             try
             { 
             ModelState.Clear();
             AllocationSKUModel model = new AllocationSKUModel();
-            //model.ClubSKU = queryskus.GetClub();
+            
             model.ClubSKU = queryskus.GetClubSQL();
 
             var trucks = queryskus.GetTruckcategory();
@@ -61,7 +63,7 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
-
+        //To search SKU inputed in SKU searchbox
         [HttpGet]
         public ActionResult SearchSKU(long id)
         {
@@ -70,9 +72,7 @@ namespace SNRWMSPortal.Controllers
             {
                 var result = queryskus.SelectSKU(id);
                 var listclub = queryskus.GetClubSKU(id);
-                // var listinval = queryskus.GetClubInval(id);
-                // var clubs = queryskus.GetClub();
-                // result = queryskus.SelectSKUDistribution(id);
+                
 
                 AllocationSKUModel skus = new AllocationSKUModel()
                 {
@@ -106,7 +106,7 @@ namespace SNRWMSPortal.Controllers
 
        
 
-
+        //To insert new SKU when not exist if exist update
         [HttpPost]
         public ActionResult InsertSKU(List<AllocationSKUModel> allocationSKUModels)
         {
@@ -180,7 +180,7 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
-
+        //To verify if SKU is existing in MMS
         [HttpPost]
         public ActionResult InsertBatchCon(List<AllocationSKUModel> allocationSKUModels)
         {
@@ -232,7 +232,7 @@ namespace SNRWMSPortal.Controllers
 
 
         }
-
+        //To insert new SKU using batch upload when not exist if exist update
         [HttpPost]
         public ActionResult InsertBatch(List<AllocationSKUModel> allocationSKUModels)
         {
@@ -242,11 +242,11 @@ namespace SNRWMSPortal.Controllers
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");
             int sku = 0;
             int clubcode = 0;
-            int minimum, multiplier, leadtime,category,dconfig /*department, subdepartment, classname, subclass, vendor*/;
-            //double averageSales, dconfigqty,ohitsum;
+            int minimum, multiplier, leadtime,category,dconfig;
+         
             string ConfigExcel;
             string CategoryExcel, buildtodf;
-            //  int pi, ti, pk;
+            
             AllocationSKUModel skumodel = new AllocationSKUModel();
             
                 try
@@ -278,40 +278,7 @@ namespace SNRWMSPortal.Controllers
                         category = (int)item.Category;
                         buildtodf = item.BuildToDF;
 
-                    //var Ave = queryskus.AverageSales(sku, clubcode);
-                    //var ohit = queryskus.SelectOHITMMS(sku, clubcode);
-
-
-                    //averageSales = Ave;
-                    //ohitsum = ohit;
-
-
-
-
-                   // var result = queryskus.SelectSKU(sku);
-
-                    //AllocationSKUModel skus = new AllocationSKUModel()
-                    //{
-
-                    //    //ISTDPK = (double)result.ISTDPK,
-                    //    //IVPLHI = (double)result.IVPLHI,
-                    //    //IVPLTI = (double)result.IVPLTI,
-                    //    Department = (int)result.Department,
-                    //    SubDepartment = (int)result.SubDepartment,
-                    //    ClassName = (int)result.ClassName,
-                    //    SubClass = (int)result.SubClass,
-                    //    Vendor = (int)result.Vendor
-
-
-                    //};
-                    //department = result.Department;
-                    //subdepartment = result.SubDepartment;
-                    //classname = result.ClassName;
-                    //subclass = result.SubClass;
-                    //vendor = result.Vendor;
-
-
-
+                    
                     switch (ConfigExcel)
                         {
                             case "PALLET":
@@ -367,16 +334,6 @@ namespace SNRWMSPortal.Controllers
 
 
 
-                        //sku = (int)item.SKU;
-                        //var checkSKU = queryskus.CheckSKUId(sku);
-                        //if (checkSKU != 0)
-                        //{
-                        //    sku = (int)item.SKU;
-                        //}
-                        //else
-                        //{
-                        //    return Json(new { success = false, message = $"The SKU:{sku} is not found" }, JsonRequestBehavior.AllowGet);
-                        //}
 
                     bool insertSKUbool = queryskus.VerifyBatchInsert(sku, clubcode);
 
@@ -418,41 +375,6 @@ namespace SNRWMSPortal.Controllers
 
         
 
-        //[HttpPost]
-        //public ActionResult UpdateInval(List<AllocationSKUModel> allocationSKUModels)
-        //{
-        //    int sku, clubcode,roundedclubneeds;
-        //    double clubneeds;
-        //    AllocationSKUModel skumodel = new AllocationSKUModel();
-        //    try
-        //    {
-        //        var skuModel = allocationSKUModels.Select(x => x.SKU).FirstOrDefault();
-        //        var clubCodeModel = allocationSKUModels.Select(x => x.ClubCode).FirstOrDefault();
-        //        foreach (var item in allocationSKUModels)
-        //        {
-
-        //            sku = (int)item.SKU;
-        //            clubcode = (int)item.ClubCode;
-        //            clubneeds = (double)item.ClubNeeds;
-        //            roundedclubneeds = (int)item.RoundedClubNeeds;
-
-        //            bool insertSKUbool = queryskus.VerifyClubInsert(sku, clubcode);
-        //            if (insertSKUbool == true)
-        //            {
-
-        //                queryskus.UpdateInval(sku, clubcode, clubneeds,roundedclubneeds);
-        //            }
-
-
-        //        }
-        //        return Json("");
-
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
 
     }
 }

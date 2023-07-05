@@ -372,6 +372,8 @@
             
 
             $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+
+            //To display records when selectd status change 
             $('#Status').change(function () {
 
                
@@ -478,6 +480,7 @@
 
             });
 
+            //To search the selected Club
             $('#btnClubSearch').click(function () {
 
                 $('#btnClubSearch').prop("disabled", true);
@@ -593,6 +596,7 @@
 
         $(document).ready(function () {
 
+            //To search SKU description in MMS and SQL
             $('#btnSearch').click(function () {
                 var skuid = $('#SKU').val();
                 var clubcode = $('#ClubName').val();
@@ -676,7 +680,7 @@
         });
 
 
-
+        //To edit selected SKU
         function GetDetails(id) {
             $.ajax({
                 url: "/AllocationClubReq/EditSKU/" + id,
@@ -729,6 +733,8 @@
         }
 
         $(document).ready(function () {
+
+            //To insert and update request
             $("#btnsave").on("click", function () {
                 var skus = new Array();
                 var skuslist = {};
@@ -870,6 +876,7 @@
 
             });
 
+            //To update approved request
             $("#approvedBtn").on("click", function () {
                 var skus = new Array();
                 var skuslist = {};
@@ -995,6 +1002,8 @@
 
             });
 
+
+            //To update status to disapproved
             $("#disapprovedBtn").on("click", function () {
                 var skus = new Array();
                 var skuslist = {};
@@ -1087,7 +1096,7 @@
 
             });
 
-
+            //Date picker function
             $(function () {
 
                 $('#RequestedDate').datepicker({
@@ -1100,12 +1109,13 @@
             });
 
         });
-        
+        //Close the  modal
         $('#closeModalBtn').click(function () {
             $('#modalRegisterForm').modal('hide');
 
         })
 
+        //To compute the inutted quantity based on the formula below
         $('#modalRegisterForm').on('shown', function () {
             $('#Quantity').focus();
         })
@@ -1144,7 +1154,7 @@
         });
 
 
-
+        //Formula
         function getValues() {
 
 

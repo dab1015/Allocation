@@ -26,19 +26,15 @@ namespace SNRWMSPortal.Controllers
     {
 
         SQLQueryAllocationMerchandise queryskus = new SQLQueryAllocationMerchandise();
+        
+        //To select and display dropdownlist in the form
         public ActionResult Index()
         {
             try
             { 
             var reasons = queryskus.GetReason();
             var reasonlist = new List<SelectListItem>();
-                //var configs = queryskus.GetDConfig();
-                //var configlist = new List<SelectListItem>();
-                //foreach (var i in configs)
-                //{
-                //    configlist.Add(new SelectListItem() { Text = i.Dconfig, Value = i.Code.ToString() });
-                //}
-                //ViewBag.Config = configlist;
+            
                 foreach (var i in reasons)
             {
                 reasonlist.Add(new SelectListItem() { Text = i.Reasons, Value = i.Reason.ToString() });
@@ -53,7 +49,7 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
-
+        //To search inputted SKU
         [HttpGet]
         public ActionResult SearchSKU(long id)
         {
@@ -98,11 +94,11 @@ namespace SNRWMSPortal.Controllers
            
         }
 
-
+        //To insert new record in Merchandise Request if exist update
         [HttpPost]
         public ActionResult InsertMerchandise(List<AllocationMerchandiseModel> allocationOverModels)
         {
-          //  string userName = "Junes";
+          //string userName = "Junes";
             string userName = Session["Username"].ToString();
             DateTime date = DateTime.Now;
             string todaysDate = date.ToString("MM-dd-yyyy,H:mm");

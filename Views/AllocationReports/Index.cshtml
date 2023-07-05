@@ -251,7 +251,7 @@
 
         $(document).ready(function () {
 
-
+            //Button to generete report
             $('#Generate').prop("disabled", true);
             $('#Generate').on('click', function (e) {
                 $('#loader4').css("display", "block");
@@ -304,94 +304,8 @@
 
         });
 
-            /* $('#search').click(function () {*/
-
-            //$("#dataTable").dataTable().fnDestroy();
-
-            //$("#dataTablebdy").empty();
-            //var fr = $('#fromtemp').val();
-            //var t = $('#totemp').val();
-            //if ($('#fromtemp').val() == "" || $('#totemp').val() == "") {
-            //    Swal.fire(
-            //        'Please input date field to search!',
-            //        'Please try again',
-            //        'warning'
-            //    )
-            //    return;
-            //}
-
-            //$.ajax({
-
-            //    url: "/AllocationNewSKU/SearchSKU?from=" + fr + "&to=" + t,
-            //    type: "Get",
-            //    success: function (data) {
-            //        var y = 1;
-            //    for (var i = 0; i < data.ClubSKU.length; i++) {
-
-            //        var tablerow = '<tr class="package-row">'
-
-            //            + '<td>' + y + '</td>'
-            //            + '<td>' + data.ClubSKU[i].INUMBR + '</td>'
-            //            + '<td>' + data.ClubSKU[i].Description + '</td>'
-            //            + '<td>' + data.ClubSKU[i].IDEPT + '</td>'
-            //            + '<td>' + data.ClubSKU[i].ISDEPT + '</td>'
-            //            + '<td>' + data.ClubSKU[i].Status + '</td>'
-            //            + '<td>' + data.ClubSKU[i].IATRB1 + '</td>'
-            //            + '<td>' + data.ClubSKU[i].IMDATE + '</td>'
-            //            + '<td></td>'
-            //            + '<td>' + data.ClubSKU[i].Case + '</td>'
-            //            + '<td>' + data.ClubSKU[i].Layer + '</td>'
-            //            + '<td>' + data.ClubSKU[i].Pallet + '</td>'
-
-            //            + '</tr>';
-            //        $("#dataTablebdy").append(tablerow);
-            //        y++;
-
-            //    }
-
-
-            //        $(function () {
-            //            $('#dataTable').DataTable({
-            //                ordering: false,
-            //                dom: 'Bfrtip',
-            //                buttons: [
-            //                    'pageLength',
-            //                    {
-            //                        extend: 'copy',
-            //                        title: 'New SKU Set-up'
-            //                    },
-            //                    {
-            //                        extend: 'csv',
-            //                        title: 'New SKU Set-up'
-            //                    },
-            //                    {
-            //                        extend: 'excel',
-            //                        title: 'New SKU Set-up'
-            //                    },
-            //                    {
-            //                        extend: 'pdfHtml5',
-            //                        orientation: 'landscape',
-            //                        title: 'New SKU Set-up',
-            //                        pageSize: 'LEGAL'
-            //                    },
-            //                    {
-            //                        extend: 'print',
-            //                        title: 'New SKU Set-up'
-
-            //                    }
-
-
-            //                ],
-            //                paging: true,
-            //            });
-            //        })
-            //    }
-
-            //});
-
-
-
-
+           
+        //Function for date validation
         function getValues() {
 
             if ($('#fromtemp').val() == "" || $('#totemp').val() == "") {

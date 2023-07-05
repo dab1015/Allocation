@@ -169,19 +169,7 @@
 
                                                 </div>
                                             </div>
-                                            @*<div class="col-4  mb-0">
-                                    <div class="row g-1">
-                                        <label for="Option" class="form-label">Status</label>
-                                        <select name="status" style="height:46px;" class="form-select" id="Status">
-                                            <option id="ss" value="PENDING">PENDING</option>
-
-                                            <option id ="aa" value="APPROVED">APPROVED</option>
-                                            <option id="dd" value="DISAPPROVED">DISAPPROVED</option>
-                                        </select>
-
-
-                                    </div>
-                                </div>*@
+                                           
 
                                             <div class="col-4  mb-0">
                                                 <div class="row g-1">
@@ -379,8 +367,10 @@
 
             
             
-
+            //dataable design
             $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+
+            //Search Club Request records when selected status is change
             $('#Status').change(function () {
 
                
@@ -486,6 +476,7 @@
 
             });
 
+            //To search when button search is clicked
             $('#btnClubSearch').click(function () {
 
                 $('#btnClubSearch').prop("disabled", true);
@@ -619,6 +610,8 @@
 
         $(document).ready(function () {
 
+
+            //to search SKU description
             $('#btnSearch').click(function () {
                 var skuid = $('#SKU').val();
                 var clubcode = $('#ClubName').val();
@@ -702,7 +695,7 @@
         });
 
 
-
+        //To edit selected SKU
         function GetDetails(id) {
             $.ajax({
                 url: "/AllocationClubReq/EditSKU/" + id,
@@ -755,6 +748,8 @@
         }
 
         $(document).ready(function () {
+
+            //To save and update request
             $("#btnsave").on("click", function () {
                 var skus = new Array();
                 var skuslist = {};
@@ -896,6 +891,7 @@
 
             });
 
+            //To update status to Approved
             $("#approvedBtn").on("click", function () {
                 var skus = new Array();
                 var skuslist = {};
@@ -1021,6 +1017,7 @@
 
             });
 
+            //To update status to DisApproved
             $("#disapprovedBtn").on("click", function () {
                 var skus = new Array();
                 var skuslist = {};
@@ -1113,7 +1110,7 @@
 
             });
 
-
+            //Date picker function
             $(function () {
 
                 $('#RequestedDate').datepicker({
@@ -1126,7 +1123,8 @@
             });
 
         });
-        
+
+        //To close the modal
         $('#closeModalBtn').click(function () {
             $('#modalRegisterForm').modal('hide');
 
@@ -1135,6 +1133,8 @@
         $('#modalRegisterForm').on('shown', function () {
             $('#Quantity').focus();
         })
+
+        //To register new SKU
         $('#modalRegisterBtn').click(function () {
 
             if ($("#ClubName").val() == 0) {
@@ -1170,7 +1170,7 @@
         });
 
         
-
+        //Function to get the set formula
         function getValues() {
 
 
@@ -1197,7 +1197,7 @@
                 $("#PQty").val(parseInt(palletqty));
             }
         }
-
+        //Button clicked when entered 
         $("#SKU").keyup(function (event) {
             if (event.which === 13) {
                 $("#btnSearch").click();

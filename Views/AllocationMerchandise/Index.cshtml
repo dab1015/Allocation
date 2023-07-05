@@ -222,6 +222,8 @@
 
 
             $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+
+            //To search records based on inputted sku
             $('#skubtn').click(function () {
                 $('#skubtn').prop("disabled", true);
                 var id = $('#SKU').val();
@@ -316,6 +318,8 @@
         });
 
         $(document).ready(function () {
+
+            //To insert and update request
             $("#btnSave").on("click", function () {
 
 
@@ -395,6 +399,7 @@
             });
         });
 
+        //Function for selected reasons 
         function getValues() {
 
             var rows = document.querySelectorAll("tr.package-row");

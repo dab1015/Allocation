@@ -319,6 +319,8 @@
 
 
             $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+
+            //To display record when button generate clicked 
             $('#btnGenerate').click(function () {
                 $('#loader').css("display", "block");
                 $('#btnGenerate').prop("disabled", true);
@@ -522,7 +524,7 @@
 
         $(document).ready(function () {
 
-
+            //To go to inventory in WMS for the selected SKU based on number of pallet and distribution config
             $('#dataTablePick').dataTable({ searching: false, paging: false, info: false, "ordering": false });
             $('#btnGenerate1').click(function () {
                 $('#loader2').css("display", "block");
@@ -610,6 +612,7 @@
                 $("#dataTablebdy1").empty();
                 $('#loader3').css("display", "block");
                 $.ajax({
+                    //Search to WMS slot loc above 1 and config is pallet
                     url: "/AllocationCreation/SearchAllocationSKU?clubcode=" + clubcode,
                     type: "Get",
                     success: function (data) {
@@ -643,6 +646,7 @@
                 $("#dataTablebdy1").empty();
               //  $('#loader3').css("display", "block");
                 $.ajax({
+                    //Search to WMS slot loc  1 and config is case or layer
                     url: "/AllocationCreation/SearchAllocationSKUCase?clubcode=" + clubcode,
                     type: "Get",
                     success: function (data) {
@@ -690,6 +694,8 @@
 
 
             $('#dataTablePicklist').dataTable({ searching: false, paging: false, info: false, "ordering": false });
+
+            //To populate date which is ready to pick
             $('#btnGen1').click(function () {
 
 
@@ -812,6 +818,8 @@
 
 
         $(document).ready(function () {
+
+            //To insert into Picklist table
             $("#btnGen2").on("click", function () {
 
                 
@@ -893,7 +901,7 @@
 
             });
 
-
+            //To close the modal and delete selected sku to pick
             $("#closeModalBtn").on("click", function () {
 
 
@@ -949,7 +957,7 @@
 
 
             
-
+            //To have a validated prioritazation
             $("#btnGenerate2").on("click", function () {
 
 
@@ -1003,6 +1011,8 @@
         });
 
         $(document).ready(function () {
+
+            //To update slot location 
             $("#btnGen").on("click", function () {
 
 
@@ -1048,6 +1058,7 @@
         });
 
         $(document).ready(function () {
+            //to select the checked SKU based on number of pallets
             $("#btnSave").on("click", function () {
 
                
@@ -1140,6 +1151,8 @@
 
         });
 
+
+        //function to close modal
         $(function () {
 
 

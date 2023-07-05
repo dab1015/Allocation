@@ -21,7 +21,7 @@ using System.Web.UI;
 
 namespace SNRWMSPortal.Controllers
 {
-   [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
+ //  [AuthorizeRoles(Role.Allocation, Role.SystemAdministrator)]
     public class AllocationCreationController : Controller
     {
 

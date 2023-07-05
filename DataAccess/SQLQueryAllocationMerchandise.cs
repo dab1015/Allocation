@@ -346,7 +346,16 @@ namespace SNRWMSPortal.DataAccess
                 clublist.RequestedQty = Convert.ToInt32(reader["RequestedQty"]);
                 clublist.PrioritizationName = Convert.ToString(reader["Prio"]);
                 clublist.OriginalPrio = Convert.ToString(reader["OriginalPrio"]);
-                clublist.FinalPrio = clublist.PrioritizationName +" - "+ clublist.OriginalPrio;
+
+                if(clublist.PrioritizationName == clublist.OriginalPrio)
+                {
+                    clublist.FinalPrio = clublist.PrioritizationName;
+                }
+                else
+                {
+                    clublist.FinalPrio = clublist.PrioritizationName + " - " + clublist.OriginalPrio;
+                }
+               
                 clublist.Remarks = Convert.ToString(reader["Remarks"]);
                 clublist.LPN = Convert.ToString(reader["LPN"]);
                 clublist.SlotLoc = Convert.ToString(reader["SlotLoc"]);

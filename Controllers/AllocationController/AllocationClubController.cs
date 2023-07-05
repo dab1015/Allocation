@@ -17,6 +17,8 @@ namespace SNRWMSPortal.Controllers
     {
 
         SQLQueryAllocationSKU queryskus = new SQLQueryAllocationSKU();
+
+        //To display and select Club dropdown list in the form
         public ActionResult Index()
         {
             try
@@ -33,6 +35,8 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
+
+        //To edit the Club list
         [HttpGet]
         public JsonResult EditClub(int id)
         {
@@ -42,7 +46,9 @@ namespace SNRWMSPortal.Controllers
             return Json(equipment, JsonRequestBehavior.AllowGet);
         }
 
+        
 
+        //To insert new Club
         [HttpPost]
         public ActionResult InsertClub(List<AllocationSKUModel> allocationSKUModels)
         {
@@ -89,7 +95,7 @@ namespace SNRWMSPortal.Controllers
             }
         }
 
-
+        //To update if isprovince is true or false
         [HttpPost]
         public ActionResult UpdateProvince(List<AllocationSKUModel> allocationClubModels)
         {

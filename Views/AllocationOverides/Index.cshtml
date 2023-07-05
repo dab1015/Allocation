@@ -301,9 +301,11 @@
 
 @section scripts{
 
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.0/dist/xlsx.full.min.js"></script>
     <script>
+        //To browse excel for batch upload
         var ExcelToJSON = function () {
             this.parseExcel = function (file) {
                 var reader = new FileReader();
@@ -378,8 +380,8 @@
         document.getElementById('fileupload').addEventListener('change', handleFileSelect, false);
 
 
-        //Batch Upload
-
+        //Batch Upload 
+        //To upload when button was clicked
         $("#btnUpload").on("click", function () {
             $('#loader').css("display", "block");
             var counterC = 0;
@@ -436,6 +438,7 @@
 
             $.ajax({
                 type: "Post",
+                //To insert batch upload
                 url: "/AllocationOverides/InsertBatchDept",
                 dataType: 'json',
                 data: JSON.stringify(batch),
@@ -481,6 +484,7 @@
                         var productList = JSON.parse(JSON.stringify(XL_row_object));
 
                         var rows = $('#tblItems tbody');
+                        //Sheetname initialize must be the same to excel sheet name on template
                         if (sheetName != "Vendor") {
                             return;
                         }
@@ -538,8 +542,9 @@
 
 
         //Batch Upload
-
+        //To uplaod another template for batch uplaod
         $("#btnUpload2").on("click", function () {
+
             $('#loader').css("display", "block");
             var counterC = 0;
 
@@ -840,7 +845,7 @@
         $(document).ready(function () {
             $('#dataTable').dataTable({ searching: false, paging: false, info: false, "ordering": false });
 
-
+        // To search using vendor code
             $('#search').click(function () {
                 $('#search').prop("disabled", true);
 
@@ -905,6 +910,7 @@
                     });
 
                 }
+                     //To search using SKU
                 else if ($('#SKU').val() == "") {
                     var vcode = $('#VendorCode').val();
                     $("#dataTablebdy").empty();
@@ -967,7 +973,7 @@
 
             });
 
-
+            //To search using department name
             $('#DeptName').change(function () {
 
 
@@ -1013,6 +1019,7 @@
 
             });
 
+            //To search using sub-department name
             $('#SubDeptName').change(function () {
 
                 var deptcode = $('#DeptName').val();
@@ -1057,7 +1064,7 @@
 
 
             });
-
+             //To search using class name
             $('#ClassName').change(function () {
 
                 var deptcode = $('#DeptName').val();
@@ -1103,6 +1110,7 @@
 
             });
 
+             //To search using sub-class name
             $('#SubClassName').change(function () {
 
                 var deptcode = $('#DeptName').val();
@@ -1144,7 +1152,7 @@
                 });
             });
 
-
+             //To search all when checkbox is thicked
             $('#allsearch').change(function () {
 
 
@@ -1261,7 +1269,7 @@
 
 
         //....................................
-        //display sku clubs...................
+        //date Picker function
         $(function () {
 
             $('#to').datepicker({
@@ -1297,7 +1305,7 @@
         });
 
 
-
+        //Function fro current row functionality
         function getValues1() {
 
             var rows = document.querySelectorAll("tr.package-row");
@@ -1448,6 +1456,8 @@
         });
 
         $(document).ready(function () {
+
+            //To insert new overides record
             $("#btnSave").on("click", function () {
                 if ($('#VendorCode').val() == "") {
                     var counterT = 0;
@@ -1486,6 +1496,7 @@
 
                     $.ajax({
                         type: "Post",
+                        //new overrides record using SKU
                         url: "/AllocationOverides/InsertOverRides",
                         dataType: 'json',
                         data: JSON.stringify(skus),
@@ -1548,6 +1559,7 @@
 
                     $.ajax({
                         type: "Post",
+                        //overrides using vendor code
                         url: "/AllocationOverides/InsertOverRidesVendor",
                         dataType: 'json',
                         data: JSON.stringify(skus),
@@ -1618,6 +1630,7 @@
 
                 $.ajax({
                     type: "Post",
+                    //To insert new overides using department
                     url: "/AllocationOverides/InsertOverDept",
                     dataType: 'json',
                     data: JSON.stringify(skus),
@@ -1683,6 +1696,7 @@
 
                 $.ajax({
                     type: "Post",
+                    //To insert new overides using sub-department
                     url: "/AllocationOverides/InsertOverSubDept",
                     dataType: 'json',
                     data: JSON.stringify(skus),
@@ -1748,6 +1762,7 @@
 
                 $.ajax({
                     type: "Post",
+                    //To insert new overides using class
                     url: "/AllocationOverides/InsertOverClass",
                     dataType: 'json',
                     data: JSON.stringify(skus),
@@ -1812,6 +1827,7 @@
 
                 $.ajax({
                     type: "Post",
+                    //To insert new overides using sub-class
                     url: "/AllocationOverides/InsertOverSubClass",
                     dataType: 'json',
                     data: JSON.stringify(skus),
@@ -1879,6 +1895,7 @@
 
                 $.ajax({
                     type: "Post",
+                    //To insert new overides in all categories 
                     url: "/AllocationOverides/InsertAllCateg",
                     dataType: 'json',
                     data: JSON.stringify(skus),

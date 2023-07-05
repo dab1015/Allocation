@@ -147,6 +147,7 @@
 
     <script>
 
+        //To insert new Club
         $("#btnSave").on("click", function () {
             
             //Loop through the Table rows and build a JSON array.
@@ -177,7 +178,7 @@
         $(document).ready(function () {
             $('#dataTable').dataTable({ searching: false, paging: false, info: false });
         });
-
+        //To edit Club information
         function GetDetails(id) {
             $.ajax({
                 url: "/AllocationClub/EditClub/" + id,
@@ -199,7 +200,7 @@
             });
             return false;
         }
-
+        //To close the modal
         $('#closeModalBtn').click(function () {
             $('#modalRegisterForm').modal('hide');
 

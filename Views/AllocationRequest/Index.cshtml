@@ -229,6 +229,7 @@
 
                 $("#dataTablebdy").empty();
                 $.ajax({
+                    //Search request 
                     url: "/AllocationRequest/SearchSKU?id=" + id,
                     type: "Get",
                     success: function (data) {
@@ -311,6 +312,7 @@
         });
 
         $(document).ready(function () {
+            //Button to save and update request
             $("#btnSave").on("click", function () {
 
                 if ($('#DCMOH').val() == 0) {
@@ -366,6 +368,7 @@
 
                 $.ajax({
                     type: "Post",
+                    //insert and update request
                     url: "/AllocationRequest/InsertMerchandise",
                     dataType: 'json',
                     data: JSON.stringify(skus),
